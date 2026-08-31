@@ -148,14 +148,60 @@ html,body,[class*="css"]{font-family:'Poppins',sans-serif !important;}
 /* map card */
 .mapwrap{border-radius:20px;overflow:hidden;border:1px solid #ece5d2;
   box-shadow:0 14px 34px -14px rgba(28,43,33,.2);animation:fadeUp .8s both;}
+
+/* ---------- Advanced transitions ---------- */
+/* smooth page fade for the whole app container */
+.stApp>div{animation:pageIn .5s cubic-bezier(.22,1,.36,1);}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* card entrance with scale+lift */
+.card{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s;}
+.card:hover{transform:translateY(-8px) scale(1.015);border-color:var(--gold);}
+
+/* buttons ripple-like press */
+.stButton>button{position:relative;overflow:hidden;}
+.stButton>button::after{content:"";position:absolute;inset:0;border-radius:14px;
+  background:radial-gradient(circle,rgba(255,255,255,.35) 0%,transparent 70%);
+  opacity:0;transform:scale(.6);transition:opacity .3s,transform .3s;}
+.stButton>button:hover::after{opacity:1;transform:scale(1.2);}
+
+/* nav link underline sweep */
+.nav-link{position:relative;}
+.nav-link::after{content:"";position:absolute;left:12px;right:12px;bottom:6px;height:2px;
+  background:var(--gold2);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.nav-link:hover::after{transform:scaleX(1);}
+
+/* stop timeline connector pulse */
+.stop .num{transition:transform .3s,box-shadow .3s;}
+.stop:hover .num{transform:scale(1.12);box-shadow:0 10px 20px -4px rgba(47,82,51,.6);}
+
+/* activity rows slide+fade on hover */
+.act{transition:transform .25s,background .25s,box-shadow .25s;}
+.act:hover{transform:translateX(6px);background:#f3efe0;box-shadow:0 6px 14px -6px rgba(28,43,33,.15);}
+
+/* metric count-up feel */
+.metric .v{display:inline-block;animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+
+/* invite code shimmer border */
+.invite{position:relative;overflow:hidden;}
+.invite::after{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(201,162,75,.25),transparent);
+  animation:shimmer 3s infinite;}
+
+/* smooth expander open */
+.streamlit-expanderContent{animation:fadeUp .4s both;}
+
+/* reduced motion respect */
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+}
 </style>
 """
 
-# Lottie animation URLs (free, from lottiefiles)
+# Lottie animations — served LOCALLY from assets/ for instant load (no network latency).
 LOTTIE = {
-    "travel": "https://assets9.lottiefiles.com/packages/lf20_zw0djhar.json",
-    "map": "https://assets2.lottiefiles.com/packages/lf20_06a6pf9i.json",
-    "compass": "https://assets5.lottiefiles.com/packages/lf20_49dzk0.json",
-    "group": "https://assets8.lottiefiles.com/packages/lf20_t24tpvcu.json",
-    "success": "https://assets1.lottiefiles.com/packages/lf20_jbrw3hcz.json",
+    "travel": "assets/travel.json",
+    "group": "assets/group.json",
+    "success": "assets/success.json",
 }

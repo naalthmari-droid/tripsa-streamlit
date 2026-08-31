@@ -3,7 +3,7 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 from datetime import datetime, date
-import requests
+import json, os
 from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 
@@ -16,11 +16,12 @@ st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 db.init_db()
 
-@st.cache_data(ttl=3600)
-def load_lottie(url):
+@st.cache_data
+def load_lottie(path):
+    """Load a Lottie animation from a LOCAL file (instant, no network)."""
     try:
-        r = requests.get(url, timeout=8)
-        return r.json() if r.status_code == 200 else None
+        with open(os.path.join(os.path.dirname(__file__), path)) as f:
+            return json.load(f)
     except Exception:
         return None
 
