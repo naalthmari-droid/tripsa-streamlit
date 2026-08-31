@@ -1,0 +1,123 @@
+{
+  "project_info": {
+    "title": "TRIPSA — Saudi Route Intelligence",
+    "created": 1788187738.56,
+    "last_updated": 1788187913.525,
+    "total_slides": 11
+  },
+  "slides": [
+    {
+      "id": "title",
+      "state": "edited",
+      "pageNum": 1
+    },
+    {
+      "id": "problem",
+      "state": "edited",
+      "pageNum": 2
+    },
+    {
+      "id": "gap",
+      "state": "edited",
+      "pageNum": 3
+    },
+    {
+      "id": "solution",
+      "state": "edited",
+      "pageNum": 4
+    },
+    {
+      "id": "features1",
+      "state": "edited",
+      "pageNum": 5
+    },
+    {
+      "id": "features2",
+      "state": "edited",
+      "pageNum": 6
+    },
+    {
+      "id": "architecture",
+      "state": "edited",
+      "pageNum": 7
+    },
+    {
+      "id": "audiences",
+      "state": "edited",
+      "pageNum": 8
+    },
+    {
+      "id": "impact",
+      "state": "edited",
+      "pageNum": 9
+    },
+    {
+      "id": "whywin",
+      "state": "edited",
+      "pageNum": 10
+    },
+    {
+      "id": "roadmap",
+      "state": "edited",
+      "pageNum": 11
+    }
+  ],
+  "outline": [
+    {
+      "id": "title",
+      "title": "TRIPSA — Saudi Route Intelligence",
+      "summary": "Title slide with the TRIPSA gold wordmark, the English slogan, and a one-line positioning statement for the TDF Hackathon."
+    },
+    {
+      "id": "problem",
+      "title": "Saudi tourism is booming, but planning is still manual",
+      "summary": "2025 official figures (29.3M inbound / SAR 176.6B, 93.3M domestic / SAR 127.1B) contrasted with fragmented, static, manual trip planning."
+    },
+    {
+      "id": "gap",
+      "title": "No one owns the brain of the route",
+      "summary": "STA publishes static itineraries; Ministry tools serve businesses/investors. A validated gap for a traveler-facing route-intelligence engine."
+    },
+    {
+      "id": "solution",
+      "title": "TRIPSA: an intelligent route engine for Saudi road trips",
+      "summary": "Optimized routes with stay dates, custom or certified-route modes, group room with invite code, and learning recommendations."
+    },
+    {
+      "id": "features1",
+      "title": "Engineered for the traveler's real journey",
+      "summary": "Route optimizer, smart day scheduling around wake/sleep hours, real local restaurants matched to cuisine, interactive route map.",
+      "image_plan": "/home/ubuntu/upload/pasted_file_8Ru4oW_image.png - Screenshot of the TRIPSA working MVP app UI showing features like Optimized Routes, Create a trip, etc."
+    },
+    {
+      "id": "features2",
+      "title": "Built for groups — a first in the market",
+      "summary": "Invite-code group room, voting, live consensus score, comments, For-You recommendations with ratings, email notifications."
+    },
+    {
+      "id": "architecture",
+      "title": "A clean, modular, data-driven pipeline",
+      "summary": "Data layer, engine layer (TSP, scheduler, consensus, recommender), Streamlit app layer, persistence, deployed on Streamlit Cloud."
+    },
+    {
+      "id": "audiences",
+      "title": "Two audiences, one platform",
+      "summary": "Tourist-facing simplicity plus a hidden admin dashboard (readiness, economic impact, demand/review analytics) for partners."
+    },
+    {
+      "id": "impact",
+      "title": "Extends stays, spreads spend, empowers regions",
+      "summary": "Longer trips, wider geographic spend, local economic impact indicator, certified-route surfacing, actionable demand signals for TDF."
+    },
+    {
+      "id": "whywin",
+      "title": "A validated gap, a working product, a data moat",
+      "summary": "Live MVP, unique group-consensus planning, self-improving recommender, complements STA/Ministry, built on real 2025-2026 data."
+    },
+    {
+      "id": "roadmap",
+      "title": "From hackathon MVP to national route-intelligence layer",
+      "summary": "Roadmap (live APIs, Arabic UI, PDF export, mobile) and the ask: pilot with TDF, official data access, growth-track incubation."
+    }
+  ]
+}

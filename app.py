@@ -263,11 +263,20 @@ def page_detail():
               </div>
             </div>""", unsafe_allow_html=True)
             with st.expander(f"🕒 Day schedule for {s['name']} (your hours)"):
-                acts = engine.schedule_day(s["destination_id"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
-                for a in acts:
-                    star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
-                    cls = "act meal" if a["kind"] == "meal" else "act"
-                    st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
+                # Recommended stay (real hotels for this city)
+                hotels = engine.hotels_for(s["destination_id"], t.get("budget_tier", "Mid-range"), t.get("accommodation"))
+                if hotels:
+                    st.markdown('<div class="sub" style="font-weight:700;color:#2f5233;margin-top:2px">🏨 Recommended stay</div>', unsafe_allow_html=True)
+                    for h in hotels[:3]:
+                        st.markdown(f'<div class="act"><span class="dotm"></span><span><b>{h[0]}</b> · {"★"*h[1]} · {h[2]} · ~SAR {h[3]}/night · {h[4]}</span></div>', unsafe_allow_html=True)
+                # A schedule for EACH day of the stay
+                days = engine.schedule_trip_days(s["destination_id"], s["nights"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
+                for di, acts in enumerate(days, 1):
+                    st.markdown(f'<div class="sub" style="font-weight:700;color:#2f5233;margin-top:10px">📅 Day {di}</div>', unsafe_allow_html=True)
+                    for a in acts:
+                        star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
+                        cls = "act meal" if a["kind"] == "meal" else "act"
+                        st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
 
     # Members
     members = db.get_members(t["id"])

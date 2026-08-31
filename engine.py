@@ -202,6 +202,171 @@ def _fmt(minutes):
     return f"{h:02d}:{m:02d}"
 
 
+# ----------------------------- Real hotels per city -----------------------------
+# name, stars, area, approx nightly SAR, type
+HOTELS = {
+    "riyadh": [
+        ("The Ritz-Carlton Riyadh", 5, "Diplomatic Quarter", 1400, "Luxury"),
+        ("Four Seasons Hotel Riyadh", 5, "Kingdom Centre", 1500, "Luxury"),
+        ("Hyatt Regency Riyadh Olaya", 5, "Olaya", 850, "Luxury"),
+        ("Aloft Riyadh", 4, "Olaya", 480, "Mid-Range"),
+        ("ibis Riyadh Olaya Street", 3, "Olaya", 260, "Budget"),
+    ],
+    "jeddah": [
+        ("The Ritz-Carlton Jeddah", 5, "Corniche", 1300, "Luxury"),
+        ("Park Hyatt Jeddah", 5, "Marina", 1100, "Luxury"),
+        ("Radisson Blu Hotel Jeddah", 4, "Al Salamah", 520, "Mid-Range"),
+        ("ibis Jeddah City Center", 3, "Al Rawdah", 250, "Budget"),
+    ],
+    "alula": [
+        ("Habitas AlUla", 5, "Ashar Valley", 2200, "Luxury"),
+        ("Banyan Tree AlUla", 5, "Ashar Valley", 2600, "Luxury"),
+        ("Shaden Resort", 4, "AlUla", 900, "Mid-Range"),
+        ("Sahary AlUla Resort", 3, "AlUla", 420, "Budget"),
+    ],
+    "abha": [
+        ("Abha Palace Hotel", 5, "Al Soudah Rd", 700, "Luxury"),
+        ("Blue Inn Boutique Hotel", 4, "Abha", 450, "Mid-Range"),
+        ("Al Eairy Furnished Apartments", 3, "Abha", 220, "Budget"),
+    ],
+    "albaha": [
+        ("Golden Tulip Al Baha", 4, "Al Baha", 380, "Mid-Range"),
+        ("Safir Al Baha Hotel", 3, "Al Baha", 240, "Budget"),
+    ],
+    "taif": [
+        ("InterContinental Taif", 5, "Taif", 750, "Luxury"),
+        ("Velar Hotel", 4, "Taif", 420, "Mid-Range"),
+        ("Boudl Taif", 3, "Taif", 230, "Budget"),
+    ],
+    "hail": [
+        ("Golden Tulip Hail", 4, "Hail", 380, "Mid-Range"),
+        ("Millennium Hail Hotel", 5, "Hail", 600, "Luxury"),
+        ("Oyo Hail", 3, "Hail", 200, "Budget"),
+    ],
+    "qassim": [
+        ("Movenpick Hotel Qassim", 5, "Buraidah", 650, "Luxury"),
+        ("Golden Tulip Buraidah", 4, "Buraidah", 380, "Mid-Range"),
+        ("Boudl Buraidah", 3, "Buraidah", 220, "Budget"),
+    ],
+    "makkah": [
+        ("Fairmont Makkah Clock Royal Tower", 5, "Abraj Al Bait", 1600, "Luxury"),
+        ("Swissotel Makkah", 5, "Abraj Al Bait", 1200, "Luxury"),
+        ("Hilton Suites Makkah", 4, "Ibrahim Al Khalil", 700, "Mid-Range"),
+    ],
+    "madinah": [
+        ("The Oberoi Madina", 5, "Central Area", 1400, "Luxury"),
+        ("Pullman Zamzam Madina", 5, "Central Area", 900, "Luxury"),
+        ("Millennium Taiba Hotel", 4, "Central Area", 550, "Mid-Range"),
+    ],
+    "dammam": [
+        ("Sheraton Dammam Hotel", 5, "Corniche", 700, "Luxury"),
+        ("Park Inn by Radisson Dammam", 4, "Al Shati", 420, "Mid-Range"),
+        ("ibis Dammam", 3, "Dammam", 230, "Budget"),
+    ],
+    "khobar": [
+        ("Le Meridien Al Khobar", 5, "Corniche", 750, "Luxury"),
+        ("DoubleTree by Hilton Al Khobar", 4, "Al Rakah", 480, "Mid-Range"),
+        ("Holiday Inn Al Khobar", 3, "Al Khobar", 260, "Budget"),
+    ],
+    "tabuk": [
+        ("Grand Millennium Tabuk", 5, "Tabuk", 600, "Luxury"),
+        ("Holiday Inn Tabuk", 4, "Tabuk", 380, "Mid-Range"),
+        ("Oyo Tabuk", 3, "Tabuk", 200, "Budget"),
+    ],
+    "jazan": [
+        ("Radisson Blu Resort Jazan", 5, "Corniche", 650, "Luxury"),
+        ("Holiday Jazan Hotel", 4, "Jazan", 380, "Mid-Range"),
+        ("Al Eairy Jazan", 3, "Jazan", 200, "Budget"),
+    ],
+    "najran": [
+        ("Gloria Inn Najran", 4, "Najran", 350, "Mid-Range"),
+        ("Hyatt Najran", 3, "Najran", 220, "Budget"),
+    ],
+}
+
+
+def hotels_for(dest_id, budget_tier="mid", accommodation=None):
+    """Return real hotels for a city filtered by budget tier."""
+    hs = HOTELS.get(dest_id, [])
+    if not hs:
+        return []
+    tier_map = {"Budget": "Budget", "Mid-range": "Mid-Range", "Luxury": "Luxury"}
+    want = tier_map.get(budget_tier, "Mid-Range")
+    # prefer matching tier, else return all sorted by stars
+    matched = [h for h in hs if h[4] == want]
+    rest = [h for h in hs if h[4] != want]
+    ordered = matched + sorted(rest, key=lambda x: -x[1])
+    return ordered
+
+
+def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
+    """Generate a schedule for EACH day of the stay (not just one day)."""
+    days = max(1, int(nights))
+    all_days = []
+    attrs = attractions_for(dest_id)
+    # rotate attractions across days so each day differs
+    for d in range(days):
+        day_attrs = attrs[d:] + attrs[:d]  # rotate
+        all_days.append(_schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, day_attrs, d + 1))
+    return all_days
+
+
+def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num):
+    """Internal: schedule a single day given a rotated attraction list."""
+    start_min = day_start * 60
+    end_min = day_end * 60
+    lunch_at = 13 * 60
+    dinner_at = 19 * 60 + 30
+    gap = 30
+
+    rests = restaurants_by_cuisines(dest_id, cuisine_ids)
+    lunch = rests[(day_num - 1) % len(rests)] if rests else None
+    dinner = rests[day_num % len(rests)] if rests else None
+
+    target = 5 if pace == "action_packed" else (3 if pace == "relaxed" else 4)
+    items = []
+    for a in attrs[:target]:
+        kind = "heavy" if a[3] == "Nature" else ("light" if a[3] == "Religious" else "medium")
+        items.append(dict(label=a[2], kind=kind, rating=a[6], dur=a[8]))
+    order_map = {"light": 0, "medium": 1, "heavy": 2}
+    items.sort(key=lambda x: order_map[x["kind"]])
+
+    out = []
+    cursor = start_min
+    lunch_added = False
+    dinner_added = False
+
+    def add_meal(label, place):
+        nonlocal cursor
+        dur = place[8] if place else 60
+        name = f"{label} — {place[2]}" if place else label
+        out.append(dict(time=_fmt(cursor), end=_fmt(cursor + dur), label=name,
+                        kind="meal", rating=(place[6] if place else None)))
+        cursor += dur + gap
+
+    for it in items:
+        dur = it["dur"]
+        if pace == "relaxed":
+            dur = int(dur * 1.15)
+        elif pace == "action_packed":
+            dur = int(dur * 0.85)
+        if not lunch_added and lunch_at - 30 <= cursor <= lunch_at + 60:
+            lunch_added = True
+            add_meal("Lunch", lunch)
+        if cursor + dur > end_min:
+            break
+        out.append(dict(time=_fmt(cursor), end=_fmt(cursor + dur), label=it["label"],
+                        kind="activity", rating=it["rating"]))
+        cursor += dur + gap
+        if not lunch_added and cursor >= lunch_at:
+            lunch_added = True
+            add_meal("Lunch", lunch)
+        if not dinner_added and dinner_at - 30 <= cursor <= dinner_at + 60:
+            dinner_added = True
+            add_meal("Dinner", dinner)
+    return out
+
+
 def schedule_day(dest_id, day_start, day_end, pace, cuisine_ids):
     """Distribute a day's activities across the tourist's waking hours with real
     attractions and cuisine-matched restaurants."""

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  .slide-container { width:1280px; min-height:720px; background:#f6f1e3; font-family:'Segoe UI',Arial,sans-serif; position:relative; overflow:hidden; }
+  .gold-bar { position:absolute; left:0; top:0; width:14px; height:720px; background:linear-gradient(180deg,#c9a227,#a8861c); }
+  .inner { position:relative; padding:60px 70px 0 70px; }
+  .kicker { color:#c9a227; letter-spacing:5px; font-size:14px; font-weight:700; text-transform:uppercase; }
+  h1 { color:#2f5233; font-size:38px; font-weight:800; margin-top:10px; line-height:1.15; }
+  .cols { display:flex; gap:48px; margin-top:36px; }
+  .left { flex:1.1; }
+  .right { flex:1; display:flex; align-items:flex-start; justify-content:center; }
+  .shot { width:520px; border:6px solid #2f5233; }
+  .feat { display:flex; align-items:flex-start; margin-top:26px; }
+  .ic { width:46px; height:46px; background:#2f5233; color:#e7c95a; font-size:22px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .feat .tx { margin-left:18px; }
+  .feat .t { font-size:20px; font-weight:700; color:#2f5233; }
+  .feat .d { font-size:16px; color:#5a5344; line-height:1.45; margin-top:3px; }
+</style>
+</head>
+<body>
+<div class="slide-container">
+  <div class="gold-bar"></div>
+  <div class="inner">
+    <div class="kicker">Key Features · 1 of 2</div>
+    <h1>Engineered for the traveler's real journey.</h1>
+    <div class="cols">
+      <div class="left">
+        <div class="feat"><div class="ic">1</div><div class="tx"><div class="t">Route optimization engine</div><div class="d">Orders cities to minimize drive time (TSP + 2-opt), with per-stop arrival/departure dates and nights.</div></div></div>
+        <div class="feat"><div class="ic">2</div><div class="tx"><div class="t">Smart day scheduling</div><div class="d">Plans each day around the traveler's wake/sleep hours and pace — relaxed, moderate or action-packed.</div></div></div>
+        <div class="feat"><div class="ic">3</div><div class="tx"><div class="t">Real local data</div><div class="d">Actual attractions and restaurants per city, matched to the traveler's favorite cuisine and accommodation.</div></div></div>
+        <div class="feat"><div class="ic">4</div><div class="tx"><div class="t">Interactive route map</div><div class="d">Numbered stops and the path between them, rendered on a live map.</div></div></div>
+      </div>
+      <div class="right">
+        <img class="shot" src="/home/ubuntu/upload/pasted_file_8Ru4oW_image.png" alt="TRIPSA app">
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

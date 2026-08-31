@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  .slide-container { width:1280px; min-height:720px; background:#f6f1e3; font-family:'Segoe UI',Arial,sans-serif; position:relative; overflow:hidden; }
+  .gold-bar { position:absolute; left:0; top:0; width:14px; height:720px; background:linear-gradient(180deg,#c9a227,#a8861c); }
+  .inner { position:relative; padding:60px 80px 0 80px; }
+  .kicker { color:#c9a227; letter-spacing:5px; font-size:14px; font-weight:700; text-transform:uppercase; }
+  h1 { color:#2f5233; font-size:38px; font-weight:800; margin-top:12px; line-height:1.15; max-width:1050px; }
+  .cols { display:flex; gap:56px; margin-top:40px; }
+  .col { flex:1; }
+  .col h3 { color:#2f5233; font-size:22px; font-weight:700; padding-bottom:12px; border-bottom:3px solid #c9a227; display:inline-block; }
+  .step { display:flex; align-items:flex-start; margin-top:20px; }
+  .sn { width:34px; height:34px; background:#c9a227; color:#2f5233; font-weight:800; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .step p { font-size:17px; color:#424242; line-height:1.45; margin-left:16px; }
+  .step p b { color:#2f5233; }
+  .ask { margin-top:20px; }
+  .ask .it { display:flex; align-items:flex-start; margin-top:16px; }
+  .ask .adot { width:11px; height:11px; background:#2f5233; border-radius:50%; margin-top:7px; flex-shrink:0; }
+  .ask .it p { font-size:18px; color:#424242; line-height:1.45; margin-left:16px; }
+  .ask .it p b { color:#2f5233; }
+  .closing { margin-top:38px; background:#2f5233; padding:28px 40px; display:flex; align-items:center; justify-content:space-between; }
+  .closing .wm { font-size:34px; font-weight:800; color:#f6f1e3; }
+  .closing .wm span { color:#e7c95a; }
+  .closing .tg { font-size:19px; color:#e7c95a; font-style:italic; }
+</style>
+</head>
+<body>
+<div class="slide-container">
+  <div class="gold-bar"></div>
+  <div class="inner">
+    <div class="kicker">Roadmap &amp; Ask</div>
+    <h1>From hackathon MVP to the national route-intelligence layer.</h1>
+    <div class="cols">
+      <div class="col">
+        <h3>What's next</h3>
+        <div class="step"><div class="sn">1</div><p><b>Live data:</b> Google Places &amp; Directions for real-time POIs and drive times.</p></div>
+        <div class="step"><div class="sn">2</div><p><b>Arabic UI</b> and <b>PDF itinerary export</b> for sharing and printing.</p></div>
+        <div class="step"><div class="sn">3</div><p><b>Mobile app</b> for on-the-go planning and navigation.</p></div>
+        <div class="step"><div class="sn">4</div><p><b>Integration</b> with the Ministry's developer portal and the STA certified-route registry.</p></div>
+      </div>
+      <div class="col">
+        <h3>What we ask</h3>
+        <div class="ask">
+          <div class="it"><div class="adot"></div><p><b>Pilot</b> TRIPSA with TDF destinations and routes.</p></div>
+          <div class="it"><div class="adot"></div><p><b>Access</b> to official route and points-of-interest data.</p></div>
+          <div class="it"><div class="adot"></div><p><b>Incubation</b> in the growth track to scale nationally.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="closing">
+      <div class="wm">TRIP<span>SA</span></div>
+      <div class="tg">The brain of the Saudi road trip.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
