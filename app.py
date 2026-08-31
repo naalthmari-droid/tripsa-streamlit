@@ -374,6 +374,34 @@ def page_room():
                 chips = '<span class="tag">No preferences yet</span>'
             st.markdown(f'<div class="act"><span class="dotm"></span><span><b>👤 {m["name"]}</b> · {m.get("age","—")} yrs</span></div><div style="margin:2px 0 10px 26px">{chips}</div>', unsafe_allow_html=True)
 
+    # ---- Shared route & schedule (visible to ALL members, like the founder) ----
+    member_interests = [m["preferences"] for m in members if m.get("preferences")]
+    group_vec = engine.group_interest_vector(member_interests)
+    top_interests = sorted(group_vec.items(), key=lambda x: -x[1])[:3]
+    group_txt = " · ".join(f"{data.INTEREST_LABELS.get(k,k)} {v:.1f}★" for k, v in top_interests)
+    st.markdown('<div class="sec">🗺️ Shared route &amp; schedule</div>', unsafe_allow_html=True)
+    st.caption(f"Built from everyone's preferences — group taste: {group_txt}")
+    for s in stops:
+        wbadge = weather.weather_badge(s["lat"], s["lng"])
+        wbadge_html = f'<span class="tag" style="background:#eef4e6">🌡️ {wbadge}</span>' if wbadge else ""
+        st.markdown(f"""
+        <div class="stop">
+          <div class="num">{s['order']}</div>
+          <div class="body">
+            <h4>{s['name']} {wbadge_html}</h4>
+            <div class="sub">🛏️ {s['nights']} night(s) · {fmt_date(s['check_in'])} → {fmt_date(s['check_out'])}</div>
+            <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
+          </div>
+        </div>""", unsafe_allow_html=True)
+        with st.expander(f"🕒 Day schedule for {s['name']}"):
+            days = engine.schedule_trip_days(s["destination_id"], s["nights"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
+            for di, acts in enumerate(days, 1):
+                st.markdown(f'<div class="sub" style="font-weight:700;color:#2f5233;margin-top:8px">📅 Day {di}</div>', unsafe_allow_html=True)
+                for a in acts:
+                    star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
+                    cls = "act meal" if a["kind"] == "meal" else "act"
+                    st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
+
     # Detailed per-member votes (destinations + activities/restaurants)
     dest_votes_by_m = db.votes_by_member(t["id"])
     item_votes_by_m = db.item_votes_by_member(t["id"])
@@ -449,6 +477,25 @@ def page_room():
         for did, avg in engine.rank_by_consensus(votes):
             name = data.DEST_BY_ID.get(did, {}).get("name", did)
             st.progress(min(1.0, avg / 5), text=f"{name} — {avg}/5")
+
+        # ---- Regenerate the FINAL shared schedule from the vote ----
+        st.markdown('<div class="sec">✅ Finalize the shared plan</div>', unsafe_allow_html=True)
+        st.caption("After everyone votes, regenerate the route ordered by the group's consensus.")
+        if st.button("🔁 Regenerate final schedule from votes", use_container_width=True):
+            new_stops = engine.reorder_stops_by_votes(stops, votes)
+            # re-sequence order numbers and recompute dates from the trip start
+            from datetime import datetime as _dt, timedelta as _td
+            cur = _dt.fromisoformat(str(t["start_date"]))
+            for i, s in enumerate(new_stops):
+                s["order"] = i + 1
+                s["check_in"] = cur.isoformat()
+                cur = cur + _td(days=int(s["nights"]))
+                s["check_out"] = cur.isoformat()
+            new_route = dict(t["route"])
+            new_route["stops"] = new_stops
+            db.update_trip_route(t["id"], new_route)
+            st.success("Final shared schedule generated from the group's votes!")
+            st.rerun()
 
     # ---- Vote on attractions & restaurants per chosen city ----
     st.markdown('<div class="sec">🎯 Vote on activities &amp; restaurants</div>', unsafe_allow_html=True)

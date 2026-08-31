@@ -539,6 +539,25 @@ def rank_by_consensus(votes):
     return sorted(cons.items(), key=lambda x: -x[1])
 
 
+def group_interest_vector(member_interests):
+    """Average all members' interest vectors into one group vector."""
+    if not member_interests:
+        return {}
+    keys = member_interests[0].keys()
+    return {k: sum(m.get(k, 0) for m in member_interests) / len(member_interests) for k in keys}
+
+
+def reorder_stops_by_votes(stops, votes):
+    """Reorder route stops by group destination votes (highest first), keeping start first."""
+    if not votes:
+        return stops
+    cons = destination_consensus(votes)  # {destination_id: avg}
+    start = stops[0] if stops else None
+    rest = stops[1:]
+    rest.sort(key=lambda s: -cons.get(s["destination_id"], 0))
+    return ([start] + rest) if start else rest
+
+
 def rank_items_by_consensus(item_votes, destination_id=None, item_type=None):
     """Average score per item (attraction/restaurant), optionally filtered by
     destination and/or type. Returns list of (item_name, avg, count) sorted desc."""

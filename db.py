@@ -215,6 +215,15 @@ def _trip_dict(row):
     return d
 
 
+def update_trip_route(trip_id, route):
+    """Replace a trip's route JSON (e.g. after group re-optimization)."""
+    conn = _conn()
+    conn.execute("UPDATE trips SET route_json=? WHERE id=?",
+                 (json.dumps(route), trip_id))
+    conn.commit()
+    conn.close()
+
+
 def add_member(trip_id, name, age, preferences):
     conn = _conn()
     cur = conn.cursor()
