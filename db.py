@@ -34,6 +34,10 @@ def init_db():
     cur.execute("""CREATE TABLE IF NOT EXISTS votes(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         trip_id INTEGER, member_id INTEGER, destination_id TEXT, score INTEGER)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS item_votes(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trip_id INTEGER, member_id INTEGER, destination_id TEXT,
+        item_type TEXT, item_id TEXT, item_name TEXT, score INTEGER)""")
     cur.execute("""CREATE TABLE IF NOT EXISTS comments(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         trip_id INTEGER, member_name TEXT, destination_id TEXT,
@@ -149,6 +153,23 @@ def add_vote(trip_id, member_id, destination_id, score):
 def get_votes(trip_id):
     conn = _conn()
     rows = conn.execute("SELECT * FROM votes WHERE trip_id=?", (trip_id,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+# ----------------------------- Item votes (attractions & restaurants) -----------------------------
+def add_item_vote(trip_id, member_id, destination_id, item_type, item_id, item_name, score):
+    conn = _conn()
+    conn.execute(
+        "INSERT INTO item_votes(trip_id,member_id,destination_id,item_type,item_id,item_name,score) VALUES(?,?,?,?,?,?,?)",
+        (trip_id, member_id, destination_id, item_type, item_id, item_name, score))
+    conn.commit()
+    conn.close()
+
+
+def get_item_votes(trip_id):
+    conn = _conn()
+    rows = conn.execute("SELECT * FROM item_votes WHERE trip_id=?", (trip_id,)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 

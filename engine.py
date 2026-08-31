@@ -467,6 +467,25 @@ def rank_by_consensus(votes):
     return sorted(cons.items(), key=lambda x: -x[1])
 
 
+def rank_items_by_consensus(item_votes, destination_id=None, item_type=None):
+    """Average score per item (attraction/restaurant), optionally filtered by
+    destination and/or type. Returns list of (item_name, avg, count) sorted desc."""
+    agg = {}
+    for v in item_votes:
+        if destination_id and v.get("destination_id") != destination_id:
+            continue
+        if item_type and v.get("item_type") != item_type:
+            continue
+        key = (v.get("item_type"), v.get("item_name"))
+        agg.setdefault(key, []).append(v.get("score", 0))
+    out = []
+    for (itype, name), scores in agg.items():
+        avg = round(sum(scores) / len(scores), 1) if scores else 0
+        out.append((name, avg, len(scores), itype))
+    out.sort(key=lambda x: -x[1])
+    return out
+
+
 # ----------------------------- Personalized recommendations -----------------------------
 def aggregate_preferences(past_interests):
     """Average interest vectors across a user's past trips -> taste profile."""

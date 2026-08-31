@@ -370,6 +370,49 @@ def page_room():
             name = data.DEST_BY_ID.get(did, {}).get("name", did)
             st.progress(min(1.0, avg / 5), text=f"{name} — {avg}/5")
 
+    # ---- Vote on attractions & restaurants per chosen city ----
+    st.markdown('<div class="sec">🎯 Vote on activities &amp; restaurants</div>', unsafe_allow_html=True)
+    st.caption("For each city on the route, vote on the attractions and restaurants you'd like to include.")
+    item_votes = db.get_item_votes(t["id"])
+    for s in stops:
+        did = s["destination_id"]
+        with st.expander(f"📍 {s['name']} — activities & restaurants"):
+            # Attractions
+            st.markdown('<div class="sub" style="font-weight:700;color:#2f5233">🎟️ Attractions</div>', unsafe_allow_html=True)
+            for a in data.attractions_for(did):
+                aid, aname, acat, arating = a[0], a[2], a[3], a[6]
+                c1, c2 = st.columns([3, 1])
+                c1.markdown(f"**{aname}** · {acat} ★{arating}")
+                ascore = c2.selectbox("Score", [1, 2, 3, 4, 5], index=4, key=f"at{did}{aid}", label_visibility="collapsed")
+                if c2.button("Vote", key=f"atb{did}{aid}"):
+                    db.add_item_vote(t["id"], st.session_state.member_id, did, "attraction", aid, aname, ascore)
+                    st.toast(f"Voted {ascore} for {aname}")
+                    st.rerun()
+            # Restaurants
+            st.markdown('<div class="sub" style="font-weight:700;color:#2f5233;margin-top:8px">🍽️ Restaurants</div>', unsafe_allow_html=True)
+            for r in data.restaurants_for(did):
+                rid, rname, rcui, rrating = r[0], r[2], r[3], r[6]
+                c1, c2 = st.columns([3, 1])
+                c1.markdown(f"**{rname}** · {data.CUISINE_LABELS.get(rcui, rcui)} ★{rrating}")
+                rscore = c2.selectbox("Score", [1, 2, 3, 4, 5], index=4, key=f"rt{did}{rid}", label_visibility="collapsed")
+                if c2.button("Vote", key=f"rtb{did}{rid}"):
+                    db.add_item_vote(t["id"], st.session_state.member_id, did, "restaurant", rid, rname, rscore)
+                    st.toast(f"Voted {rscore} for {rname}")
+                    st.rerun()
+
+    # ---- Group picks (top-voted activities & restaurants) ----
+    if item_votes:
+        st.markdown('<div class="sec">🏅 Group picks</div>', unsafe_allow_html=True)
+        for s in stops:
+            did = s["destination_id"]
+            top = engine.rank_items_by_consensus(item_votes, destination_id=did)[:4]
+            if not top:
+                continue
+            st.markdown(f"**{s['name']}**")
+            for name, avg, cnt, itype in top:
+                icon = "🎟️" if itype == "attraction" else "🍽️"
+                st.progress(min(1.0, avg / 5), text=f"{icon} {name} — {avg}/5 ({cnt})")
+
     # comments
     st.markdown('<div class="sec">💬 Discussion</div>', unsafe_allow_html=True)
     with st.form("comment", clear_on_submit=True):
