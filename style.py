@@ -82,6 +82,13 @@ html,body,[class*="css"]{font-family:'Poppins',sans-serif !important;}
 .stButton>button:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 32px -8px rgba(47,82,51,.6);}
 .stButton>button:active{transform:scale(.97);}
 
+/* secondary (nav) buttons — pill style */
+.stButton>button[kind="secondary"]{
+  background:#fff;color:var(--ink);border:1px solid #ece5d2;
+  box-shadow:0 4px 12px -6px rgba(28,43,33,.12);}
+.stButton>button[kind="secondary"]:hover{
+  background:#f1ead6;border-color:var(--gold);transform:translateY(-2px);}
+
 /* section title */
 .sec{font-size:26px;font-weight:800;color:var(--ink);margin:34px 0 14px;
   display:flex;align-items:center;gap:12px;animation:fadeUp .6s both;}

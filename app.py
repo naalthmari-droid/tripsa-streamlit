@@ -5,7 +5,6 @@ from streamlit_folium import st_folium
 from datetime import datetime, date
 import json, os
 from streamlit_lottie import st_lottie
-from streamlit_option_menu import option_menu
 
 import data
 import engine
@@ -368,32 +367,14 @@ def page_routes():
 
 
 # ============================================================ Router
-# top nav (animated option menu) — bound to session_state via key so it never
-# fights with programmatic go() navigation (create/detail/room).
-NAV_PAGES = ["home", "create", "join", "routes"]
-NAV_LABELS = {"home":"Home", "create":"Create", "join":"Join", "routes":"Routes"}
-NAV_PAGES_FROM_LABEL = {v:k for k,v in NAV_LABELS.items()}
-
-if "_nav" not in st.session_state:
-    st.session_state._nav = NAV_LABELS.get(st.session_state.page, "Home")
-
-def _on_nav():
-    lbl = st.session_state._nav
-    st.session_state.page = NAV_PAGES_FROM_LABEL[lbl]
-
-nav = option_menu(None, list(NAV_LABELS.values()),
-    icons=["house", "plus-circle", "key", "map"], menu_icon="cast",
-    default_index=NAV_PAGES.index(st.session_state.page) if st.session_state.page in NAV_PAGES else 0,
-    orientation="horizontal", key="_nav", on_change=_on_nav,
-    styles={
-        "container": {"padding": "4px", "background": "#ffffff", "border-radius": "16px",
-                      "border": "1px solid #ece5d2", "box-shadow": "0 8px 20px -10px rgba(28,43,33,.15)"},
-        "icon": {"color": "#c9a24b", "font-size": "18px"},
-        "nav-link": {"font-size": "15px", "font-weight": "600", "color": "#1c2b21",
-                     "border-radius": "12px", "margin": "0 4px",
-                     "--hover-color": "#f1ead6", "transition": "all .25s"},
-        "nav-link-selected": {"background": "linear-gradient(135deg,#2f5233,#3e6b44)", "color": "#fff"},
-    })
+# top nav — native Streamlit buttons (reliable, no third-party widget state issues).
+_nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),("routes","🗺️ Routes")]
+_cols = st.columns(len(_nav_items))
+for _i, (_p, _label) in enumerate(_nav_items):
+    _active = (st.session_state.page == _p)
+    if _cols[_i].button(_label, key=f"nav_{_p}", use_container_width=True,
+                        type=("primary" if _active else "secondary")):
+        go(_p)
 
 page = st.session_state.page
 if page == "home":
