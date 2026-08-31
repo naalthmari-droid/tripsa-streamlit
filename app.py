@@ -35,6 +35,10 @@ def go(page, **kw):
     st.session_state.page = page
     for kk, vv in kw.items():
         st.session_state[kk] = vv
+    # keep the top nav in sync with programmatic navigation
+    _labels = {"home":"Home","create":"Create","join":"Join","routes":"Routes"}
+    if page in _labels:
+        st.session_state._nav = _labels[page]
     st.rerun()
 
 
@@ -364,11 +368,23 @@ def page_routes():
 
 
 # ============================================================ Router
-# top nav (animated option menu)
-nav = option_menu(None, ["Home", "Create", "Join", "Routes"],
+# top nav (animated option menu) — bound to session_state via key so it never
+# fights with programmatic go() navigation (create/detail/room).
+NAV_PAGES = ["home", "create", "join", "routes"]
+NAV_LABELS = {"home":"Home", "create":"Create", "join":"Join", "routes":"Routes"}
+NAV_PAGES_FROM_LABEL = {v:k for k,v in NAV_LABELS.items()}
+
+if "_nav" not in st.session_state:
+    st.session_state._nav = NAV_LABELS.get(st.session_state.page, "Home")
+
+def _on_nav():
+    lbl = st.session_state._nav
+    st.session_state.page = NAV_PAGES_FROM_LABEL[lbl]
+
+nav = option_menu(None, list(NAV_LABELS.values()),
     icons=["house", "plus-circle", "key", "map"], menu_icon="cast",
-    default_index={"home":0,"create":1,"join":2,"routes":3}.get(st.session_state.page,0),
-    orientation="horizontal",
+    default_index=NAV_PAGES.index(st.session_state.page) if st.session_state.page in NAV_PAGES else 0,
+    orientation="horizontal", key="_nav", on_change=_on_nav,
     styles={
         "container": {"padding": "4px", "background": "#ffffff", "border-radius": "16px",
                       "border": "1px solid #ece5d2", "box-shadow": "0 8px 20px -10px rgba(28,43,33,.15)"},
@@ -378,10 +394,6 @@ nav = option_menu(None, ["Home", "Create", "Join", "Routes"],
                      "--hover-color": "#f1ead6", "transition": "all .25s"},
         "nav-link-selected": {"background": "linear-gradient(135deg,#2f5233,#3e6b44)", "color": "#fff"},
     })
-nav_map = {"Home":"home","Create":"create","Join":"join","Routes":"routes"}
-if nav_map[nav] != st.session_state.page:
-    st.session_state.page = nav_map[nav]
-    st.rerun()
 
 page = st.session_state.page
 if page == "home":
