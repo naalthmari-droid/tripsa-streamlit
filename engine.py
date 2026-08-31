@@ -385,8 +385,8 @@ def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
 
 def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num):
     """Internal: schedule a single day given a rotated attraction list."""
-    start_min = day_start * 60
-    end_min = day_end * 60
+    start_min = int(day_start) * 60
+    end_min = int(day_end) * 60
     lunch_at = 13 * 60
     dinner_at = 19 * 60 + 30
     gap = 30
