@@ -374,6 +374,29 @@ def page_room():
                 chips = '<span class="tag">No preferences yet</span>'
             st.markdown(f'<div class="act"><span class="dotm"></span><span><b>👤 {m["name"]}</b> · {m.get("age","—")} yrs</span></div><div style="margin:2px 0 10px 26px">{chips}</div>', unsafe_allow_html=True)
 
+    # Detailed per-member votes (destinations + activities/restaurants)
+    dest_votes_by_m = db.votes_by_member(t["id"])
+    item_votes_by_m = db.item_votes_by_member(t["id"])
+    if dest_votes_by_m or item_votes_by_m:
+        with st.expander("🗳️ Each member's votes — destinations & activities"):
+            for m in members:
+                mid = m["id"]
+                dv = dest_votes_by_m.get(mid, {})
+                iv = item_votes_by_m.get(mid, [])
+                if not dv and not iv:
+                    continue
+                st.markdown(f"**👤 {m['name']}**")
+                if dv:
+                    chips = " ".join(
+                        f'<span class="tag">📍 {data.DEST_BY_ID.get(did,{}).get("name",did)} {sc}★</span>'
+                        for did, sc in dv.items())
+                    st.markdown(f'<div style="margin:2px 0 6px 20px">{chips}</div>', unsafe_allow_html=True)
+                if iv:
+                    chips = " ".join(
+                        f'<span class="tag">{"🎟️" if v["item_type"]=="attraction" else "🍽️"} {v["item_name"]} {v["score"]}★</span>'
+                        for v in iv)
+                    st.markdown(f'<div style="margin:2px 0 10px 20px">{chips}</div>', unsafe_allow_html=True)
+
     # consensus
     member_interests = [m["preferences"] for m in members if m.get("preferences")]
     cons = engine.route_consensus(member_interests)

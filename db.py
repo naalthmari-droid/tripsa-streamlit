@@ -174,6 +174,25 @@ def get_item_votes(trip_id):
     return [dict(r) for r in rows]
 
 
+def votes_by_member(trip_id):
+    """Return {member_id: {destination_id: score}} for destination votes."""
+    out = {}
+    for v in get_votes(trip_id):
+        out.setdefault(v["member_id"], {})[v["destination_id"]] = v["score"]
+    return out
+
+
+def item_votes_by_member(trip_id):
+    """Return {member_id: [ {item_name, item_type, score, destination_id}, ... ]}."""
+    out = {}
+    for v in get_item_votes(trip_id):
+        out.setdefault(v["member_id"], []).append({
+            "item_name": v["item_name"], "item_type": v["item_type"],
+            "score": v["score"], "destination_id": v["destination_id"],
+        })
+    return out
+
+
 def add_comment(trip_id, member_name, destination_id, body):
     conn = _conn()
     conn.execute("INSERT INTO comments(trip_id,member_name,destination_id,body,created_at) VALUES(?,?,?,?,?)",
