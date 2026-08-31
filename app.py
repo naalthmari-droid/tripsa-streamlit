@@ -49,9 +49,16 @@ def hero():
         </div>
         """, unsafe_allow_html=True)
     with c2:
-        anim = load_lottie(LOTTIE["travel"])
-        if anim:
-            st_lottie(anim, height=220, key="hero")
+        # elegant stat badge instead of the off-theme illustration
+        st.markdown("""
+        <div class="hero-badge">
+          <div class="hb-num">15</div><div class="hb-lbl">Destinations</div>
+          <div class="hb-div"></div>
+          <div class="hb-num">2</div><div class="hb-lbl">Certified routes</div>
+          <div class="hb-div"></div>
+          <div class="hb-num">🤝</div><div class="hb-lbl">Group planning</div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 def fmt_drive(m):

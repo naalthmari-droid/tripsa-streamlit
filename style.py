@@ -196,6 +196,21 @@ html,body,[class*="css"]{font-family:'Poppins',sans-serif !important;}
   background:linear-gradient(100deg,transparent,rgba(201,162,75,.25),transparent);
   animation:shimmer 3s infinite;}
 
+/* hero stat badge (replaces off-theme illustration) */
+.hero-badge{
+  background:linear-gradient(160deg,#ffffff,#f7f2e4);border:1px solid #eee4c9;
+  border-radius:22px;padding:22px 18px;text-align:center;
+  box-shadow:0 16px 36px -14px rgba(28,43,33,.2);
+  animation:fadeUp .8s cubic-bezier(.22,1,.36,1) both;
+  transition:transform .3s,box-shadow .3s;}
+.hero-badge:hover{transform:translateY(-5px);box-shadow:0 24px 44px -14px rgba(47,82,51,.3);}
+.hero-badge .hb-num{font-size:30px;font-weight:800;color:var(--olive);
+  animation:popIn .6s cubic-bezier(.34,1.56,.64,1) both;}
+.hero-badge .hb-lbl{font-size:12px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-top:2px;}
+.hero-badge .hb-div{height:1px;background:linear-gradient(90deg,transparent,#e3dcc0,transparent);
+  margin:12px 8px;}
+
 /* smooth expander open */
 .streamlit-expanderContent{animation:fadeUp .4s both;}
 
