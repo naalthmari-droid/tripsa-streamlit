@@ -10,6 +10,7 @@ import data
 import engine
 import db
 import notifications
+import weather
 from style import CUSTOM_CSS, LOTTIE
 
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
@@ -252,11 +253,13 @@ def page_detail():
     st.caption(f"Your day: {t['day_start']}:00 – {t['day_end']}:00 · {t.get('accommodation','')}")
     for s in stops:
         with st.container():
+            wbadge = weather.weather_badge(s["lat"], s["lng"])
+            wbadge_html = f'<span class="tag" style="background:#eef4e6">🌡️ {wbadge}</span>' if wbadge else ""
             st.markdown(f"""
             <div class="stop">
               <div class="num">{s['order']}</div>
               <div class="body">
-                <h4>{s['name']}</h4>
+                <h4>{s['name']} {wbadge_html}</h4>
                 <div class="sub">🛏️ {s['nights']} night(s) · {fmt_date(s['check_in'])} → {fmt_date(s['check_out'])}
                 {f"· 🚗 {s['distance_from_prev_km']} km · {fmt_drive(s['drive_min'])}" if s['order']>1 else ""}</div>
                 <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
