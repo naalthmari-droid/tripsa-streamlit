@@ -347,7 +347,11 @@ def page_join():
                 owner_email = t.get("owner_email") or ""
                 if owner_email:
                     notifications.notify_member_joined(owner_email, t["owner_name"], name, t["title"])
-                go("room", trip_id=t["id"])
+                # set navigation state, then rerun OUTSIDE the form so the room renders
+                st.session_state.page = "room"
+                st.session_state.trip_id = t["id"]
+                st.session_state.just_joined = True
+                st.rerun()
 
 
 # ============================================================ ROOM
@@ -363,6 +367,11 @@ def page_room():
     st.markdown(f'<div class="sec">🤝 Planning room — {t["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="invite">🔑 {t["invite_code"]}</div>', unsafe_allow_html=True)
 
+    if st.session_state.pop("just_joined", False):
+        me = next((m for m in members if m["id"] == st.session_state.member_id), None)
+        seq = me.get("seq", len(members)) if me else len(members)
+        st.success(f"🎉 Welcome, {st.session_state.member_name}! You're member #{seq} — the shared route & schedule are below.")
+
     # Members & their preferences
     with st.expander(f"👥 Members ({len(members)}) — see everyone's preferences"):
         for m in members:
@@ -372,7 +381,7 @@ def page_room():
                 chips = " ".join(f'<span class="tag">{data.INTEREST_LABELS.get(k,k)} {v}★</span>' for k, v in top)
             else:
                 chips = '<span class="tag">No preferences yet</span>'
-            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>👤 {m["name"]}</b> · {m.get("age","—")} yrs</span></div><div style="margin:2px 0 10px 26px">{chips}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>#{m.get("seq","—")} 👤 {m["name"]}</b> · {m.get("age","—")} yrs</span></div><div style="margin:2px 0 10px 26px">{chips}</div>', unsafe_allow_html=True)
 
     # ---- Shared route & schedule (visible to ALL members, like the founder) ----
     member_interests = [m["preferences"] for m in members if m.get("preferences")]

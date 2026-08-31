@@ -3,8 +3,8 @@ import math
 import random
 import string
 from datetime import datetime, timedelta
-
 from data import DEST_BY_ID, attractions_for, restaurants_by_cuisines
+import streamlit as st
 
 AVG_SPEED_KMH = 90.0
 
@@ -371,6 +371,7 @@ def hotels_for(dest_id, budget_tier="mid", accommodation=None):
     return ordered
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
 def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
     """Generate a schedule for EACH day of the stay (not just one day)."""
     days = max(1, int(nights))

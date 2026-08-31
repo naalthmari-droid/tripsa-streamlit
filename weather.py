@@ -1,5 +1,6 @@
 """TRIPSA — live weather per city via the free Open-Meteo API (no key needed)."""
 import requests
+import streamlit as st
 
 # WMO weather interpretation codes -> (icon, English label)
 WMO = {
@@ -13,6 +14,7 @@ WMO = {
 }
 
 
+@st.cache_data(ttl=1800, show_spinner=False)
 def get_weather(lat, lng):
     """Return current weather dict for coordinates, or None on failure."""
     try:

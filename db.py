@@ -240,9 +240,10 @@ def get_members(trip_id):
     rows = conn.execute("SELECT * FROM members WHERE trip_id=? ORDER BY id", (trip_id,)).fetchall()
     conn.close()
     out = []
-    for r in rows:
+    for i, r in enumerate(rows, 1):
         d = dict(r)
         d["preferences"] = json.loads(d.get("preferences") or "{}")
+        d["seq"] = i  # auto sequential member number within the trip
         out.append(d)
     return out
 
