@@ -168,8 +168,11 @@ def page_create():
                 certified_route_id=certified_id, cuisines=cuisines, accommodation=accommodation,
                 day_start=day_start, day_end=day_end, route=route))
             db.add_member(tid, owner, age, interests)
-            st.success(f"Trip created! Invite code: {code}")
-            go("detail", trip_id=tid)
+            # set navigation state and rerun OUTSIDE the form so the detail page renders
+            st.session_state.page = "detail"
+            st.session_state.trip_id = tid
+            st.session_state.just_created = code
+            st.rerun()
 
 
 # ============================================================ DETAIL
@@ -180,6 +183,11 @@ def page_detail():
         return
     route = t["route"]
     stops = route.get("stops", [])
+
+    # success banner right after creation
+    if st.session_state.get("just_created"):
+        st.success(f"🎉 Trip created successfully! Share invite code: **{st.session_state.just_created}**")
+        st.session_state.just_created = None
 
     st.markdown(f'<div class="sec">🧭 {t["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f"**{fmt_date(t['start_date'])} → {fmt_date(t['end_date'])}** · {t['travelers']} travelers · {t['pace']}")
