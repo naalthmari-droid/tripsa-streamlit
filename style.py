@@ -99,5 +99,63 @@ html,body,[class*="css"]{font-family:'Poppins',sans-serif !important;}
 .stagger>*:nth-child(1){animation-delay:.05s}.stagger>*:nth-child(2){animation-delay:.12s}
 .stagger>*:nth-child(3){animation-delay:.19s}.stagger>*:nth-child(4){animation-delay:.26s}
 .stagger>*:nth-child(5){animation-delay:.33s}.stagger>*:nth-child(6){animation-delay:.40s}
+
+/* ---------- Extra polish ---------- */
+/* animated progress bars */
+.stProgress > div > div > div{background:linear-gradient(90deg,var(--olive),var(--gold));
+  border-radius:8px;transition:width .8s cubic-bezier(.22,1,.36,1);}
+
+/* inputs */
+.stTextInput input,.stNumberInput input,.stSelectbox div[data-baseweb]{
+  border-radius:12px !important;border:1px solid #e3dcc6 !important;
+  transition:border-color .2s,box-shadow .2s;}
+.stTextInput input:focus,.stNumberInput input:focus{
+  border-color:var(--olive) !important;box-shadow:0 0 0 3px rgba(47,82,51,.15) !important;}
+
+/* sliders */
+.stSlider [role="slider"]{background:var(--olive) !important;box-shadow:0 4px 10px -2px rgba(47,82,51,.5);}
+
+/* tabs / radio */
+.stRadio label{font-weight:500;}
+
+/* expander */
+.streamlit-expanderHeader{font-weight:600;color:var(--olive);border-radius:12px;
+  transition:background .2s;}
+.streamlit-expanderHeader:hover{background:#f3efe0;}
+
+/* floating back-to-top feel for headers */
+.sec{position:relative;}
+
+/* shimmer on hero */
+.hero::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.12),transparent);
+  animation:shimmer 3.5s infinite;}
+@keyframes shimmer{0%{left:-60%}100%{left:130%}}
+
+/* consensus ring */
+.ring{position:relative;width:120px;height:120px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin:auto;
+  background:conic-gradient(var(--olive) calc(var(--p)*1%),#eee4c9 0);
+  animation:fadeUp .7s both;}
+.ring::before{content:"";position:absolute;inset:10px;border-radius:50%;background:#fff;}
+.ring .rv{position:relative;font-size:28px;font-weight:800;color:var(--olive);}
+
+/* toast-like badges */
+.pill{display:inline-flex;align-items:center;gap:6px;background:#eef3ea;color:var(--olive);
+  border:1px solid #d7e2cf;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600;
+  animation:slideIn .5s both;}
+
+/* map card */
+.mapwrap{border-radius:20px;overflow:hidden;border:1px solid #ece5d2;
+  box-shadow:0 14px 34px -14px rgba(28,43,33,.2);animation:fadeUp .8s both;}
 </style>
 """
+
+# Lottie animation URLs (free, from lottiefiles)
+LOTTIE = {
+    "travel": "https://assets9.lottiefiles.com/packages/lf20_zw0djhar.json",
+    "map": "https://assets2.lottiefiles.com/packages/lf20_06a6pf9i.json",
+    "compass": "https://assets5.lottiefiles.com/packages/lf20_49dzk0.json",
+    "group": "https://assets8.lottiefiles.com/packages/lf20_t24tpvcu.json",
+    "success": "https://assets1.lottiefiles.com/packages/lf20_jbrw3hcz.json",
+}

@@ -3,15 +3,26 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 from datetime import datetime, date
+import requests
+from streamlit_lottie import st_lottie
+from streamlit_option_menu import option_menu
 
 import data
 import engine
 import db
-from style import CUSTOM_CSS
+from style import CUSTOM_CSS, LOTTIE
 
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 db.init_db()
+
+@st.cache_data(ttl=3600)
+def load_lottie(url):
+    try:
+        r = requests.get(url, timeout=8)
+        return r.json() if r.status_code == 200 else None
+    except Exception:
+        return None
 
 # ---------------- session state ----------------
 for k, v in dict(page="home", trip_id=None, member_id=None, member_name="").items():
@@ -27,14 +38,20 @@ def go(page, **kw):
 
 
 def hero():
-    st.markdown("""
-    <div class="hero">
-      <div class="brand"><span class="dot"></span> TRIPSA</div>
-      <h1>Plan your Saudi road trip<br/>with intelligence.</h1>
-      <p>TRIPSA builds an optimized route between cities — with distance, stay dates,
-      cost and readiness — and lets your group vote & reach consensus via a single invite code.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        st.markdown("""
+        <div class="hero">
+          <div class="brand"><span class="dot"></span> TRIPSA</div>
+          <h1>Plan your Saudi road trip<br/>with intelligence.</h1>
+          <p>TRIPSA builds an optimized route between cities — with distance, stay dates,
+          cost and readiness — and lets your group vote & reach consensus via a single invite code.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with c2:
+        anim = load_lottie(LOTTIE["travel"])
+        if anim:
+            st_lottie(anim, height=220, key="hero")
 
 
 def fmt_drive(m):
@@ -179,6 +196,7 @@ def page_detail():
     # Map
     st.markdown('<div class="sec">🗺️ Route map</div>', unsafe_allow_html=True)
     if stops:
+        st.markdown('<div class="mapwrap">', unsafe_allow_html=True)
         m = folium.Map(location=[stops[0]["lat"], stops[0]["lng"]], zoom_start=5, tiles="CartoDB positron")
         pts = []
         for s in stops:
@@ -191,6 +209,7 @@ def page_detail():
             folium.PolyLine(pts, color="#2f5233", weight=3, opacity=0.8).add_to(m)
         m.fit_bounds(pts)
         st_folium(m, width=None, height=420)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # Stops timeline
     st.markdown('<div class="sec">📍 Optimized route — stop by stop</div>', unsafe_allow_html=True)
@@ -272,7 +291,14 @@ def page_room():
     # consensus
     member_interests = [m["preferences"] for m in members if m.get("preferences")]
     cons = engine.route_consensus(member_interests)
-    st.markdown(f'<div class="metric" style="max-width:280px"><div class="v">{cons}%</div><div class="l">Group consensus</div></div>', unsafe_allow_html=True)
+    c1, c2 = st.columns([1, 3])
+    with c1:
+        st.markdown(f'<div class="ring" style="--p:{cons}"><div class="rv">{cons}%</div></div>', unsafe_allow_html=True)
+        st.markdown('<div style="text-align:center;color:#6b7560;font-size:13px;margin-top:6px">Group consensus</div>', unsafe_allow_html=True)
+    with c2:
+        anim = load_lottie(LOTTIE["group"])
+        if anim:
+            st_lottie(anim, height=140, key="room")
 
     # voting
     st.markdown('<div class="sec">🗳️ Vote on destinations</div>', unsafe_allow_html=True)
@@ -329,6 +355,25 @@ def page_routes():
 
 
 # ============================================================ Router
+# top nav (animated option menu)
+nav = option_menu(None, ["Home", "Create", "Join", "Routes"],
+    icons=["house", "plus-circle", "key", "map"], menu_icon="cast",
+    default_index={"home":0,"create":1,"join":2,"routes":3}.get(st.session_state.page,0),
+    orientation="horizontal",
+    styles={
+        "container": {"padding": "4px", "background": "#ffffff", "border-radius": "16px",
+                      "border": "1px solid #ece5d2", "box-shadow": "0 8px 20px -10px rgba(28,43,33,.15)"},
+        "icon": {"color": "#c9a24b", "font-size": "18px"},
+        "nav-link": {"font-size": "15px", "font-weight": "600", "color": "#1c2b21",
+                     "border-radius": "12px", "margin": "0 4px",
+                     "--hover-color": "#f1ead6", "transition": "all .25s"},
+        "nav-link-selected": {"background": "linear-gradient(135deg,#2f5233,#3e6b44)", "color": "#fff"},
+    })
+nav_map = {"Home":"home","Create":"create","Join":"join","Routes":"routes"}
+if nav_map[nav] != st.session_state.page:
+    st.session_state.page = nav_map[nav]
+    st.rerun()
+
 page = st.session_state.page
 if page == "home":
     page_home()
@@ -342,8 +387,3 @@ elif page == "room":
     page_room()
 elif page == "routes":
     page_routes()
-
-# back nav
-if page != "home":
-    if st.button("← Home"):
-        go("home")
