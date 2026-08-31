@@ -9,6 +9,7 @@ from streamlit_lottie import st_lottie
 import data
 import engine
 import db
+import notifications
 from style import CUSTOM_CSS, LOTTIE
 
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
@@ -114,6 +115,7 @@ def page_create():
         c1, c2 = st.columns(2)
         title = c1.text_input("Trip title", "Northern Adventure")
         owner = c2.text_input("Your name", "Sara")
+        email = st.text_input("Your email (for trip alerts)", placeholder="you@example.com")
         c1, c2, c3 = st.columns(3)
         age = c1.number_input("Your age", 18, 90, 28)
         travelers = c2.number_input("Travelers", 1, 20, 2)
@@ -171,7 +173,7 @@ def page_create():
                     datetime.combine(sd, datetime.min.time()), datetime.combine(ed, datetime.min.time()),
                     travelers, 500, pace, include_holy)
             tid = db.create_trip(dict(
-                title=title, owner_name=owner, owner_age=age, invite_code=code,
+                title=title, owner_name=owner, owner_age=age, owner_email=email.strip(), invite_code=code,
                 start_destination_id=start, start_date=str(sd), end_date=str(ed),
                 travelers=travelers, budget_tier=budget, pace=pace, is_group=is_group,
                 include_holy=include_holy, interests=interests, audience="tourist",
@@ -179,6 +181,11 @@ def page_create():
                 certified_route_id=certified_id, cuisines=cuisines, accommodation=accommodation,
                 day_start=day_start, day_end=day_end, route=route))
             db.add_member(tid, owner, age, interests)
+            # email confirmation (demo mode if SMTP not configured)
+            ok, mode = notifications.notify_trip_created(email, owner, title, code, str(sd), str(ed))
+            if email:
+                st.session_state.email_note = ("📧 Confirmation email sent." if mode == "smtp"
+                                               else "📧 Confirmation logged (demo mode — configure SMTP to send real emails).")
             # set navigation state and rerun OUTSIDE the form so the detail page renders
             st.session_state.page = "detail"
             st.session_state.trip_id = tid
@@ -198,6 +205,9 @@ def page_detail():
     # success banner right after creation
     if st.session_state.get("just_created"):
         st.success(f"🎉 Trip created successfully! Share invite code: **{st.session_state.just_created}**")
+        if st.session_state.get("email_note"):
+            st.info(st.session_state.email_note)
+            st.session_state.email_note = None
         st.session_state.just_created = None
 
     st.markdown(f'<div class="sec">🧭 {t["title"]}</div>', unsafe_allow_html=True)
@@ -298,6 +308,10 @@ def page_join():
                 mid = db.add_member(t["id"], name, age, prefs)
                 st.session_state.member_id = mid
                 st.session_state.member_name = name
+                # notify the trip owner that a new member joined
+                owner_email = t.get("owner_email") or ""
+                if owner_email:
+                    notifications.notify_member_joined(owner_email, t["owner_name"], name, t["title"])
                 go("room", trip_id=t["id"])
 
 

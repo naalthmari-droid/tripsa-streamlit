@@ -19,6 +19,7 @@ def init_db():
     cur.execute("""CREATE TABLE IF NOT EXISTS trips(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT, owner_name TEXT, owner_age INTEGER,
+        owner_email TEXT,
         invite_code TEXT UNIQUE, start_destination_id TEXT,
         start_date TEXT, end_date TEXT, travelers INTEGER,
         budget_tier TEXT, pace TEXT, is_group INTEGER,
@@ -41,6 +42,9 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_name TEXT, destination_id TEXT,
         stars INTEGER, comment TEXT, created_at TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS notifications(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_email TEXT, subject TEXT, status TEXT, created_at TEXT)""")
     conn.commit()
     conn.close()
 
@@ -48,11 +52,11 @@ def init_db():
 def create_trip(t):
     conn = _conn()
     cur = conn.cursor()
-    cur.execute("""INSERT INTO trips(title,owner_name,owner_age,invite_code,start_destination_id,
+    cur.execute("""INSERT INTO trips(title,owner_name,owner_age,owner_email,invite_code,start_destination_id,
         start_date,end_date,travelers,budget_tier,pace,is_group,include_holy,interests,audience,
         route_mode,certified_route_id,cuisines,accommodation,day_start,day_end,route_json,status,created_at)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-        (t["title"], t["owner_name"], t.get("owner_age"), t["invite_code"], t["start_destination_id"],
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+        (t["title"], t["owner_name"], t.get("owner_age"), t.get("owner_email"), t["invite_code"], t["start_destination_id"],
          t["start_date"], t["end_date"], t["travelers"], t["budget_tier"], t["pace"],
          int(t["is_group"]), int(t["include_holy"]), json.dumps(t["interests"]), t["audience"],
          t["route_mode"], t.get("certified_route_id"), json.dumps(t.get("cuisines", [])),
@@ -259,3 +263,19 @@ def rating_distribution():
     for r in rows:
         dist[r["stars"]] = r["c"]
     return dist
+
+
+# ----------------------------- Notification log -----------------------------
+def log_notification(to_email, subject, status):
+    conn = _conn()
+    conn.execute("INSERT INTO notifications(to_email,subject,status,created_at) VALUES(?,?,?,?)",
+                 (to_email, subject, status, datetime.utcnow().isoformat()))
+    conn.commit()
+    conn.close()
+
+
+def list_notifications(limit=50):
+    conn = _conn()
+    rows = conn.execute("SELECT * FROM notifications ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
