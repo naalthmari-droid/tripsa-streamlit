@@ -300,3 +300,40 @@ def route_consensus(member_interests):
 def rank_by_consensus(votes):
     cons = destination_consensus(votes)
     return sorted(cons.items(), key=lambda x: -x[1])
+
+
+# ----------------------------- Personalized recommendations -----------------------------
+def aggregate_preferences(past_interests):
+    """Average interest vectors across a user's past trips -> taste profile."""
+    if not past_interests:
+        return {}
+    keys = past_interests[0].keys()
+    return {k: round(sum(p.get(k, 0) for p in past_interests) / len(past_interests), 2) for k in keys}
+
+
+def recommend_destinations(taste_profile, visited_ids=None, include_holy=False, limit=5):
+    """Recommend destinations matching the user's taste profile, excluding visited ones.
+    Returns list of (destination, match_score 0-100, reason)."""
+    visited_ids = set(visited_ids or [])
+    if not taste_profile:
+        return []
+    # dominant interests (top 2)
+    top = sorted(taste_profile.items(), key=lambda x: -x[1])[:2]
+    top_keys = [k for k, _ in top]
+    recs = []
+    for d in DEST_BY_ID.values():
+        if d["id"] in visited_ids:
+            continue
+        if d["holy"] and not include_holy:
+            continue
+        score = destination_score(d, taste_profile)
+        match = round(score * 100)
+        # reason from dominant matching interest
+        best_k = max(top_keys, key=lambda k: d["interests"].get(k, 0)) if top_keys else None
+        reason = ""
+        if best_k:
+            from data import INTEREST_LABELS
+            reason = f"Strong in {INTEREST_LABELS.get(best_k, best_k)}"
+        recs.append((d, match, reason))
+    recs.sort(key=lambda x: -x[1])
+    return recs[:limit]

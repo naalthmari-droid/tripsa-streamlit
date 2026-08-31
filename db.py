@@ -81,6 +81,24 @@ def list_trips():
     return [_trip_dict(r) for r in rows]
 
 
+def trips_by_owner(owner_name):
+    """All trips created by a given owner name (past trips for recommendations)."""
+    conn = _conn()
+    rows = conn.execute("SELECT * FROM trips WHERE owner_name=? ORDER BY id DESC", (owner_name,)).fetchall()
+    conn.close()
+    return [_trip_dict(r) for r in rows]
+
+
+def trips_with_member(member_name):
+    """Trips where this name appears as a member (to learn their taste)."""
+    conn = _conn()
+    rows = conn.execute(
+        "SELECT DISTINCT t.* FROM trips t JOIN members m ON m.trip_id=t.id WHERE m.name=? ORDER BY t.id DESC",
+        (member_name,)).fetchall()
+    conn.close()
+    return [_trip_dict(r) for r in rows]
+
+
 def _trip_dict(row):
     d = dict(row)
     d["interests"] = json.loads(d.get("interests") or "{}")

@@ -353,6 +353,65 @@ def page_room():
         st.markdown(f'<div class="act"><span class="dotm"></span><span><b>{c["member_name"]}</b>{f" · {dname}" if dname else ""}: {c["body"]}</span></div>', unsafe_allow_html=True)
 
 
+# ============================================================ RECOMMENDATIONS
+def page_recommendations():
+    st.markdown('<div class="sec">✨ Personalized recommendations</div>', unsafe_allow_html=True)
+    st.caption("We learn your taste from your past trips and suggest destinations you'll love.")
+
+    name = st.text_input("Your name (as used in past trips)", st.session_state.member_name or "",
+                         placeholder="e.g. Nada")
+    if not name.strip():
+        st.info("Enter your name to see recommendations based on your previous trips.")
+        return
+
+    past = db.trips_by_owner(name.strip()) + db.trips_with_member(name.strip())
+    # de-duplicate by id
+    seen, past_trips = set(), []
+    for t in past:
+        if t["id"] not in seen:
+            seen.add(t["id"])
+            past_trips.append(t)
+
+    if not past_trips:
+        st.warning(f"No past trips found for **{name}**. Create a trip first so we can learn your taste!")
+        if st.button("✨ Create a trip", use_container_width=True):
+            go("create")
+        return
+
+    past_interests = [t["interests"] for t in past_trips if t.get("interests")]
+    visited = []
+    for t in past_trips:
+        visited += [s["destination_id"] for s in t["route"].get("stops", [])]
+    taste = engine.aggregate_preferences(past_interests)
+
+    st.markdown(f"**Your taste profile** (from {len(past_trips)} past trip(s))")
+    cols = st.columns(len(taste) or 1)
+    for i, (k, v) in enumerate(sorted(taste.items(), key=lambda x: -x[1])):
+        cols[i % len(cols)].markdown(
+            f'<div class="metric"><div class="v">{v:.1f}</div><div class="l">{data.INTEREST_LABELS.get(k,k)}</div></div>',
+            unsafe_allow_html=True)
+
+    st.markdown('<div class="sec">🎯 Recommended for you</div>', unsafe_allow_html=True)
+    recs = engine.recommend_destinations(taste, visited_ids=visited, include_holy=False, limit=5)
+    if not recs:
+        st.info("You've explored everything! Try including holy cities or new interests.")
+        return
+    st.markdown('<div class="stagger">', unsafe_allow_html=True)
+    for d, match, reason in recs:
+        st.markdown(f"""
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3>{d['name']}</h3>
+            <span class="pill">{match}% match</span>
+          </div>
+          <div class="sub">{d['region']} · {reason}</div>
+          <p style="margin-top:8px">{d['blurb']}</p>
+          <div>{"".join(f'<span class="tag">{h}</span>' for h in d['highlights'][:3])}</div>
+        </div>""", unsafe_allow_html=True)
+        st.markdown("<br/>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
 # ============================================================ ROUTES
 def page_routes():
     st.markdown('<div class="sec">🗺️ Certified routes</div>', unsafe_allow_html=True)
@@ -371,7 +430,7 @@ def page_routes():
 
 # ============================================================ Router
 # top nav — native Streamlit buttons (reliable, no third-party widget state issues).
-_nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),("routes","🗺️ Routes")]
+_nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),("routes","🗺️ Routes"),("recommend","🎯 For You")]
 _cols = st.columns(len(_nav_items))
 for _i, (_p, _label) in enumerate(_nav_items):
     _active = (st.session_state.page == _p)
@@ -392,3 +451,5 @@ elif page == "room":
     page_room()
 elif page == "routes":
     page_routes()
+elif page == "recommend":
+    page_recommendations()
