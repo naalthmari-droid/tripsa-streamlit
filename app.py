@@ -45,9 +45,9 @@ def hero():
         st.markdown("""
         <div class="hero">
           <div class="brand"><span class="dot"></span> TRIPSA</div>
-          <h1>Plan your Saudi road trip<br/>with intelligence.</h1>
-          <p>TRIPSA builds an optimized route between cities — with distance, stay dates,
-          cost and readiness — and lets your group vote & reach consensus via a single invite code.</p>
+          <h1>Plan your Saudi journey<br/>with intelligence.</h1>
+          <p>TRIPSA builds an optimized route between cities — by road, air or rail — with stay dates,
+          cost and live weather, and lets your group vote & reach consensus via a single invite code.</p>
         </div>
         """, unsafe_allow_html=True)
     with c2:
