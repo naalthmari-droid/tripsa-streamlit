@@ -219,6 +219,44 @@ def rail_options_for_route(dest_ids):
     return out
 
 
+# ----------------------------- Airports (IATA) -----------------------------
+AIRPORTS = {
+    "riyadh": "RUH", "diriyah": "RUH", "jeddah": "JED", "makkah": "JED",
+    "madinah": "MED", "alula": "ULH", "abha": "AHB", "taif": "TIF",
+    "hail": "HAS", "qassim": "ELQ", "alahsa": "HOF", "dammam": "DMM",
+    "khobar": "DMM", "dammam_khobar": "DMM", "tabuk": "TUU", "yanbu": "YNB",
+    "albaha": "ABT", "jazan": "GIZ", "najran": "EAM",
+}
+
+def airport_for(dest_id):
+    return AIRPORTS.get(dest_id)
+
+def transport_options(a_id, b_id, km, engine):
+    """Build a comparison of transport options for one leg (road/air/rail)."""
+    opts = []
+    for mode in ("road", "air", "rail"):
+        m = engine.TRANSPORT_MODES[mode]
+        mins = engine.travel_minutes(km, mode)
+        avail, note = True, ""
+        if mode == "air":
+            fa, ta = airport_for(a_id), airport_for(b_id)
+            if fa and ta:
+                note = f"{fa} → {ta} · ~{max(1, round(mins/60))}h incl. airport time"
+            else:
+                avail, note = False, "No direct airport on this leg"
+        elif mode == "rail":
+            line = rail_between(a_id, b_id)
+            if line:
+                note = f"{line['name']} · {line['note']}"
+            else:
+                avail, note = False, "No rail line connects these cities"
+        else:
+            note = f"{round(km)} km drive"
+        opts.append(dict(mode=mode, icon=m["icon"], label=m["label"], minutes=mins,
+                         available=avail, note=note))
+    return opts
+
+
 # ----------------------------- Certified Routes -----------------------------
 CERTIFIED_ROUTES = [
     dict(

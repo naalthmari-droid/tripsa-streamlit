@@ -278,6 +278,16 @@ def page_detail():
                 <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
               </div>
             </div>""", unsafe_allow_html=True)
+            # Transport comparison for this leg (road/air/rail)
+            if s['order'] > 1:
+                prev_id = stops[s['order'] - 2]["destination_id"]
+                with st.expander(f"🧭 Travel options {data.DEST_BY_ID[prev_id]['name']} → {s['name']}"):
+                    for o in data.transport_options(prev_id, s["destination_id"], s["distance_from_prev_km"], engine):
+                        if o["available"]:
+                            chosen_mark = " ✅" if o["mode"] == tmode else ""
+                            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>{o["icon"]} {o["label"]}</b>{chosen_mark} · {fmt_drive(o["minutes"])} — {o["note"]}</span></div>', unsafe_allow_html=True)
+                        else:
+                            st.markdown(f'<div class="act" style="opacity:.55"><span class="dotm"></span><span><b>{o["icon"]} {o["label"]}</b> · {o["note"]}</span></div>', unsafe_allow_html=True)
             with st.expander(f"🕒 Day schedule for {s['name']} (your hours)"):
                 # Recommended stay (real hotels for this city)
                 hotels = engine.hotels_for(s["destination_id"], t.get("budget_tier", "Mid-range"), t.get("accommodation"))
