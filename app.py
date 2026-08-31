@@ -10,7 +10,6 @@ import data
 import engine
 import db
 import notifications
-import weather
 from style import CUSTOM_CSS, LOTTIE
 
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
@@ -47,7 +46,7 @@ def hero():
           <div class="brand"><span class="dot"></span> TRIPSA</div>
           <h1>Plan your Saudi journey<br/>with intelligence.</h1>
           <p>TRIPSA builds an optimized route between cities — by road, air or rail — with stay dates,
-          cost and live weather, and lets your group vote & reach consensus via a single invite code.</p>
+          and cost, and lets your group vote &amp; reach consensus via a single invite code.</p>
         </div>
         """, unsafe_allow_html=True)
     with c2:
@@ -265,14 +264,12 @@ def page_detail():
             st.markdown(f'<div class="act"><span class="dotm"></span><span><b>{data.DEST_BY_ID[a]["name"]} → {data.DEST_BY_ID[b]["name"]}</b> · {line["name"]} — {line["note"]}</span></div>', unsafe_allow_html=True)
     for s in stops:
         with st.container():
-            wbadge = weather.weather_badge(s["lat"], s["lng"])
-            wbadge_html = f'<span class="tag" style="background:#eef4e6">🌡️ {wbadge}</span>' if wbadge else ""
             leg_icon = tm["icon"] if s['order'] > 1 else ""
             st.markdown(f"""
             <div class="stop">
               <div class="num">{s['order']}</div>
               <div class="body">
-                <h4>{s['name']} {wbadge_html}</h4>
+                <h4>{s['name']}</h4>
                 <div class="sub">🛏️ {s['nights']} night(s) · {fmt_date(s['check_in'])} → {fmt_date(s['check_out'])}
                 {f"· {leg_icon} {s['distance_from_prev_km']} km · {fmt_drive(s['drive_min'])}" if s['order']>1 else ""}</div>
                 <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
@@ -391,13 +388,11 @@ def page_room():
     st.markdown('<div class="sec">🗺️ Shared route &amp; schedule</div>', unsafe_allow_html=True)
     st.caption(f"Built from everyone's preferences — group taste: {group_txt}")
     for s in stops:
-        wbadge = weather.weather_badge(s["lat"], s["lng"])
-        wbadge_html = f'<span class="tag" style="background:#eef4e6">🌡️ {wbadge}</span>' if wbadge else ""
         st.markdown(f"""
         <div class="stop">
           <div class="num">{s['order']}</div>
           <div class="body">
-            <h4>{s['name']} {wbadge_html}</h4>
+            <h4>{s['name']}</h4>
             <div class="sub">🛏️ {s['nights']} night(s) · {fmt_date(s['check_in'])} → {fmt_date(s['check_out'])}</div>
             <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
           </div>
