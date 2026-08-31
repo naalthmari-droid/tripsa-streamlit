@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+tripsa.db
+.streamlit/secrets.toml
