@@ -37,6 +37,10 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         trip_id INTEGER, member_name TEXT, destination_id TEXT,
         body TEXT, created_at TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS rec_ratings(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_name TEXT, destination_id TEXT,
+        stars INTEGER, comment TEXT, created_at TEXT)""")
     conn.commit()
     conn.close()
 
@@ -158,3 +162,43 @@ def get_comments(trip_id):
     rows = conn.execute("SELECT * FROM comments WHERE trip_id=? ORDER BY id DESC", (trip_id,)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+# ----------------------------- Recommendation ratings -----------------------------
+def add_rec_rating(user_name, destination_id, stars, comment=""):
+    conn = _conn()
+    conn.execute("INSERT INTO rec_ratings(user_name,destination_id,stars,comment,created_at) VALUES(?,?,?,?,?)",
+                 (user_name, destination_id, int(stars), comment, datetime.utcnow().isoformat()))
+    conn.commit()
+    conn.close()
+
+
+def get_rec_ratings(destination_id=None):
+    """All ratings, or ratings for one destination."""
+    conn = _conn()
+    if destination_id:
+        rows = conn.execute("SELECT * FROM rec_ratings WHERE destination_id=? ORDER BY id DESC",
+                            (destination_id,)).fetchall()
+    else:
+        rows = conn.execute("SELECT * FROM rec_ratings ORDER BY id DESC").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def rec_rating_summary(destination_id):
+    """(avg_stars, count) for a destination."""
+    conn = _conn()
+    row = conn.execute(
+        "SELECT AVG(stars) a, COUNT(*) c FROM rec_ratings WHERE destination_id=?",
+        (destination_id,)).fetchone()
+    conn.close()
+    return (round(row["a"], 1) if row["a"] else 0.0, row["c"])
+
+
+def user_rec_ratings(user_name):
+    """Map destination_id -> stars given by this user (to adjust recommendations)."""
+    conn = _conn()
+    rows = conn.execute("SELECT destination_id, stars FROM rec_ratings WHERE user_name=?",
+                        (user_name,)).fetchall()
+    conn.close()
+    return {r["destination_id"]: r["stars"] for r in rows}

@@ -311,10 +311,13 @@ def aggregate_preferences(past_interests):
     return {k: round(sum(p.get(k, 0) for p in past_interests) / len(past_interests), 2) for k in keys}
 
 
-def recommend_destinations(taste_profile, visited_ids=None, include_holy=False, limit=5):
+def recommend_destinations(taste_profile, visited_ids=None, include_holy=False, limit=5,
+                           user_ratings=None):
     """Recommend destinations matching the user's taste profile, excluding visited ones.
+    user_ratings: {destination_id: stars 1-5} — boosts liked (>=4) and dampens disliked (<=2).
     Returns list of (destination, match_score 0-100, reason)."""
     visited_ids = set(visited_ids or [])
+    user_ratings = user_ratings or {}
     if not taste_profile:
         return []
     # dominant interests (top 2)
@@ -327,6 +330,13 @@ def recommend_destinations(taste_profile, visited_ids=None, include_holy=False, 
         if d["holy"] and not include_holy:
             continue
         score = destination_score(d, taste_profile)
+        # feedback loop: adjust by the user's own past rating of this destination
+        stars = user_ratings.get(d["id"])
+        if stars is not None:
+            if stars >= 4:
+                score = min(1.0, score * 1.15)   # boost liked
+            elif stars <= 2:
+                score = score * 0.6              # dampen disliked
         match = round(score * 100)
         # reason from dominant matching interest
         best_k = max(top_keys, key=lambda k: d["interests"].get(k, 0)) if top_keys else None
@@ -334,6 +344,8 @@ def recommend_destinations(taste_profile, visited_ids=None, include_holy=False, 
         if best_k:
             from data import INTEREST_LABELS
             reason = f"Strong in {INTEREST_LABELS.get(best_k, best_k)}"
+        if stars is not None:
+            reason += f" · You rated it {stars}★"
         recs.append((d, match, reason))
     recs.sort(key=lambda x: -x[1])
     return recs[:limit]

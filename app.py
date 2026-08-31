@@ -392,22 +392,43 @@ def page_recommendations():
             unsafe_allow_html=True)
 
     st.markdown('<div class="sec">🎯 Recommended for you</div>', unsafe_allow_html=True)
-    recs = engine.recommend_destinations(taste, visited_ids=visited, include_holy=False, limit=5)
+    user_ratings = db.user_rec_ratings(name.strip())
+    recs = engine.recommend_destinations(taste, visited_ids=visited, include_holy=False, limit=5,
+                                         user_ratings=user_ratings)
     if not recs:
         st.info("You've explored everything! Try including holy cities or new interests.")
         return
     st.markdown('<div class="stagger">', unsafe_allow_html=True)
     for d, match, reason in recs:
+        avg, cnt = db.rec_rating_summary(d["id"])
+        stars_txt = f"⭐ {avg} ({cnt})" if cnt else "Not rated yet"
         st.markdown(f"""
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <h3>{d['name']}</h3>
             <span class="pill">{match}% match</span>
           </div>
-          <div class="sub">{d['region']} · {reason}</div>
+          <div class="sub">{d['region']} · {reason} · {stars_txt}</div>
           <p style="margin-top:8px">{d['blurb']}</p>
           <div>{"".join(f'<span class="tag">{h}</span>' for h in d['highlights'][:3])}</div>
         </div>""", unsafe_allow_html=True)
+
+        # --- rating & feedback for this recommendation ---
+        with st.expander(f"⭐ Rate & review {d['name']}", expanded=False):
+            with st.form(f"rate_{d['id']}"):
+                stars = st.slider("Your rating", 1, 5, 4, key=f"stars_{d['id']}")
+                comment = st.text_area("Your review (optional)", key=f"cmt_{d['id']}",
+                                       placeholder="What did you like or dislike?")
+                if st.form_submit_button("Submit rating", use_container_width=True):
+                    db.add_rec_rating(name.strip(), d["id"], stars, comment.strip())
+                    st.success("Thanks! Your feedback improves future recommendations.")
+                    st.rerun()
+            for r in db.get_rec_ratings(d["id"])[:5]:
+                st.markdown(
+                    f'<div class="act"><span class="dotm"></span><span><b>{r["user_name"]}</b> '
+                    f'— {"★"*r["stars"]}{"☆"*(5-r["stars"])}'
+                    f'{f": {r["comment"]}" if r["comment"] else ""}</span></div>',
+                    unsafe_allow_html=True)
         st.markdown("<br/>", unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
