@@ -1,4 +1,6 @@
-"""TRIPSA — SQLite persistence for trips, members, preferences, votes, comments."""
+"""TRIPSA — persistence for trips, members, preferences, votes, comments.
+Uses Turso (libsql) cloud DB when configured so ALL devices share the same data;
+falls back to local SQLite otherwise."""
 import json
 import os
 import sqlite3
@@ -6,8 +8,102 @@ from datetime import datetime
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "tripsa.db")
 
+# ---- Cloud (Turso) credentials: from Streamlit secrets or environment ----
+def _creds():
+    url = os.environ.get("TURSO_URL", "")
+    tok = os.environ.get("TURSO_TOKEN", "")
+    try:
+        import streamlit as st
+        url = url or st.secrets.get("TURSO_URL", "")
+        tok = tok or st.secrets.get("TURSO_TOKEN", "")
+    except Exception:
+        pass
+    return url, tok
+
+
+def _use_cloud():
+    url, _ = _creds()
+    return bool(url)
+
+
+# ----------------------------- Turso HTTPS (hrana) backend -----------------------------
+def _turso_host(url):
+    return url.replace("libsql://", "https://").rstrip("/")
+
+
+def _turso_exec(url, tok, sql, params=()):
+    """Execute one statement via Turso's HTTP pipeline API. Returns (cols, rows, lastrowid)."""
+    import requests
+    args = []
+    for p in params:
+        if p is None:
+            args.append({"type": "null"})
+        elif isinstance(p, int):
+            args.append({"type": "integer", "value": str(p)})
+        elif isinstance(p, float):
+            args.append({"type": "float", "value": p})
+        else:
+            args.append({"type": "text", "value": str(p)})
+    body = {"requests": [
+        {"type": "execute", "stmt": ({"sql": sql, "args": args} if args else {"sql": sql})},
+        {"type": "close"},
+    ]}
+    r = requests.post(_turso_host(url) + "/v2/pipeline", json=body,
+                      headers={"Authorization": "Bearer " + tok}, timeout=30)
+    r.raise_for_status()
+    res = r.json()["results"][0]["response"]["result"]
+    cols = [c["name"] for c in res.get("cols", [])]
+    rows = [[cell.get("value") for cell in row] for row in res.get("rows", [])]
+    lastrowid = res.get("last_insert_rowid")
+    return cols, rows, lastrowid
+
+
+class _CloudCursor:
+    def __init__(self, url, tok):
+        self._url, self._tok = url, tok
+        self.lastrowid = None
+        self._cols, self._rows = [], []
+
+    def execute(self, sql, params=()):
+        cols, rows, lastrowid = _turso_exec(self._url, self._tok, sql, params)
+        self._cols, self._rows = cols, rows
+        self.lastrowid = int(lastrowid) if lastrowid is not None else None
+        return self
+
+    def fetchone(self):
+        if not self._rows:
+            return None
+        return {self._cols[i]: self._rows[0][i] for i in range(len(self._cols))}
+
+    def fetchall(self):
+        return [{self._cols[i]: r[i] for i in range(len(self._cols))} for r in self._rows]
+
+
+class _CloudConn:
+    def __init__(self, url, tok):
+        self._url, self._tok = url, tok
+
+    def cursor(self):
+        return _CloudCursor(self._url, self._tok)
+
+    def execute(self, sql, params=()):
+        return _CloudCursor(self._url, self._tok).execute(sql, params)
+
+    def commit(self):
+        pass
+
+    def close(self):
+        pass
+
 
 def _conn():
+    """Return a DB connection: Turso cloud if configured, else local SQLite."""
+    url, tok = _creds()
+    if url:
+        try:
+            return _CloudConn(url, tok)
+        except Exception:
+            pass
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
