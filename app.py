@@ -82,7 +82,11 @@ def page_home():
     with c2:
         st.markdown('<div class="card"><h3>🤝 Group Consensus</h3><div class="sub">Invite code, member preferences, voting and a live group-consensus score.</div></div>', unsafe_allow_html=True)
     with c3:
-        st.markdown('<div class="card"><h3>📊 Readiness & Impact</h3><div class="sub">Readiness (0-100) and local economic impact for every route.</div></div>', unsafe_allow_html=True)
+        # Readiness & Impact is an admin/business metric — hidden from regular tourists.
+        if st.session_state.get("admin_ok"):
+            st.markdown('<div class="card"><h3>📊 Readiness & Impact</h3><div class="sub">Readiness (0-100) and local economic impact for every route.</div></div>', unsafe_allow_html=True)
+        else:
+            st.markdown('<div class="card"><h3>🍽️ Local Flavors</h3><div class="sub">Restaurant picks matched to your favorite cuisine in every city on your route.</div></div>', unsafe_allow_html=True)
 
     st.markdown('<div class="sec">Get started</div>', unsafe_allow_html=True)
     a, b, c = st.columns([1, 1, 1])
@@ -202,11 +206,18 @@ def page_detail():
     st.markdown(f'<div class="invite">🔑 {t["invite_code"]}</div>', unsafe_allow_html=True)
     st.caption("Share this code so your group can join, vote and plan together.")
 
-    m1, m2, m3, m4 = st.columns(4)
-    m1.markdown(f'<div class="metric"><div class="v">{route.get("total_distance_km",0):,} km</div><div class="l">Distance</div></div>', unsafe_allow_html=True)
-    m2.markdown(f'<div class="metric"><div class="v">{fmt_drive(route.get("total_duration_min",0))}</div><div class="l">Drive time</div></div>', unsafe_allow_html=True)
-    m3.markdown(f'<div class="metric"><div class="v">SAR {route.get("estimated_cost",0):,}</div><div class="l">Est. cost</div></div>', unsafe_allow_html=True)
-    m4.markdown(f'<div class="metric"><div class="v">{route.get("readiness",0)}%</div><div class="l">Readiness</div></div>', unsafe_allow_html=True)
+    # Readiness is an admin/business metric — regular tourists see tourist-friendly metrics only.
+    if st.session_state.get("admin_ok"):
+        m1, m2, m3, m4 = st.columns(4)
+        m1.markdown(f'<div class="metric"><div class="v">{route.get("total_distance_km",0):,} km</div><div class="l">Distance</div></div>', unsafe_allow_html=True)
+        m2.markdown(f'<div class="metric"><div class="v">{fmt_drive(route.get("total_duration_min",0))}</div><div class="l">Drive time</div></div>', unsafe_allow_html=True)
+        m3.markdown(f'<div class="metric"><div class="v">SAR {route.get("estimated_cost",0):,}</div><div class="l">Est. cost</div></div>', unsafe_allow_html=True)
+        m4.markdown(f'<div class="metric"><div class="v">{route.get("readiness",0)}%</div><div class="l">Readiness</div></div>', unsafe_allow_html=True)
+    else:
+        m1, m2, m3 = st.columns(3)
+        m1.markdown(f'<div class="metric"><div class="v">{route.get("total_distance_km",0):,} km</div><div class="l">Distance</div></div>', unsafe_allow_html=True)
+        m2.markdown(f'<div class="metric"><div class="v">{fmt_drive(route.get("total_duration_min",0))}</div><div class="l">Drive time</div></div>', unsafe_allow_html=True)
+        m3.markdown(f'<div class="metric"><div class="v">SAR {route.get("estimated_cost",0):,}</div><div class="l">Est. cost</div></div>', unsafe_allow_html=True)
 
     # Map
     st.markdown('<div class="sec">🗺️ Route map</div>', unsafe_allow_html=True)
