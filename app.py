@@ -122,6 +122,9 @@ def page_create():
         travelers = c2.number_input("Travelers", 1, 20, 2)
         budget = c3.selectbox("Budget tier", ["Budget", "Mid-range", "Luxury"])
 
+        transport = st.radio("How will you travel?", ["road", "air", "rail"], horizontal=True,
+                             format_func=lambda m: f"{engine.TRANSPORT_MODES[m]['icon']} {engine.TRANSPORT_MODES[m]['label']}")
+
         route_mode = st.radio("How to build your route?", ["Pick cities myself", "Use a certified route"], horizontal=True)
         certified_id = None
         if route_mode == "Pick cities myself":
@@ -172,7 +175,7 @@ def page_create():
                 route = engine.build_optimized_route(
                     start, chosen, interests,
                     datetime.combine(sd, datetime.min.time()), datetime.combine(ed, datetime.min.time()),
-                    travelers, 500, pace, include_holy)
+                    travelers, 500, pace, include_holy, transport_mode=transport)
             tid = db.create_trip(dict(
                 title=title, owner_name=owner, owner_age=age, owner_email=email.strip(), invite_code=code,
                 start_destination_id=start, start_date=str(sd), end_date=str(ed),
@@ -251,17 +254,27 @@ def page_detail():
     # Stops timeline
     st.markdown('<div class="sec">📍 Optimized route — stop by stop</div>', unsafe_allow_html=True)
     st.caption(f"Your day: {t['day_start']}:00 – {t['day_end']}:00 · {t.get('accommodation','')}")
+    tmode = route.get("transport_mode", "road")
+    tm = engine.TRANSPORT_MODES.get(tmode, engine.TRANSPORT_MODES["road"])
+    # rail options across consecutive stops
+    route_ids = [s["destination_id"] for s in stops]
+    rails = data.rail_options_for_route(route_ids)
+    if rails:
+        st.markdown('<div class="sec">🚄 Rail options on this route</div>', unsafe_allow_html=True)
+        for a, b, line in rails:
+            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>{data.DEST_BY_ID[a]["name"]} → {data.DEST_BY_ID[b]["name"]}</b> · {line["name"]} — {line["note"]}</span></div>', unsafe_allow_html=True)
     for s in stops:
         with st.container():
             wbadge = weather.weather_badge(s["lat"], s["lng"])
             wbadge_html = f'<span class="tag" style="background:#eef4e6">🌡️ {wbadge}</span>' if wbadge else ""
+            leg_icon = tm["icon"] if s['order'] > 1 else ""
             st.markdown(f"""
             <div class="stop">
               <div class="num">{s['order']}</div>
               <div class="body">
                 <h4>{s['name']} {wbadge_html}</h4>
                 <div class="sub">🛏️ {s['nights']} night(s) · {fmt_date(s['check_in'])} → {fmt_date(s['check_out'])}
-                {f"· 🚗 {s['distance_from_prev_km']} km · {fmt_drive(s['drive_min'])}" if s['order']>1 else ""}</div>
+                {f"· {leg_icon} {s['distance_from_prev_km']} km · {fmt_drive(s['drive_min'])}" if s['order']>1 else ""}</div>
                 <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
               </div>
             </div>""", unsafe_allow_html=True)

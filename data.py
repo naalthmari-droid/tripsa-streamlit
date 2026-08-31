@@ -192,6 +192,33 @@ def restaurants_by_cuisines(dest_id, cuisine_ids):
     matched = [r for r in allr if r[3] in cuisine_ids]
     return matched if matched else allr
 
+# ----------------------------- Railway lines (real, SAR) -----------------------------
+RAIL_LINES = [
+    dict(id="haramain", name="Haramain High-Speed Railway", operator="SAR",
+         stops=["makkah", "jeddah", "madinah"], note="Makkah - Jeddah - Madinah (up to 300 km/h)"),
+    dict(id="riyadh_dammam", name="Riyadh-Dammam Railway", operator="SAR",
+         stops=["riyadh", "dammam", "khobar"], note="Riyadh - Dammam / Al-Khobar"),
+    dict(id="north", name="North-South Railway", operator="SAR",
+         stops=["riyadh", "qassim", "hail"], note="Riyadh - Qassim - Hail"),
+]
+
+def rail_between(a_id, b_id):
+    """Return the rail line dict connecting two destinations, or None."""
+    for line in RAIL_LINES:
+        if a_id in line["stops"] and b_id in line["stops"]:
+            return line
+    return None
+
+def rail_options_for_route(dest_ids):
+    """Return list of (from_id, to_id, line) for consecutive stops connected by rail."""
+    out = []
+    for i in range(len(dest_ids) - 1):
+        line = rail_between(dest_ids[i], dest_ids[i + 1])
+        if line:
+            out.append((dest_ids[i], dest_ids[i + 1], line))
+    return out
+
+
 # ----------------------------- Certified Routes -----------------------------
 CERTIFIED_ROUTES = [
     dict(

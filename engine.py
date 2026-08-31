@@ -8,6 +8,20 @@ from data import DEST_BY_ID, attractions_for, restaurants_by_cuisines
 
 AVG_SPEED_KMH = 90.0
 
+# ----------------------------- Transport modes -----------------------------
+# Each mode: label, icon, average speed (km/h), fixed overhead (min per leg).
+TRANSPORT_MODES = {
+    "road":  {"label": "By road",  "icon": "🚗", "speed": 90.0,  "overhead_min": 0},
+    "air":   {"label": "By air",   "icon": "✈️", "speed": 700.0, "overhead_min": 120},
+    "rail":  {"label": "By rail",  "icon": "🚄", "speed": 160.0, "overhead_min": 30},
+}
+
+
+def travel_minutes(km, mode="road"):
+    """Travel time for a leg given the transport mode (includes overhead)."""
+    m = TRANSPORT_MODES.get(mode, TRANSPORT_MODES["road"])
+    return int(round((km / m["speed"]) * 60)) + m["overhead_min"]
+
 
 def haversine_km(lat1, lon1, lat2, lon2):
     R = 6371.0
@@ -97,7 +111,7 @@ def season_from_date(dt):
 
 
 def build_optimized_route(start_id, dest_ids, interests, start_date, end_date,
-                          travelers, budget_daily, pace, include_holy):
+                          travelers, budget_daily, pace, include_holy, transport_mode="road"):
     """Build an optimized multi-stop route with per-stop stay dates."""
     nights_total = max(1, (end_date - start_date).days)
     if not dest_ids:
@@ -142,7 +156,7 @@ def build_optimized_route(start_id, dest_ids, interests, start_date, end_date,
         else:
             prev = DEST_BY_ID[full_order[idx - 1]]
             dist_prev = haversine_km(prev["lat"], prev["lng"], d["lat"], d["lng"])
-            dmin = drive_minutes(dist_prev)
+            dmin = travel_minutes(dist_prev, transport_mode)
         total_km += dist_prev
         total_min += dmin
         total_cost += d["daily_cost"] * n * travelers
@@ -161,6 +175,7 @@ def build_optimized_route(start_id, dest_ids, interests, start_date, end_date,
     return dict(
         stops=stops, total_distance_km=round(total_km, 1), total_duration_min=total_min,
         estimated_cost=round(total_cost), readiness=readiness, local_impact=impact,
+        transport_mode=transport_mode,
     )
 
 
