@@ -397,6 +397,26 @@ def page_room():
                         for v in iv)
                     st.markdown(f'<div style="margin:2px 0 10px 20px">{chips}</div>', unsafe_allow_html=True)
 
+    # ---- Per-member budget comparison ----
+    st.markdown('<div class="sec">💰 Budget comparison per member</div>', unsafe_allow_html=True)
+    st.caption("Estimated cost for each member based on their choices (stay, food, activities, transport).")
+    budgets = []
+    for m in members:
+        iv = item_votes_by_m.get(m["id"], [])
+        b = engine.estimate_member_budget(t, m, iv)
+        budgets.append((m, b))
+    if budgets:
+        max_total = max(b["total"] for _, b in budgets) or 1
+        for m, b in budgets:
+            pct = b["total"] / max_total
+            st.markdown(f"**👤 {m['name']}** — SAR {b['total']:,} total · ~SAR {b['per_day']:,}/day · {b['nights']} nights · {b['tier']}")
+            st.progress(min(1.0, pct))
+            st.markdown(
+                f'<div style="margin:0 0 12px 4px;font-size:13px;color:#6b7560">'
+                f'🏨 Stay SAR {b["accommodation"]:,} &nbsp;·&nbsp; 🍽️ Food SAR {b["food"]:,} &nbsp;·&nbsp; '
+                f'🎟️ Activities SAR {b["activities"]:,} &nbsp;·&nbsp; 🧭 Transport SAR {b["transport"]:,}</div>',
+                unsafe_allow_html=True)
+
     # consensus
     member_interests = [m["preferences"] for m in members if m.get("preferences")]
     cons = engine.route_consensus(member_interests)

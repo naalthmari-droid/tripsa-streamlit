@@ -300,6 +300,63 @@ HOTELS = {
 }
 
 
+# ----------------------------- Per-member budget estimation -----------------------------
+# Approx SAR costs by price tier (1-3) for one visit / meal.
+_PRICE_SAR = {1: 40, 2: 90, 3: 180}
+
+def estimate_member_budget(trip, member, member_item_votes):
+    """Estimate one member's trip cost from their choices.
+    Returns dict with accommodation, food, activities, transport, total, per_day."""
+    import data as _data
+    stops = trip["route"].get("stops", [])
+    nights_total = sum(s["nights"] for s in stops) or 1
+    budget_tier = trip.get("budget_tier", "Mid-range")
+
+    # Accommodation: avg nightly rate of the member's tier across stops
+    nightly_rates = []
+    for s in stops:
+        hs = hotels_for(s["destination_id"], budget_tier)
+        if hs:
+            nightly_rates.append(hs[0][3])  # top pick nightly SAR
+    avg_nightly = sum(nightly_rates) / len(nightly_rates) if nightly_rates else 400
+    accommodation = avg_nightly * nights_total
+
+    # Food & activities from the member's own item votes (or defaults)
+    food = 0.0
+    activities = 0.0
+    if member_item_votes:
+        for v in member_item_votes:
+            # find the place to read its price tier
+            price_tier = 2
+            for r in _data.RESTAURANTS + _data.ATTRACTIONS:
+                if r[0] == v.get("item_id") or r[2] == v.get("item_name"):
+                    price_tier = r[7]
+                    break
+            cost = _PRICE_SAR.get(price_tier, 90)
+            if v.get("item_type") == "restaurant":
+                food += cost
+            else:
+                activities += cost
+    else:
+        # default: 2 meals + 2 activities per day at mid tier
+        food = 2 * _PRICE_SAR[2] * nights_total
+        activities = 2 * _PRICE_SAR[2] * nights_total
+
+    # Transport: share of route distance by mode
+    mode = trip["route"].get("transport_mode", "road")
+    total_km = trip["route"].get("total_distance_km", 0)
+    per_km = {"road": 0.5, "air": 1.2, "rail": 0.35}.get(mode, 0.5)
+    transport = total_km * per_km
+
+    total = accommodation + food + activities + transport
+    return dict(
+        accommodation=round(accommodation), food=round(food),
+        activities=round(activities), transport=round(transport),
+        total=round(total), per_day=round(total / nights_total),
+        nights=nights_total, tier=budget_tier,
+    )
+
+
 def hotels_for(dest_id, budget_tier="mid", accommodation=None):
     """Return real hotels for a city filtered by budget tier."""
     hs = HOTELS.get(dest_id, [])
