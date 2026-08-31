@@ -363,6 +363,17 @@ def page_room():
     st.markdown(f'<div class="sec">🤝 Planning room — {t["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="invite">🔑 {t["invite_code"]}</div>', unsafe_allow_html=True)
 
+    # Members & their preferences
+    with st.expander(f"👥 Members ({len(members)}) — see everyone's preferences"):
+        for m in members:
+            prefs = m.get("preferences") or {}
+            if prefs:
+                top = sorted(prefs.items(), key=lambda x: -x[1])[:3]
+                chips = " ".join(f'<span class="tag">{data.INTEREST_LABELS.get(k,k)} {v}★</span>' for k, v in top)
+            else:
+                chips = '<span class="tag">No preferences yet</span>'
+            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>👤 {m["name"]}</b> · {m.get("age","—")} yrs</span></div><div style="margin:2px 0 10px 26px">{chips}</div>', unsafe_allow_html=True)
+
     # consensus
     member_interests = [m["preferences"] for m in members if m.get("preferences")]
     cons = engine.route_consensus(member_interests)
