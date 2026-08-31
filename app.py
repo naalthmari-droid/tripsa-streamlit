@@ -34,10 +34,6 @@ def go(page, **kw):
     st.session_state.page = page
     for kk, vv in kw.items():
         st.session_state[kk] = vv
-    # keep the top nav in sync with programmatic navigation
-    _labels = {"home":"Home","create":"Create","join":"Join","routes":"Routes"}
-    if page in _labels:
-        st.session_state._nav = _labels[page]
     st.rerun()
 
 
