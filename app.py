@@ -449,6 +449,66 @@ def page_routes():
     st.markdown('</div>', unsafe_allow_html=True)
 
 
+# ============================================================ ADMIN DASHBOARD
+def page_admin():
+    st.markdown('<div class="sec">🔒 Admin Dashboard</div>', unsafe_allow_html=True)
+    st.caption("Internal analytics — not visible in the public navigation.")
+
+    # Password comes from Streamlit Secrets; a safe development fallback is used locally.
+    expected = st.secrets.get("ADMIN_PASSWORD", "TRIPSA-ADMIN-2026")
+    if not st.session_state.get("admin_ok", False):
+        with st.form("admin_login"):
+            pwd = st.text_input("Admin password", type="password")
+            submitted = st.form_submit_button("Sign in", use_container_width=True)
+        if submitted:
+            if pwd == expected:
+                st.session_state.admin_ok = True
+                st.rerun()
+            else:
+                st.error("Incorrect password.")
+        return
+
+    if st.button("Sign out", key="admin_logout"):
+        st.session_state.admin_ok = False
+        go("home")
+
+    k = db.admin_overview()
+    cols = st.columns(6)
+    metrics = [
+        ("Trips", k["trips"]), ("Members", k["members"]), ("Votes", k["votes"]),
+        ("Comments", k["comments"]), ("Ratings", k["ratings"]),
+        ("Avg rating", f'{k["avg_rating"]}★'),
+    ]
+    for c, (label, value) in zip(cols, metrics):
+        c.metric(label, value)
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown('<div class="sec">📍 Most requested destinations</div>', unsafe_allow_html=True)
+        demand = db.top_destinations_by_demand(10)
+        if not demand:
+            st.info("No trip demand data yet.")
+        for rank, (did, count) in enumerate(demand, 1):
+            dname = data.DEST_BY_ID.get(did, {}).get("name", did)
+            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>#{rank} {dname}</b> — {count} trip(s)</span></div>', unsafe_allow_html=True)
+
+    with c2:
+        st.markdown('<div class="sec">⭐ Most reviewed destinations</div>', unsafe_allow_html=True)
+        reviewed = db.top_destinations_by_reviews(10)
+        if not reviewed:
+            st.info("No recommendation reviews yet.")
+        for rank, (did, count, avg) in enumerate(reviewed, 1):
+            dname = data.DEST_BY_ID.get(did, {}).get("name", did)
+            st.markdown(f'<div class="act"><span class="dotm"></span><span><b>#{rank} {dname}</b> — {avg}★ from {count}</span></div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sec">📊 Rating distribution</div>', unsafe_allow_html=True)
+    dist = db.rating_distribution()
+    for stars in range(5, 0, -1):
+        st.markdown(f"**{stars}★** — {dist[stars]} rating(s)")
+        total = max(1, sum(dist.values()))
+        st.progress(dist[stars] / total)
+
+
 # ============================================================ Router
 # top nav — native Streamlit buttons (reliable, no third-party widget state issues).
 _nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),("routes","🗺️ Routes"),("recommend","🎯 For You")]
@@ -474,3 +534,11 @@ elif page == "routes":
     page_routes()
 elif page == "recommend":
     page_recommendations()
+elif page == "admin":
+    page_admin()
+
+# Hidden admin entry — not part of the public nav. Lives in the sidebar.
+with st.sidebar:
+    st.markdown("### 🔐 Staff")
+    if st.button("Admin dashboard", key="admin_entry", use_container_width=True):
+        go("admin")

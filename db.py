@@ -202,3 +202,60 @@ def user_rec_ratings(user_name):
                         (user_name,)).fetchall()
     conn.close()
     return {r["destination_id"]: r["stars"] for r in rows}
+
+
+# ----------------------------- Admin analytics -----------------------------
+def admin_overview():
+    """Global KPIs: totals across trips, members, votes, comments, ratings."""
+    conn = _conn()
+    def one(q):
+        return conn.execute(q).fetchone()[0]
+    out = {
+        "trips": one("SELECT COUNT(*) FROM trips"),
+        "members": one("SELECT COUNT(*) FROM members"),
+        "votes": one("SELECT COUNT(*) FROM votes"),
+        "comments": one("SELECT COUNT(*) FROM comments"),
+        "ratings": one("SELECT COUNT(*) FROM rec_ratings"),
+        "avg_rating": round(conn.execute("SELECT AVG(stars) FROM rec_ratings").fetchone()[0] or 0, 2),
+    }
+    conn.close()
+    return out
+
+
+def top_destinations_by_demand(limit=10):
+    """Most requested destinations — by how often they appear in trip routes."""
+    conn = _conn()
+    rows = conn.execute("SELECT route_json FROM trips").fetchall()
+    conn.close()
+    counts = {}
+    for r in rows:
+        try:
+            route = json.loads(r["route_json"] or "{}")
+            for s in route.get("stops", []):
+                did = s.get("destination_id")
+                if did:
+                    counts[did] = counts.get(did, 0) + 1
+        except Exception:
+            pass
+    return sorted(counts.items(), key=lambda x: -x[1])[:limit]
+
+
+def top_destinations_by_reviews(limit=10):
+    """Most reviewed destinations — by rating count, with avg stars."""
+    conn = _conn()
+    rows = conn.execute(
+        "SELECT destination_id, COUNT(*) c, AVG(stars) a FROM rec_ratings "
+        "GROUP BY destination_id ORDER BY c DESC, a DESC LIMIT ?", (limit,)).fetchall()
+    conn.close()
+    return [(r["destination_id"], r["c"], round(r["a"], 2)) for r in rows]
+
+
+def rating_distribution():
+    """Count of ratings per star (1-5)."""
+    conn = _conn()
+    rows = conn.execute("SELECT stars, COUNT(*) c FROM rec_ratings GROUP BY stars").fetchall()
+    conn.close()
+    dist = {i: 0 for i in range(1, 6)}
+    for r in rows:
+        dist[r["stars"]] = r["c"]
+    return dist
