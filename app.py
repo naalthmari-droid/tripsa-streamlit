@@ -397,7 +397,7 @@ def page_room():
             <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
           </div>
         </div>""", unsafe_allow_html=True)
-        with st.expander(f"🕒 Day schedule for {s['name']}"):
+        with st.expander(f"🕒 Day schedule for {s['name']}", expanded=(s["order"] == 1)):
             days = engine.schedule_trip_days(s["destination_id"], s["nights"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
             for di, acts in enumerate(days, 1):
                 st.markdown(f'<div class="sub" style="font-weight:700;color:#2f5233;margin-top:8px">📅 Day {di}</div>', unsafe_allow_html=True)
