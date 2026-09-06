@@ -2,9 +2,11 @@
 Uses Turso (libsql) cloud DB when configured so ALL devices share the same data;
 falls back to local SQLite otherwise."""
 import json
-import os
+import json
 import sqlite3
+import os
 from datetime import datetime
+import streamlit as st
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "tripsa.db")
 
@@ -165,9 +167,11 @@ def create_trip(t):
     tid = cur.lastrowid
     conn.commit()
     conn.close()
+    list_trips.clear()
     return tid
 
 
+@st.cache_data(ttl=60, show_spinner=False)
 def get_trip(tid):
     conn = _conn()
     row = conn.execute("SELECT * FROM trips WHERE id=?", (tid,)).fetchone()
@@ -175,6 +179,7 @@ def get_trip(tid):
     return _trip_dict(row) if row else None
 
 
+@st.cache_data(ttl=60, show_spinner=False)
 def get_trip_by_code(code):
     conn = _conn()
     row = conn.execute("SELECT * FROM trips WHERE invite_code=?", (code,)).fetchone()
@@ -182,6 +187,7 @@ def get_trip_by_code(code):
     return _trip_dict(row) if row else None
 
 
+@st.cache_data(ttl=60, show_spinner=False)
 def list_trips():
     conn = _conn()
     rows = conn.execute("SELECT * FROM trips ORDER BY id DESC").fetchall()
@@ -222,6 +228,7 @@ def update_trip_route(trip_id, route):
                  (json.dumps(route), trip_id))
     conn.commit()
     conn.close()
+    get_trip.clear()
 
 
 def add_member(trip_id, name, age, preferences):
@@ -232,9 +239,11 @@ def add_member(trip_id, name, age, preferences):
     mid = cur.lastrowid
     conn.commit()
     conn.close()
+    get_members.clear()
     return mid
 
 
+@st.cache_data(ttl=30, show_spinner=False)
 def get_members(trip_id):
     conn = _conn()
     rows = conn.execute("SELECT * FROM members WHERE trip_id=? ORDER BY id", (trip_id,)).fetchall()
