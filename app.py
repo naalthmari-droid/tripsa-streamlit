@@ -544,8 +544,32 @@ def page_room():
             new_route = dict(t["route"])
             new_route["stops"] = new_stops
             db.update_trip_route(t["id"], new_route)
+            db.mark_plan_finalized(t["id"], True)
             st.success("Final shared schedule generated from the group's votes!")
             st.rerun()
+
+    # ---- FINAL PLAN — shown prominently once the group finalizes from votes ----
+    if t.get("finalized"):
+        st.markdown('<div class="sec">🏁 Final plan — locked by group consensus</div>', unsafe_allow_html=True)
+        st.caption("This is the agreed route, re-ordered by everyone's votes.")
+        for s in t["route"].get("stops", []):
+            st.markdown(f"""
+            <div class="stop">
+              <div class="num">{s['order']}</div>
+              <div class="body">
+                <h4>{s['name']}</h4>
+                <div class="sub">🛏️ {s['nights']} night(s) · {fmt_date(s['check_in'])} → {fmt_date(s['check_out'])}</div>
+                <div>{"".join(f'<span class="tag">{h}</span>' for h in s['highlights'])}</div>
+              </div>
+            </div>""", unsafe_allow_html=True)
+            with st.expander(f"🕒 Day schedule for {s['name']}", expanded=(s["order"] == 1)):
+                days = engine.schedule_trip_days(s["destination_id"], s["nights"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
+                for di, acts in enumerate(days, 1):
+                    st.markdown(f'<div class="sub" style="font-weight:700;color:#2f5233;margin-top:8px">📅 Day {di}</div>', unsafe_allow_html=True)
+                    for a in acts:
+                        star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
+                        cls = "act meal" if a["kind"] == "meal" else "act"
+                        st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
 
     # ---- Group picks (top-voted activities & restaurants) ----
     item_votes = db.get_item_votes(t["id"])

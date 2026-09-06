@@ -252,6 +252,19 @@ def update_trip_route(trip_id, route):
     conn.close()
     get_trip.clear()
 
+def mark_plan_finalized(trip_id, finalized=True):
+    """Mark the trip's shared plan as finalized (from group votes)."""
+    conn = _conn()
+    try:
+        conn.execute("ALTER TABLE trips ADD COLUMN finalized INTEGER DEFAULT 0")
+    except Exception:
+        pass  # column already exists
+    conn.execute("UPDATE trips SET finalized=? WHERE id=?", (1 if finalized else 0, trip_id))
+    conn.commit()
+    conn.close()
+    get_trip.clear()
+    get_trip_by_code.clear()
+
 
 def add_member(trip_id, name, age, preferences):
     conn = _conn()
