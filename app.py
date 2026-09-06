@@ -329,37 +329,44 @@ def page_join():
     st.markdown('<div class="sec">🔑 Join a trip</div>', unsafe_allow_html=True)
     code = st.text_input("Invite code", value=st.session_state.get("prefill_code", ""),
                          placeholder="TRP-XXXXX").strip().upper()
+    # The join form is ALWAYS rendered (disabled until a valid trip is found),
+    # so it never disappears after the member types their preferences.
+    t = None
     if st.button("Find trip", use_container_width=True):
         if not engine.is_valid_invite_code(code):
             st.error("Invalid code format (TRP-XXXXX).")
-            return
-        t = db.get_trip_by_code(code)
-        if not t:
+        else:
+            t = db.get_trip_by_code(code)
+        if t:
+            st.session_state.join_found = t["id"]
+            st.success(f"Found: {t['title']}")
+        else:
             st.error("No trip with this code.")
-            return
+    fid = st.session_state.get("join_found")
+    if fid:
+        t = db.get_trip(fid)
+    with st.form("join"):
+        name = st.text_input("Your name")
+        age = st.number_input("Your age", 18, 90, 30)
+        st.markdown("**Your interests (1–5)** — `1` least · `5` most")
+        prefs = {}
+        cols = st.columns(3)
+        for i, (k, label) in enumerate(data.INTEREST_LABELS.items()):
+            prefs[k] = cols[i % 3].slider(label, 1, 5, 3, key=f"j{k}")
+        submitted = st.form_submit_button("Join trip", use_container_width=True, disabled=(t is None))
+    if submitted and t is not None:
+        mid = db.add_member(t["id"], name, age, prefs)
+        st.session_state.member_id = mid
+        st.session_state.member_name = name
+        owner_email = t.get("owner_email") or ""
+        if owner_email:
+            notifications.notify_member_joined(owner_email, t["owner_name"], name, t["title"])
+        st.session_state.page = "room"
         st.session_state.trip_id = t["id"]
-        st.success(f"Found: {t['title']}")
-        with st.form("join"):
-            name = st.text_input("Your name")
-            age = st.number_input("Your age", 18, 90, 30)
-            st.markdown("**Your interests (1–5)** — `1` least · `5` most")
-            prefs = {}
-            cols = st.columns(3)
-            for i, (k, label) in enumerate(data.INTEREST_LABELS.items()):
-                prefs[k] = cols[i % 3].slider(label, 1, 5, 3, key=f"j{k}")
-            if st.form_submit_button("Join trip", use_container_width=True):
-                mid = db.add_member(t["id"], name, age, prefs)
-                st.session_state.member_id = mid
-                st.session_state.member_name = name
-                # notify the trip owner that a new member joined
-                owner_email = t.get("owner_email") or ""
-                if owner_email:
-                    notifications.notify_member_joined(owner_email, t["owner_name"], name, t["title"])
-                # set navigation state, then rerun OUTSIDE the form so the room renders
-                st.session_state.page = "room"
-                st.session_state.trip_id = t["id"]
-                st.session_state.just_joined = True
-                st.rerun()
+        st.session_state.just_joined = True
+        st.session_state.join_found = None
+        st.session_state.prefill_code = ""
+        st.rerun()
 
 
 # ============================================================ ROOM
