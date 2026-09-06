@@ -572,8 +572,12 @@ def rank_items_by_consensus(item_votes, destination_id=None, item_type=None):
             continue
         if item_type and v.get("item_type") != item_type:
             continue
+        try:
+            s = float(v.get("score", 0))
+        except (TypeError, ValueError):
+            continue
         key = (v.get("item_type"), v.get("item_name"))
-        agg.setdefault(key, []).append(v.get("score", 0))
+        agg.setdefault(key, []).append(s)
     out = []
     for (itype, name), scores in agg.items():
         avg = round(sum(scores) / len(scores), 1) if scores else 0
