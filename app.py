@@ -159,11 +159,11 @@ def page_create():
         accommodation = st.selectbox("Preferred accommodation", data.ACCOMMODATION_TYPES)
         pace = st.select_slider("Travel pace", ["relaxed", "moderate", "action_packed"], "moderate")
 
-        st.markdown("**Interests (1–5)** — `1` least interested · `5` most interested")
+        st.markdown("**Interests (0–5)** — `0` not interested · `5` most interested")
         interests = {}
         cols = st.columns(3)
         for i, (k, label) in enumerate(data.INTEREST_LABELS.items()):
-            interests[k] = cols[i % 3].slider(label, 1, 5, 3)
+            interests[k] = cols[i % 3].slider(label, 0, 5, 3)
         c1, c2 = st.columns(2)
         is_group = c1.checkbox("Group trip (collaborative planning)", True)
         include_holy = c2.checkbox("Include holy cities (Makkah/Madinah — Muslims only)", False)
@@ -348,11 +348,11 @@ def page_join():
     with st.form("join"):
         name = st.text_input("Your name")
         age = st.number_input("Your age", 18, 90, 30)
-        st.markdown("**Your interests (1–5)** — `1` least · `5` most")
+        st.markdown("**Your interests (0–5)** — `0` not interested · `5` most")
         prefs = {}
         cols = st.columns(3)
         for i, (k, label) in enumerate(data.INTEREST_LABELS.items()):
-            prefs[k] = cols[i % 3].slider(label, 1, 5, 3, key=f"j{k}")
+            prefs[k] = cols[i % 3].slider(label, 0, 5, 3, key=f"j{k}")
         submitted = st.form_submit_button("Join trip", use_container_width=True, disabled=(t is None))
     if submitted and t is not None:
         mid = db.add_member(t["id"], name, age, prefs)
@@ -487,7 +487,7 @@ def page_room():
     for s in stops:
         c1, c2 = st.columns([3, 1])
         c1.markdown(f"**{s['name']}**")
-        score = c2.selectbox("Score", [1, 2, 3, 4, 5], index=4, key=f"v{s['destination_id']}", label_visibility="collapsed")
+        score = c2.selectbox("Score", [0, 1, 2, 3, 4, 5], index=5, key=f"v{s['destination_id']}", label_visibility="collapsed")
         if c2.button("Vote", key=f"vb{s['destination_id']}"):
             db.add_vote(t["id"], st.session_state.member_id, s["destination_id"], score)
             st.toast(f"Voted {score} for {s['name']}")
@@ -532,7 +532,7 @@ def page_room():
                 aid, aname, acat, arating = a[0], a[2], a[3], a[6]
                 c1, c2 = st.columns([3, 1])
                 c1.markdown(f"**{aname}** · {acat} ★{arating}")
-                ascore = c2.selectbox("Score", [1, 2, 3, 4, 5], index=4, key=f"at{did}{aid}", label_visibility="collapsed")
+                ascore = c2.selectbox("Score", [0, 1, 2, 3, 4, 5], index=5, key=f"at{did}{aid}", label_visibility="collapsed")
                 if c2.button("Vote", key=f"atb{did}{aid}"):
                     db.add_item_vote(t["id"], st.session_state.member_id, did, "attraction", aid, aname, ascore)
                     st.toast(f"Voted {ascore} for {aname}")
@@ -543,7 +543,7 @@ def page_room():
                 rid, rname, rcui, rrating = r[0], r[2], r[3], r[6]
                 c1, c2 = st.columns([3, 1])
                 c1.markdown(f"**{rname}** · {data.CUISINE_LABELS.get(rcui, rcui)} ★{rrating}")
-                rscore = c2.selectbox("Score", [1, 2, 3, 4, 5], index=4, key=f"rt{did}{rid}", label_visibility="collapsed")
+                rscore = c2.selectbox("Score", [0, 1, 2, 3, 4, 5], index=5, key=f"rt{did}{rid}", label_visibility="collapsed")
                 if c2.button("Vote", key=f"rtb{did}{rid}"):
                     db.add_item_vote(t["id"], st.session_state.member_id, did, "restaurant", rid, rname, rscore)
                     st.toast(f"Voted {rscore} for {rname}")
@@ -642,7 +642,7 @@ def page_recommendations():
         # --- rating & feedback for this recommendation ---
         with st.expander(f"⭐ Rate & review {d['name']}", expanded=False):
             with st.form(f"rate_{d['id']}"):
-                stars = st.slider("Your rating", 1, 5, 4, key=f"stars_{d['id']}")
+                stars = st.slider("Your rating", 0, 5, 4, key=f"stars_{d['id']}")
                 comment = st.text_area("Your review (optional)", key=f"cmt_{d['id']}",
                                        placeholder="What did you like or dislike?")
                 if st.form_submit_button("Submit rating", use_container_width=True):

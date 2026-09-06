@@ -522,7 +522,11 @@ def destination_consensus(votes):
     """votes: list of dicts {destination_id, score(1-5)}. Return avg per destination."""
     agg = {}
     for v in votes:
-        agg.setdefault(v["destination_id"], []).append(v["score"])
+        try:
+            s = float(v["score"])
+        except (TypeError, ValueError):
+            continue
+        agg.setdefault(v["destination_id"], []).append(s)
     return {k: round(sum(vs) / len(vs), 2) for k, vs in agg.items()}
 
 
