@@ -243,7 +243,7 @@ def add_member(trip_id, name, age, preferences):
     return mid
 
 
-@st.cache_data(ttl=30, show_spinner=False)
+@st.cache_data(ttl=5, show_spinner=False)
 def get_members(trip_id):
     conn = _conn()
     rows = conn.execute("SELECT * FROM members WHERE trip_id=? ORDER BY id", (trip_id,)).fetchall()

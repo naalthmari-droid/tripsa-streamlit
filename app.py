@@ -404,7 +404,7 @@ def page_room():
     top_interests = sorted(group_vec.items(), key=lambda x: -x[1])[:3]
     group_txt = " · ".join(f"{data.INTEREST_LABELS.get(k,k)} {v:.1f}★" for k, v in top_interests)
     st.markdown('<div class="sec">🗺️ Shared route &amp; schedule</div>', unsafe_allow_html=True)
-    st.caption(f"Built from everyone's preferences — group taste: {group_txt}")
+    st.caption(f"Group taste: {group_txt}. The schedule updates when you press 🔁 Regenerate after voting.")
     for s in stops:
         st.markdown(f"""
         <div class="stop">
