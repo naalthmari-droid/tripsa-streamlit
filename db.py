@@ -264,6 +264,29 @@ def add_vote(trip_id, member_id, destination_id, score):
     conn.commit()
     conn.close()
 
+def save_votes(trip_id, member_id, votes_list):
+    """Save a member's destination votes all at once (replaces their previous votes)."""
+    conn = _conn()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM votes WHERE trip_id=? AND member_id=?", (trip_id, member_id))
+    for did, score in votes_list:
+        cur.execute("INSERT INTO votes(trip_id,member_id,destination_id,score) VALUES(?,?,?,?)",
+                    (trip_id, member_id, did, score))
+    conn.commit()
+    conn.close()
+
+def save_item_votes(trip_id, member_id, items_list):
+    """Save a member's attraction/restaurant votes all at once. items_list: (destination_id, item_type, item_id, item_name, score)."""
+    conn = _conn()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM item_votes WHERE trip_id=? AND member_id=?", (trip_id, member_id))
+    for did, itype, iid, iname, score in items_list:
+        cur.execute(
+            "INSERT INTO item_votes(trip_id,member_id,destination_id,item_type,item_id,item_name,score) VALUES(?,?,?,?,?,?,?)",
+            (trip_id, member_id, did, itype, iid, iname, score))
+    conn.commit()
+    conn.close()
+
 
 def get_votes(trip_id):
     conn = _conn()
