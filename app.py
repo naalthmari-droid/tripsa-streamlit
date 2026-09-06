@@ -552,6 +552,19 @@ def page_room():
     if t.get("finalized"):
         st.markdown('<div class="sec">🏁 Final plan — locked by group consensus</div>', unsafe_allow_html=True)
         st.caption("This is the agreed route, re-ordered by everyone's votes.")
+        # Export PDF + share link
+        ex1, ex2 = st.columns([1, 2])
+        try:
+            import pdf_export
+            pdf_bytes = pdf_export.build_final_plan_pdf(t, members)
+            ex1.download_button("📄 Download PDF", pdf_bytes,
+                                file_name=f"TRIPSA-{t['invite_code']}-final-plan.pdf",
+                                mime="application/pdf", use_container_width=True)
+        except Exception as _e:
+            ex1.caption("PDF unavailable")
+        _share_url = f"https://tripsa-app-hyjsp9bnu4fvx2k5vad88g.streamlit.app/?join={t['invite_code']}"
+        ex2.markdown("**🔗 Share the final plan**")
+        ex2.code(_share_url, language=None)
         for s in t["route"].get("stops", []):
             st.markdown(f"""
             <div class="stop">
