@@ -55,9 +55,31 @@ def _turso_exec(url, tok, sql, params=()):
     r.raise_for_status()
     res = r.json()["results"][0]["response"]["result"]
     cols = [c["name"] for c in res.get("cols", [])]
-    rows = [[cell.get("value") for cell in row] for row in res.get("rows", [])]
+    rows = [[_cell_value(cell) for cell in row] for row in res.get("rows", [])]
     lastrowid = res.get("last_insert_rowid")
     return cols, rows, lastrowid
+
+def _cell_value(cell):
+    """Convert a Turso cell to its proper Python type (integer/float/text/null).
+    Turso returns values tagged by type; coerce numerics so downstream code never
+    gets a string where it expects a number (prevents TypeError across the app)."""
+    if not isinstance(cell, dict):
+        return cell
+    t = cell.get("type")
+    v = cell.get("value")
+    if t == "integer":
+        try:
+            return int(v)
+        except (TypeError, ValueError):
+            return v
+    if t == "float":
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return v
+    if t == "null":
+        return None
+    return v
 
 
 class _CloudCursor:
