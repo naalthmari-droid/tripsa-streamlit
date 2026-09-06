@@ -111,14 +111,7 @@ def page_home():
     if c.button("🗺️ Certified routes", use_container_width=True):
         go("routes")
 
-    trips = db.list_trips()
-    if trips:
-        st.markdown('<div class="sec">Recent trips</div>', unsafe_allow_html=True)
-        st.markdown('<div class="stagger">', unsafe_allow_html=True)
-        for t in trips[:6]:
-            if st.button(f"📍 {t['title']} — {t['invite_code']}", key=f"t{t['id']}", use_container_width=True):
-                go("detail", trip_id=t["id"])
-        st.markdown('</div>', unsafe_allow_html=True)
+    # Trips are private to their group — reached only via the invite link/code, not listed publicly.
 
 
 # ============================================================ CREATE

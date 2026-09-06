@@ -121,6 +121,8 @@ html,body,[class*="css"]{font-family:'Poppins',sans-serif !important;}
 
 /* sliders */
 .stSlider [role="slider"]{background:var(--olive) !important;box-shadow:0 4px 10px -2px rgba(47,82,51,.5);}
+/* Force LTR direction on sliders so 1→5 always reads left-to-right (fix reversed scale) */
+.stSlider,.stSlider *,.stSlider [data-baseweb]{direction:ltr !important;}
 
 /* tabs / radio */
 .stRadio label{font-weight:500;}
