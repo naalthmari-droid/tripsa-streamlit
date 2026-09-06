@@ -218,6 +218,26 @@ html,body,[class*="css"]{font-family:'Poppins',sans-serif !important;}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
 }
+
+/* ---------- Readability fix (mobile & light bg) ---------- */
+/* Force dark ink on the light app background so text never renders white/invisible. */
+.stApp p,.stApp li,.stApp label{color:var(--ink);}
+.stApp h1,.stApp h2,.stApp h3,.stApp h4,.stApp h5,.stApp h6{color:var(--olive);}
+[data-testid="stMarkdownContainer"],[data-testid="stCaptionContainer"],
+[data-testid="stMarkdownContainer"] p{color:var(--ink);}
+/* Widget labels & slider values stay readable */
+.stSlider label,.stSelectbox label,.stTextInput label,.stNumberInput label,
+.stRadio label,.stCheckbox label,[data-testid="stWidgetLabel"]{color:var(--ink) !important;font-weight:500;}
+.stSlider [data-testid="stThumbValue"]{color:var(--olive) !important;font-weight:700;}
+/* Text the user types inside inputs must be dark (fix white-on-light on mobile) */
+.stTextInput input,.stNumberInput input,.stTextArea textarea{color:var(--ink) !important;
+  -webkit-text-fill-color:var(--ink) !important;caret-color:var(--olive) !important;}
+.stSelectbox div[data-baseweb] input,.stSelectbox div[data-baseweb] span{color:var(--ink) !important;
+  -webkit-text-fill-color:var(--ink) !important;}
+input::placeholder,textarea::placeholder{color:var(--muted) !important;opacity:.85;}
+/* Hero keeps light text on its dark gradient (scoped exception) */
+.hero,.hero h1,.hero p{color:inherit;}
+.hero h1{color:transparent;}/* gradient clip */
 </style>
 """
 

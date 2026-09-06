@@ -30,6 +30,19 @@ for k, v in dict(page="home", trip_id=None, member_id=None, member_name="").item
     if k not in st.session_state:
         st.session_state[k] = v
 
+# ---------------- deep-link join (shared invite link) ----------------
+# When someone opens the app via a shared link like  ?join=TRP-XXXXX ,
+# land them on the JOIN page with the code prefilled — NOT on the owner's account/home.
+try:
+    _qp = st.query_params
+    _code = (_qp.get("join") or "").strip().upper()
+    if _code and not st.session_state.get("_link_consumed"):
+        st.session_state._link_consumed = True
+        st.session_state.page = "join"
+        st.session_state.prefill_code = _code
+except Exception:
+    pass
+
 
 def go(page, **kw):
     st.session_state.page = page
@@ -153,7 +166,7 @@ def page_create():
         accommodation = st.selectbox("Preferred accommodation", data.ACCOMMODATION_TYPES)
         pace = st.select_slider("Travel pace", ["relaxed", "moderate", "action_packed"], "moderate")
 
-        st.markdown("**Interests (1–5)**")
+        st.markdown("**Interests (1–5)** — `1` least interested · `5` most interested")
         interests = {}
         cols = st.columns(3)
         for i, (k, label) in enumerate(data.INTEREST_LABELS.items()):
@@ -217,7 +230,11 @@ def page_detail():
     st.markdown(f"**{fmt_date(t['start_date'])} → {fmt_date(t['end_date'])}** · {t['travelers']} travelers · {t['pace']}")
 
     st.markdown(f'<div class="invite">🔑 {t["invite_code"]}</div>', unsafe_allow_html=True)
-    st.caption("Share this code so your group can join, vote and plan together.")
+    st.caption("Share this code — or the join link below — so your group joins THEIR own session (not yours).")
+    _base = "https://tripsa-app-hyjsp9bnu4fvx2k5vad88g.streamlit.app"
+    _join_url = f"{_base}/?join={t['invite_code']}"
+    st.code(_join_url, language=None)
+    st.caption("📲 Send this link to friends — it opens the JOIN page for them directly.")
 
     # Readiness is an admin/business metric — regular tourists see tourist-friendly metrics only.
     if st.session_state.get("admin_ok"):
@@ -317,7 +334,8 @@ def page_detail():
 # ============================================================ JOIN
 def page_join():
     st.markdown('<div class="sec">🔑 Join a trip</div>', unsafe_allow_html=True)
-    code = st.text_input("Invite code", placeholder="TRP-XXXXX").strip().upper()
+    code = st.text_input("Invite code", value=st.session_state.get("prefill_code", ""),
+                         placeholder="TRP-XXXXX").strip().upper()
     if st.button("Find trip", use_container_width=True):
         if not engine.is_valid_invite_code(code):
             st.error("Invalid code format (TRP-XXXXX).")
@@ -331,7 +349,7 @@ def page_join():
         with st.form("join"):
             name = st.text_input("Your name")
             age = st.number_input("Your age", 18, 90, 30)
-            st.markdown("**Your interests (1–5)**")
+            st.markdown("**Your interests (1–5)** — `1` least · `5` most")
             prefs = {}
             cols = st.columns(3)
             for i, (k, label) in enumerate(data.INTEREST_LABELS.items()):
