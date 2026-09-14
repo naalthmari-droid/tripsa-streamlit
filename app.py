@@ -25,6 +25,21 @@ def _maps_btn(label):
             f'border:1px solid #d2e3fc;border-radius:20px;text-decoration:none;'
             f'vertical-align:middle">🗺️ Map</a>')
 
+
+def _link_btn(url, text="🔗 Link"):
+    """Elegant small external-link button."""
+    if not url:
+        return ""
+    return (f' <a href="{url}" target="_blank" class="gmap-btn" '
+            f'style="display:inline-block;margin-inline-start:8px;padding:1px 9px;'
+            f'font-size:11px;font-weight:600;color:#7b5e17;background:#fbf3dd;'
+            f'border:1px solid #efdfae;border-radius:20px;text-decoration:none;'
+            f'vertical-align:middle">{text}</a>')
+
+
+def _ctype_icon(itype):
+    return {"restaurant": "🍽️", "attraction": "🎟️", "event": "🎪"}.get(itype, "✨")
+
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 try:
@@ -604,10 +619,16 @@ def page_room():
         # list existing suggestions with delete (own only)
         if custom_items:
             for ci in custom_items:
-                col_a, col_b = st.columns([4, 1])
+                col_a, col_b = st.columns([5, 1])
                 dname = data.DEST_BY_ID.get(ci["destination_id"], {}).get("name", ci["destination_id"])
-                link_txt = f" · 🔗 [link]({ci['link']})" if ci.get("link") else ""
-                col_a.markdown(f"✨ **{ci['name']}** — {dname} · {ci['item_type']} · SAR {ci['cost']:g} · {ci['duration_min']} min{link_txt}<br><span style='font-size:12px;color:#6b7560'>by {ci['added_by']}</span>", unsafe_allow_html=True)
+                icon = _ctype_icon(ci["item_type"])
+                mapb = _maps_btn(ci["name"])
+                linkb = _link_btn(ci.get("link"), "🔗 Details")
+                cost = f' · SAR {ci["cost"]:g}' if ci.get("cost") else ""
+                col_a.markdown(
+                    f'<div class="act" style="padding:8px 10px">{icon} <b>{ci["name"]}</b>{mapb}{linkb}'
+                    f'<div style="font-size:12px;color:#6b7560;margin-top:2px">📍 {dname} · {ci["item_type"]} · {ci["duration_min"]} min{cost} · by {ci["added_by"]}</div></div>',
+                    unsafe_allow_html=True)
                 if ci["member_id"] == st.session_state.get("member_id"):
                     if col_b.button("🗑️", key=f"delc{ci['id']}", help="Delete my suggestion"):
                         db.delete_custom_item(ci["id"], ci["member_id"])
@@ -665,7 +686,7 @@ def page_room():
             for ci in custom_for_vote:
                 cdname = data.DEST_BY_ID.get(ci["destination_id"], {}).get("name", ci["destination_id"])
                 c1, c2 = st.columns([3, 1])
-                c1.markdown(f"✨ {ci['name']} · {cdname} · by {ci['added_by']}")
+                c1.markdown(f"{_ctype_icon(ci['item_type'])} {ci['name']}{_maps_btn(ci['name'])} · {cdname} · by {ci['added_by']}", unsafe_allow_html=True)
                 c2.selectbox("Score", [0, 1, 2, 3, 4, 5], index=5, key=f"cu{ci['id']}", label_visibility="collapsed")
         submitted_votes = st.form_submit_button("✅ Submit all my votes", use_container_width=True)
     if submitted_votes:
@@ -754,7 +775,8 @@ def page_room():
                     continue
                 _sc = [float(v["score"]) for v in _iv_all if v.get("item_id") == f"c{_ci['id']}"]
                 if _sc and (sum(_sc) / len(_sc)) >= 2.5:
-                    st.markdown(f'<div class="act" style="border-right:3px solid #c9a227"><span class="dotm"></span><span>✨ <b>{_ci["name"]}</b> — member-suggested, approved by group ({sum(_sc)/len(_sc):.1f}/5)</span></div>', unsafe_allow_html=True)
+                    _cm = _maps_btn(_ci["name"])
+                    st.markdown(f'<div class="act" style="border-right:3px solid #c9a227"><span class="dotm"></span><span>✨ <b>{_ci["name"]}</b>{_cm} — member-suggested, approved by group ({sum(_sc)/len(_sc):.1f}/5)</span></div>', unsafe_allow_html=True)
 
     # ---- Group picks (top-voted activities & restaurants) ----
     item_votes = db.get_item_votes(t["id"])
