@@ -100,8 +100,12 @@ def load_extra():
         # attractions
         for a in x.get("attractions", []):
             interest, kind, dur = _classify(a.get("type", ""))
-            aid = (a.get("url", "") or a.get("name", "")).strip().lower()
-            aid = "xa_" + "".join(ch for ch in aid if ch.isalnum())[:28]
+            # unique id from the attraction slug (last URL path segment) — avoids
+            # the shared prefix "httpswwwalmosaferooncomattra" that broke widget keys
+            url = (a.get("url") or "").strip().rstrip("/")
+            slug = url.split("/")[-1] if "/" in url else ""
+            raw = slug or a.get("name", "")
+            aid = "xa_" + "".join(ch for ch in raw.lower() if ch.isalnum())[:40]
             rating = 4.3 + (hash(a.get("name", "")) % 5) / 10  # 4.3-4.7 stable
             extra_attractions.append(
                 (aid, tid, a.get("name", ""), interest, 0.0, 0.0, round(rating, 1),

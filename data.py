@@ -191,11 +191,13 @@ ATTRACTIONS = [
     ("dhee_ayn", "albaha", "Dhee Ayn Village", "Heritage", 19.9300, 41.4400, 4.6, 1, 180),
 ]
 
-# Append extra attractions scraped from Almosaferoon (deduped by id)
+# Append extra attractions scraped from Almosaferoon (deduped by id,
+# including duplicates inside the scraped list itself, e.g. Masjid al-Haram twice)
 _existing_aid = {a[0] for a in ATTRACTIONS}
 for _a in _extra_attrs:
     if _a[0] not in _existing_aid:
         ATTRACTIONS.append(_a)
+        _existing_aid.add(_a[0])
 
 def restaurants_for(dest_id):
     rows = [r for r in RESTAURANTS if r[1] == dest_id]
