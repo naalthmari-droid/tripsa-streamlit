@@ -581,6 +581,41 @@ def page_room():
         if anim:
             st_lottie(anim, height=140, key="room")
 
+    # ---- Custom activities — members suggest their own events before finalization ----
+    if not t.get("finalized"):
+        st.markdown('<div class="sec">🎯 Suggest your own activity</div>', unsafe_allow_html=True)
+        st.caption("Add a personal activity or event (a hike, a show, a hidden gem) — everyone can see it and vote on it before the plan is locked.")
+        custom_items = db.get_custom_items(t["id"])
+        # list existing suggestions with delete (own only)
+        if custom_items:
+            for ci in custom_items:
+                col_a, col_b = st.columns([4, 1])
+                dname = data.DEST_BY_ID.get(ci["destination_id"], {}).get("name", ci["destination_id"])
+                link_txt = f" · 🔗 [link]({ci['link']})" if ci.get("link") else ""
+                col_a.markdown(f"✨ **{ci['name']}** — {dname} · {ci['item_type']} · SAR {ci['cost']:g} · {ci['duration_min']} min{link_txt}<br><span style='font-size:12px;color:#6b7560'>by {ci['added_by']}</span>", unsafe_allow_html=True)
+                if ci["member_id"] == st.session_state.get("member_id"):
+                    if col_b.button("🗑️", key=f"delc{ci['id']}", help="Delete my suggestion"):
+                        db.delete_custom_item(ci["id"], ci["member_id"])
+                        st.rerun()
+        with st.form("custom_activity", clear_on_submit=True):
+            cn = st.text_input("Activity / event name", placeholder="e.g. Sunset hike at Edge of the World")
+            c1, c2 = st.columns(2)
+            cdest = c1.selectbox("City / stop", [s["destination_id"] for s in stops],
+                                 format_func=lambda x: data.DEST_BY_ID.get(x, {}).get("name", x))
+            ctype = c2.selectbox("Type", ["activity", "attraction", "restaurant", "event"])
+            c3, c4 = st.columns(2)
+            ccost = c3.number_input("Est. cost per person (SAR)", min_value=0, value=0, step=10)
+            cdur = c4.selectbox("Duration", [30, 60, 90, 120, 180], index=2,
+                                format_func=lambda m: f"{m} min")
+            clink = st.text_input("Link (optional)", placeholder="https://…")
+            if st.form_submit_button("➕ Add my activity", use_container_width=True) and cn.strip():
+                db.add_custom_item(t["id"], st.session_state.get("member_id") or 0,
+                                   st.session_state.get("member_name") or "Member",
+                                   cdest, cn.strip(), ctype, ccost, cdur, clink.strip())
+                st.success(f"Added “{cn.strip()}” — everyone can now vote on it below.")
+                st.rerun()
+        st.markdown("---")
+
     # voting — ONE form, submitted ONCE at the end
     st.markdown('<div class="sec">🗳️ Vote on destinations, activities &amp; restaurants</div>', unsafe_allow_html=True)
     st.caption("Pick a score (0–5) for each, then press **Submit all my votes** once at the bottom.")
@@ -608,6 +643,15 @@ def page_room():
                 c1, c2 = st.columns([3, 1])
                 c1.markdown(f"🍽️ {rname} · {data.CUISINE_LABELS.get(rcui, rcui)} ★{rrating}")
                 c2.selectbox("Score", [0, 1, 2, 3, 4, 5], index=5, key=f"rt{did}{rid}", label_visibility="collapsed")
+        # --- member-suggested custom activities ---
+        custom_for_vote = db.get_custom_items(t["id"])
+        if custom_for_vote:
+            st.markdown('<div class="sub" style="font-weight:700;color:#2f5233;margin-top:12px">✨ Member-suggested activities</div>', unsafe_allow_html=True)
+            for ci in custom_for_vote:
+                cdname = data.DEST_BY_ID.get(ci["destination_id"], {}).get("name", ci["destination_id"])
+                c1, c2 = st.columns([3, 1])
+                c1.markdown(f"✨ {ci['name']} · {cdname} · by {ci['added_by']}")
+                c2.selectbox("Score", [0, 1, 2, 3, 4, 5], index=5, key=f"cu{ci['id']}", label_visibility="collapsed")
         submitted_votes = st.form_submit_button("✅ Submit all my votes", use_container_width=True)
     if submitted_votes:
         dv = [(s["destination_id"], st.session_state[f"v{s['destination_id']}"]) for s in stops]
@@ -619,6 +663,8 @@ def page_room():
                 iv.append((did, "attraction", a[0], a[2], st.session_state[f"at{did}{a[0]}"]))
             for r in data.restaurants_for(did):
                 iv.append((did, "restaurant", r[0], r[2], st.session_state[f"rt{did}{r[0]}"]))
+        for ci in db.get_custom_items(t["id"]):
+            iv.append((ci["destination_id"], "custom", f"c{ci['id']}", f"✨ {ci['name']}", st.session_state.get(f"cu{ci['id']}", 5)))
         db.save_item_votes(t["id"], st.session_state.member_id, iv)
         st.success("All your votes are saved!")
         st.rerun()
@@ -685,6 +731,14 @@ def page_room():
                         star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
                         cls = "act meal" if a["kind"] == "meal" else "act"
                         st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
+            # approved member-suggested activities for this stop (avg score >= 2.5)
+            _iv_all = db.get_item_votes(t["id"])
+            for _ci in db.get_custom_items(t["id"]):
+                if _ci["destination_id"] != s["destination_id"]:
+                    continue
+                _sc = [float(v["score"]) for v in _iv_all if v.get("item_id") == f"c{_ci['id']}"]
+                if _sc and (sum(_sc) / len(_sc)) >= 2.5:
+                    st.markdown(f'<div class="act" style="border-right:3px solid #c9a227"><span class="dotm"></span><span>✨ <b>{_ci["name"]}</b> — member-suggested, approved by group ({sum(_sc)/len(_sc):.1f}/5)</span></div>', unsafe_allow_html=True)
 
     # ---- Group picks (top-voted activities & restaurants) ----
     item_votes = db.get_item_votes(t["id"])

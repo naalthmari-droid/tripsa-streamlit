@@ -195,6 +195,12 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE, display_name TEXT, email TEXT,
         pw_salt TEXT, pw_hash TEXT, created_at TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS custom_items(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trip_id INTEGER, member_id INTEGER, added_by TEXT,
+        destination_id TEXT, name TEXT, item_type TEXT,
+        cost REAL, duration_min INTEGER, link TEXT, notes TEXT,
+        created_at TEXT)""")
     # ownership link: each trip belongs to a founder (nullable for legacy trips)
     try:
         cur.execute("ALTER TABLE trips ADD COLUMN founder_id INTEGER")
@@ -298,6 +304,51 @@ def create_trip(t):
     conn.close()
     list_trips.clear()
     return tid
+
+
+# ----------------------------- Custom activities (member-suggested) -----------------------------
+def add_custom_item(trip_id, member_id, added_by, destination_id, name,
+                    item_type="activity", cost=0.0, duration_min=90, link="", notes=""):
+    """A member suggests a custom activity/event for the trip. Returns the new id."""
+    conn = _conn()
+    cur = conn.cursor()
+    cur.execute("""INSERT INTO custom_items(trip_id,member_id,added_by,destination_id,name,
+        item_type,cost,duration_min,link,notes,created_at)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
+        (int(trip_id), int(member_id), (added_by or "").strip(),
+         (destination_id or "").strip(), (name or "").strip(),
+         (item_type or "activity").strip(), float(cost or 0),
+         int(duration_min or 90), (link or "").strip(), (notes or "").strip(),
+         datetime.utcnow().isoformat()))
+    cid = cur.lastrowid
+    conn.commit()
+    conn.close()
+    return cid
+
+
+def get_custom_items(trip_id):
+    """All custom activities suggested for a trip, oldest first."""
+    conn = _conn()
+    rows = conn.execute(
+        "SELECT * FROM custom_items WHERE trip_id=? ORDER BY id ASC",
+        (int(trip_id),)).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        d = dict(r)
+        d["custom"] = True
+        out.append(d)
+    return out
+
+
+def delete_custom_item(item_id, member_id):
+    """Only the member who suggested the activity can delete it (before finalization)."""
+    conn = _conn()
+    conn.execute("DELETE FROM custom_items WHERE id=? AND member_id=?",
+                 (int(item_id), int(member_id)))
+    conn.commit()
+    conn.close()
+
 
 
 @st.cache_data(ttl=60, show_spinner=False)
