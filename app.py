@@ -14,7 +14,17 @@ from style import CUSTOM_CSS, LOTTIE
 
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
-db.init_db()
+try:
+    db.init_db()
+except Exception as _db_err:
+    # Safe diagnostic: show a hash FINGERPRINT of the configured token (never the token),
+    # so we can verify the deployed secret matches the known-good credential.
+    import hashlib as _hl
+    _url, _tok = db._creds()
+    _fp = _hl.sha256((_tok or "").encode()).hexdigest()[:10] if _tok else "none"
+    st.error(f"⚠️ Database connection failed. host={_url.replace('libsql://','') or 'not-set'} · "
+             f"token_len={len(_tok or '')} · token_sha={_fp} · err={type(_db_err).__name__}")
+    st.stop()
 
 @st.cache_data
 def load_lottie(path):
