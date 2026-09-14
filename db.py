@@ -10,6 +10,18 @@ import streamlit as st
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "tripsa.db")
 
+# Reusable HTTPS session with keep-alive: the TCP+TLS handshake (~2.5s cold)
+# happens once per process instead of on every single query. This is the
+# biggest speed win regardless of which region hosts the database.
+_session = None
+
+def _get_session():
+    global _session
+    if _session is None:
+        import requests
+        _session = requests.Session()
+    return _session
+
 # ---- Cloud (Turso) credentials: from Streamlit secrets or environment ----
 def _creds():
     url = os.environ.get("TURSO_URL", "")
@@ -35,7 +47,6 @@ def _turso_host(url):
 
 def _turso_exec(url, tok, sql, params=()):
     """Execute one statement via Turso's HTTP pipeline API. Returns (cols, rows, lastrowid)."""
-    import requests
     args = []
     for p in params:
         if p is None:
@@ -50,8 +61,8 @@ def _turso_exec(url, tok, sql, params=()):
         {"type": "execute", "stmt": ({"sql": sql, "args": args} if args else {"sql": sql})},
         {"type": "close"},
     ]}
-    r = requests.post(_turso_host(url) + "/v2/pipeline", json=body,
-                      headers={"Authorization": "Bearer " + tok}, timeout=30)
+    r = _get_session().post(_turso_host(url) + "/v2/pipeline", json=body,
+                            headers={"Authorization": "Bearer " + tok}, timeout=30)
     r.raise_for_status()
     res = r.json()["results"][0]["response"]["result"]
     cols = [c["name"] for c in res.get("cols", [])]
