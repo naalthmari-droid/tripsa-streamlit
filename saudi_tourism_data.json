@@ -6,14 +6,28 @@
     "description": "بيانات شاملة للوجهات والمعالم السياحية في المملكة العربية السعودية مستخرجة من موقع المسافرون العرب، مُعدّة للاستخدام مع الذكاء الاصطناعي لتصميم تطبيق جداول السياحة",
     "total_destinations": 20,
     "currency": "ريال سعودي (SAR)",
-    "best_travel_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+    "best_travel_months": [
+      "نوفمبر",
+      "ديسمبر",
+      "يناير",
+      "فبراير"
+    ],
     "ideal_trip_duration": "10-14 يوم",
     "capital": "الرياض"
   },
   "general_info": {
     "about": "تُعرف المملكة العربية السعودية بتاريخها الغني وأهميتها الدينية، حيث تحتضن المسجد الحرام والكعبة المشرفة والمسجد النبوي الشريف، فضلًا عن الوجهات السياحية المتنوعة من الأماكن الطبيعية الخلابة والآثار القديمة إلى المراكز التجارية الفاخرة.",
     "safety": "المملكة العربية السعودية وجهة آمنة للسفر والسياحة، وهي واحدة من أكثر الوجهات أمانًا للمسافرين بمفردهم.",
-    "transportation": ["الرحلات الجوية", "القطارات", "الحافلات", "سيارات الأجرة", "تأجير السيارات", "تطبيق أوبر", "تطبيق كريم", "تطبيق جيني"],
+    "transportation": [
+      "الرحلات الجوية",
+      "القطارات",
+      "الحافلات",
+      "سيارات الأجرة",
+      "تأجير السيارات",
+      "تطبيق أوبر",
+      "تطبيق كريم",
+      "تطبيق جيني"
+    ],
     "major_airports": [
       "مطار الملك خالد الدولي – الرياض",
       "مطار الملك عبد العزيز الدولي – جدة",
@@ -22,13 +36,82 @@
       "مطار الطائف الدولي – الطائف"
     ],
     "visa_info": "معظم الجنسيات تحتاج تأشيرة سياحية إلكترونية من visa.visitsaudi.com، تسمح بالإقامة حتى 90 يومًا.",
-    "telecom_providers": ["STC", "Mobily", "Zain"],
+    "telecom_providers": [
+      "STC",
+      "Mobily",
+      "Zain"
+    ],
     "weather_table": {
-      "الرياض": {"يناير": "8/22", "فبراير": "10/24", "مارس": "14/28", "أبريل": "20/34", "مايو": "24/38", "يونيو": "27/41", "يوليو": "28/42", "أغسطس": "28/41", "سبتمبر": "27/40", "أكتوبر": "24/37", "نوفمبر": "17/30", "ديسمبر": "11/24"},
-      "جدة": {"يناير": "20/29", "فبراير": "21/30", "مارس": "24/33", "أبريل": "29/38", "مايو": "32/41", "يونيو": "34/43", "يوليو": "35/44", "أغسطس": "35/44", "سبتمبر": "33/42", "أكتوبر": "30/39", "نوفمبر": "26/34", "ديسمبر": "22/30"},
-      "الخبر": {"يناير": "15/26", "فبراير": "16/27", "مارس": "19/30", "أبريل": "24/35", "مايو": "27/38", "يونيو": "30/40", "يوليو": "31/41", "أغسطس": "31/41", "سبتمبر": "30/39", "أكتوبر": "27/36", "نوفمبر": "22/31", "ديسمبر": "18/27"},
-      "العلا": {"يناير": "8/20", "فبراير": "10/22", "مارس": "14/26", "أبريل": "20/32", "مايو": "23/36", "يونيو": "26/39", "يوليو": "28/40", "أغسطس": "28/40", "سبتمبر": "26/38", "أكتوبر": "22/34", "نوفمبر": "16/28", "ديسمبر": "11/22"},
-      "أبها": {"يناير": "9/22", "فبراير": "11/24", "مارس": "14/27", "أبريل": "19/32", "مايو": "23/36", "يونيو": "26/38", "يوليو": "27/39", "أغسطس": "27/39", "سبتمبر": "26/37", "أكتوبر": "22/34", "نوفمبر": "16/28", "ديسمبر": "11/23"}
+      "الرياض": {
+        "يناير": "8/22",
+        "فبراير": "10/24",
+        "مارس": "14/28",
+        "أبريل": "20/34",
+        "مايو": "24/38",
+        "يونيو": "27/41",
+        "يوليو": "28/42",
+        "أغسطس": "28/41",
+        "سبتمبر": "27/40",
+        "أكتوبر": "24/37",
+        "نوفمبر": "17/30",
+        "ديسمبر": "11/24"
+      },
+      "جدة": {
+        "يناير": "20/29",
+        "فبراير": "21/30",
+        "مارس": "24/33",
+        "أبريل": "29/38",
+        "مايو": "32/41",
+        "يونيو": "34/43",
+        "يوليو": "35/44",
+        "أغسطس": "35/44",
+        "سبتمبر": "33/42",
+        "أكتوبر": "30/39",
+        "نوفمبر": "26/34",
+        "ديسمبر": "22/30"
+      },
+      "الخبر": {
+        "يناير": "15/26",
+        "فبراير": "16/27",
+        "مارس": "19/30",
+        "أبريل": "24/35",
+        "مايو": "27/38",
+        "يونيو": "30/40",
+        "يوليو": "31/41",
+        "أغسطس": "31/41",
+        "سبتمبر": "30/39",
+        "أكتوبر": "27/36",
+        "نوفمبر": "22/31",
+        "ديسمبر": "18/27"
+      },
+      "العلا": {
+        "يناير": "8/20",
+        "فبراير": "10/22",
+        "مارس": "14/26",
+        "أبريل": "20/32",
+        "مايو": "23/36",
+        "يونيو": "26/39",
+        "يوليو": "28/40",
+        "أغسطس": "28/40",
+        "سبتمبر": "26/38",
+        "أكتوبر": "22/34",
+        "نوفمبر": "16/28",
+        "ديسمبر": "11/22"
+      },
+      "أبها": {
+        "يناير": "9/22",
+        "فبراير": "11/24",
+        "مارس": "14/27",
+        "أبريل": "19/32",
+        "مايو": "23/36",
+        "يونيو": "26/38",
+        "يوليو": "27/39",
+        "أغسطس": "27/39",
+        "سبتمبر": "26/37",
+        "أكتوبر": "22/34",
+        "نوفمبر": "16/28",
+        "ديسمبر": "11/23"
+      }
     }
   },
   "destinations": [
@@ -37,96 +120,176 @@
       "name": "الرياض",
       "name_en": "Riyadh",
       "region": "وسط المملكة",
-      "type": ["مدينة", "عاصمة", "حضرية", "ثقافية"],
+      "type": [
+        "مدينة",
+        "عاصمة",
+        "حضرية",
+        "ثقافية"
+      ],
       "description": "تجمع الرياض بين الحداثة والأصالة في تناغم مذهل. تُعد مركزًا اقتصاديًا وثقافيًا نابضًا، حيث تضم ناطحات السحاب مثل برج المملكة وبرج الفيصلية، إلى جانب متاحف مميزة كساحة قصر المصمك والمتحف الوطني.",
-      "best_visit_months": ["أكتوبر", "نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 4,
-      "suitable_for": ["عائلات", "أزواج", "مسافرون منفردون", "رجال أعمال"],
+      "suitable_for": [
+        "عائلات",
+        "أزواج",
+        "مسافرون منفردون",
+        "رجال أعمال"
+      ],
       "url": "https://www.almosaferoon.com/ksa/riyadh/",
       "attractions": [
         {
           "name": "بوليفارد رياض سيتي",
           "type": "ترفيه وتسوق",
           "description": "منطقة ترفيهية متكاملة تضم متاجر ومطاعم وكافيهات وأماكن للتنزه وألعاب متنوعة مناسبة لجميع أفراد العائلة.",
-          "highlights": ["متاجر راقية", "مطاعم وكافيهات", "نوافير ملونة", "مناطق لعب للأطفال", "مسارح وفعاليات"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/boulevard-riyadh-city/"
+          "highlights": [
+            "متاجر راقية",
+            "مطاعم وكافيهات",
+            "نوافير ملونة",
+            "مناطق لعب للأطفال",
+            "مسارح وفعاليات"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/boulevard-riyadh-city/",
+          "maps_url": "https://maps.google.com/?cid=12860270189299804286"
         },
         {
           "name": "بوليفارد وورلد الرياض",
           "type": "ترفيه وثقافة",
           "description": "جادّة العالم تحتوي على مناطق تمثل 9 دول مع عروض ترفيهية ومطاعم تقليدية ومتاجر محلية.",
-          "highlights": ["مناطق لـ9 دول", "عروض ترفيهية", "مطاعم تقليدية", "ألعاب للأطفال"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/boulevard-world-riyadh/"
+          "highlights": [
+            "مناطق لـ9 دول",
+            "عروض ترفيهية",
+            "مطاعم تقليدية",
+            "ألعاب للأطفال"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/boulevard-world-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=1627855457898418063"
         },
         {
           "name": "برج المملكة",
           "type": "معلم معماري",
           "description": "يبلغ ارتفاعه 302 مترًا ويحتضن فندق فور سيزونز ومركز المملكة للتسوق ومطاعم راقية.",
-          "highlights": ["ارتفاع 302 متر", "مركز تسوق", "مطاعم فاخرة", "سينما", "جسر معلق"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/kingdom-centre-riyadh/"
+          "highlights": [
+            "ارتفاع 302 متر",
+            "مركز تسوق",
+            "مطاعم فاخرة",
+            "سينما",
+            "جسر معلق"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/kingdom-centre-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=11222256548932641621"
         },
         {
           "name": "جسر برج المملكة المعلق",
           "type": "مطل سياحي",
           "description": "يربط بين جانبي البرج ويوفر إطلالة بانورامية خلابة على العاصمة السعودية.",
           "price_range": "20-70 ريال سعودي",
-          "highlights": ["إطلالة بانورامية", "لافتات إرشادية", "مصاعد متطورة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/kingdom-center-sky-bridge-riyadh/"
+          "highlights": [
+            "إطلالة بانورامية",
+            "لافتات إرشادية",
+            "مصاعد متطورة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/kingdom-center-sky-bridge-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=15174649908333325061"
         },
         {
           "name": "كافد الرياض (وادي كافد)",
           "type": "حديقة ومطاعم",
           "description": "منطقة بتصميم فريد مستوحى من مفهوم الواحة مع مساحات خضراء واسعة ومطاعم ومقاهي.",
-          "highlights": ["تصميم فريد", "مطاعم ومقاهي", "فعاليات دورية", "مناسب للتنزه"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/kafd-wadi-riyadh/"
+          "highlights": [
+            "تصميم فريد",
+            "مطاعم ومقاهي",
+            "فعاليات دورية",
+            "مناسب للتنزه"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/kafd-wadi-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=8408327337832776549"
         },
         {
           "name": "النخيل مول",
           "type": "تسوق",
           "description": "مركز تسوق في قلب الرياض بتصميم جذاب مع علامات تجارية محلية وعالمية وقاعة طعام وسينما.",
-          "highlights": ["علامات تجارية فاخرة", "قاعة طعام", "سينما", "منطقة لعب للأطفال"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/al-nakheel-mall-riyadh/"
+          "highlights": [
+            "علامات تجارية فاخرة",
+            "قاعة طعام",
+            "سينما",
+            "منطقة لعب للأطفال"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/al-nakheel-mall-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=5978342869479932747"
         },
         {
           "name": "حديقة الحيوان بالرياض",
           "type": "حديقة حيوانات",
           "description": "تقع في حي الملز وتضم مجموعة كبيرة من الحيوانات مع قطار مكشوف يطوف الحديقة.",
-          "highlights": ["أنواع متعددة من الحيوانات", "قطار مكشوف", "إطعام الحيوانات", "مناطق لعب للأطفال"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/riyadh-zoo/"
+          "highlights": [
+            "أنواع متعددة من الحيوانات",
+            "قطار مكشوف",
+            "إطعام الحيوانات",
+            "مناطق لعب للأطفال"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/riyadh-zoo/",
+          "maps_url": "https://maps.google.com/?cid=5356026128098338691"
         },
         {
           "name": "برج الفيصلية",
           "type": "معلم معماري",
           "description": "يتميز بتصميم يشبه الهرم المقلوب ويضم 30 طابقًا مع مركز تسوق وفندق ومطاعم عالمية.",
           "price_range": "69 ريال سعودي (منصة المشاهدة)",
-          "highlights": ["تصميم فريد", "مطل بانورامي", "مركز تسوق", "مطاعم فاخرة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/al-faisaliah-tower-riyadh/"
+          "highlights": [
+            "تصميم فريد",
+            "مطل بانورامي",
+            "مركز تسوق",
+            "مطاعم فاخرة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/al-faisaliah-tower-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=14598148286597674590"
         },
         {
           "name": "غرناطة مول",
           "type": "تسوق",
           "description": "مركز تسوق كبير يضم أكثر من 200 متجر مع ماركات عالمية وصالة بولينغ وسينما ومطاعم.",
-          "highlights": ["200+ متجر", "صالة بولينغ", "سينما", "منطقة ترفيهية للأطفال"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/granada-mall-riyadh/"
+          "highlights": [
+            "200+ متجر",
+            "صالة بولينغ",
+            "سينما",
+            "منطقة ترفيهية للأطفال"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/granada-mall-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=14690229257747497092"
         },
         {
           "name": "المتحف الوطني السعودي",
           "type": "متحف وثقافة",
           "description": "يقع في حي المربع ويضم قطعًا أثرية وصورًا تروي قصة الحضارة العربية والإسلامية.",
-          "highlights": ["قطع أثرية نادرة", "مساحة تفاعلية للأطفال", "حديقة خضراء", "معارض مؤقتة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/the-national-museum-riyadh/"
+          "highlights": [
+            "قطع أثرية نادرة",
+            "مساحة تفاعلية للأطفال",
+            "حديقة خضراء",
+            "معارض مؤقتة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/the-national-museum-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=18049614213515442181"
         },
         {
           "name": "مطل البجيري",
           "type": "مطل سياحي",
           "description": "مطل سياحي يوفر إطلالة رائعة على الرياض القديمة وقصر المصمك.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/bujairi-terrace-riyadh/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/bujairi-terrace-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=9926883612078003154"
         },
         {
           "name": "قصر المصمك",
           "type": "تراث تاريخي",
           "description": "قلعة تاريخية تروي قصة تأسيس المملكة العربية السعودية.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/al-masmak-palace-museum-riyadh/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/riyadh/al-masmak-palace-museum-riyadh/",
+          "maps_url": "https://maps.google.com/?cid=5432950259817442664"
         }
       ],
       "activities": [
@@ -158,12 +321,30 @@
         "url": "https://www.almosaferoon.com/program/riyadh/جدول-4-ايام-في-الرياض/"
       },
       "nearby_destinations": [
-        {"name": "الأحساء", "distance_km": 295},
-        {"name": "الظهران", "distance_km": 368},
-        {"name": "الدمام", "distance_km": 372},
-        {"name": "الجبيل", "distance_km": 373},
-        {"name": "الخبر", "distance_km": 382},
-        {"name": "المدينة المنورة", "distance_km": 721}
+        {
+          "name": "الأحساء",
+          "distance_km": 295
+        },
+        {
+          "name": "الظهران",
+          "distance_km": 368
+        },
+        {
+          "name": "الدمام",
+          "distance_km": 372
+        },
+        {
+          "name": "الجبيل",
+          "distance_km": 373
+        },
+        {
+          "name": "الخبر",
+          "distance_km": 382
+        },
+        {
+          "name": "المدينة المنورة",
+          "distance_km": 721
+        }
       ]
     },
     {
@@ -171,40 +352,79 @@
       "name": "جدة",
       "name_en": "Jeddah",
       "region": "غرب المملكة - ساحل البحر الأحمر",
-      "type": ["مدينة ساحلية", "تاريخية", "حضرية", "ترفيهية"],
+      "type": [
+        "مدينة ساحلية",
+        "تاريخية",
+        "حضرية",
+        "ترفيهية"
+      ],
       "description": "جدة عروس البحر الأحمر، مدينة ساحلية نابضة بالحياة تجمع بين التاريخ والحداثة بأسلوب فريد. تمتاز بكورنيشها الساحر وبلدتها القديمة (البلد) ذات الطابع الحجازي الأصيل.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 3,
-      "suitable_for": ["عائلات", "أزواج", "مسافرون منفردون"],
+      "suitable_for": [
+        "عائلات",
+        "أزواج",
+        "مسافرون منفردون"
+      ],
       "url": "https://www.almosaferoon.com/ksa/jeddah/",
       "attractions": [
         {
           "name": "كورنيش الواجهة البحرية جدة",
           "type": "ممشى ساحلي",
           "description": "وجهة سياحية متكاملة توفر مناظر رائعة للبحر الأحمر مع ممشى ومناطق لعب للأطفال ومساحات لركوب الدراجات.",
-          "highlights": ["إطلالة على البحر الأحمر", "غروب الشمس", "تأجير دراجات", "منطقة ألعاب للأطفال"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/jeddah/roshn-waterfront-jeddah/"
+          "highlights": [
+            "إطلالة على البحر الأحمر",
+            "غروب الشمس",
+            "تأجير دراجات",
+            "منطقة ألعاب للأطفال"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/jeddah/roshn-waterfront-jeddah/",
+          "maps_url": "https://maps.google.com/?cid=15904685380857907491"
         },
         {
           "name": "ردسي مول جدة",
           "type": "تسوق وترفيه",
           "description": "مكان مثالي للتسوق والترفيه بموقع رائع قرب الكورنيش يضم أكثر من 300 متجر وسينما ومراكز ألعاب.",
-          "highlights": ["300+ متجر", "سينما فوكس", "صالة بولينغ", "مطاعم ومقاهي"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/jeddah/red-sea-mall-jeddah/"
+          "highlights": [
+            "300+ متجر",
+            "سينما فوكس",
+            "صالة بولينغ",
+            "مطاعم ومقاهي"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/jeddah/red-sea-mall-jeddah/",
+          "maps_url": "https://maps.google.com/?cid=16716953023478220453"
         },
         {
           "name": "فقيه أكواريوم",
           "type": "ترفيه وتعليم",
           "description": "يقع في منطقة الشاطئ ويحتوي على مجموعة متنوعة من الأسماك والكائنات البحرية مع عروض الدلافين.",
           "price_range": "57-229 ريال سعودي",
-          "highlights": ["أحواض أسماك متنوعة", "عرض الدلافين الراقص", "متجر هدايا", "قريب من الشاطئ"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/jeddah/fakieh-aquarium-jeddah/"
+          "highlights": [
+            "أحواض أسماك متنوعة",
+            "عرض الدلافين الراقص",
+            "متجر هدايا",
+            "قريب من الشاطئ"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/jeddah/fakieh-aquarium-jeddah/",
+          "maps_url": "https://maps.google.com/?cid=2729011420503067399"
         },
         {
           "name": "البلد (المدينة القديمة)",
           "type": "تراث تاريخي",
           "description": "منطقة تراثية مدرجة في قائمة اليونسكو تضم بيوتًا تاريخية وأسواقًا شعبية بالطراز الحجازي الأصيل.",
-          "highlights": ["تراث عالمي يونسكو", "بيوت تاريخية", "أسواق شعبية", "طراز حجازي أصيل"]
+          "highlights": [
+            "تراث عالمي يونسكو",
+            "بيوت تاريخية",
+            "أسواق شعبية",
+            "طراز حجازي أصيل"
+          ],
+          "maps_url": "https://maps.google.com/?cid=9896741921727318492"
         }
       ],
       "activities": [
@@ -222,45 +442,81 @@
       "name": "مكة المكرمة",
       "name_en": "Makkah",
       "region": "غرب المملكة - الحجاز",
-      "type": ["ديني", "روحاني", "تاريخي"],
+      "type": [
+        "ديني",
+        "روحاني",
+        "تاريخي"
+      ],
       "description": "مكة المكرمة أطهر بقاع الأرض وقبلة المسلمين، تحتضن المسجد الحرام والكعبة المشرفة. تشهد تطورًا عمرانيًا هائلًا مع الحفاظ على طابعها الديني المميز.",
       "access_restriction": "للمسلمين فقط",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير"
+      ],
       "recommended_duration_days": 3,
-      "suitable_for": ["حجاج", "معتمرون", "مسلمون"],
+      "suitable_for": [
+        "حجاج",
+        "معتمرون",
+        "مسلمون"
+      ],
       "url": "https://www.almosaferoon.com/ksa/makkah/",
       "attractions": [
         {
           "name": "المسجد الحرام",
           "type": "ديني",
           "description": "أعظم مسجد في الإسلام وقبلة المسلمين، يضم الكعبة المشرفة ومقام إبراهيم وحِجر إسماعيل. الصلاة فيه تعادل 100,000 صلاة.",
-          "highlights": ["الكعبة المشرفة", "مقام إبراهيم", "حجر إسماعيل", "بئر زمزم", "تنظيم أمني 24 ساعة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/makkah/masjid-al-haram-makkah/"
+          "highlights": [
+            "الكعبة المشرفة",
+            "مقام إبراهيم",
+            "حجر إسماعيل",
+            "بئر زمزم",
+            "تنظيم أمني 24 ساعة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/makkah/masjid-al-haram-makkah/",
+          "maps_url": "https://maps.google.com/?cid=6183997883437107077"
         },
         {
           "name": "جبل النور وغار حراء",
           "type": "ديني وتاريخي",
           "description": "جبل يرتفع 642 مترًا يضم غار حراء حيث نزل الوحي لأول مرة على النبي صلى الله عليه وسلم.",
-          "highlights": ["غار حراء", "مكان نزول الوحي", "ارتفاع 642 متر"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/makkah/masjid-al-haram-makkah/"
+          "highlights": [
+            "غار حراء",
+            "مكان نزول الوحي",
+            "ارتفاع 642 متر"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/makkah/masjid-al-haram-makkah/",
+          "maps_url": "https://maps.google.com/?cid=12589221692329447269"
         },
         {
           "name": "جبل عرفة",
           "type": "ديني",
           "description": "جبل مقدس تُقام عليه شعائر الحج، يتكون من صخور جرانيتية ضخمة.",
-          "highlights": ["شعائر الحج", "مكانة دينية عالية"]
+          "highlights": [
+            "شعائر الحج",
+            "مكانة دينية عالية"
+          ],
+          "maps_url": "https://maps.google.com/?cid=8464906962874118208"
         },
         {
           "name": "غار ثور",
           "type": "ديني وتاريخي",
-          "description": "الغار الذي اختبأ فيه النبي صلى الله عليه وسلم وأبو بكر الصديق خلال الهجرة."
+          "description": "الغار الذي اختبأ فيه النبي صلى الله عليه وسلم وأبو بكر الصديق خلال الهجرة.",
+          "maps_url": "https://maps.google.com/?cid=13747360310983480509"
         },
         {
           "name": "أبراج البيت (برج الساعة)",
           "type": "معلم معماري وتسوق",
           "description": "مجمع أبراج فاخر بالقرب من المسجد الحرام يضم فنادق ومراكز تسوق ومتحف برج الساعة.",
-          "highlights": ["إطلالة على الحرم", "متحف برج الساعة", "مراكز تسوق", "فنادق فاخرة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/makkah/clock-tower-museum-holy-mosque-view-terrace-tickets-makkah/"
+          "highlights": [
+            "إطلالة على الحرم",
+            "متحف برج الساعة",
+            "مراكز تسوق",
+            "فنادق فاخرة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/makkah/clock-tower-museum-holy-mosque-view-terrace-tickets-makkah/",
+          "maps_url": "https://maps.google.com/?cid=12790454639902490530"
         }
       ],
       "activities": [
@@ -278,47 +534,88 @@
       "name": "المدينة المنورة",
       "name_en": "Medina",
       "region": "غرب المملكة - الحجاز",
-      "type": ["ديني", "روحاني", "تاريخي"],
+      "type": [
+        "ديني",
+        "روحاني",
+        "تاريخي"
+      ],
       "description": "المدينة المنورة ثاني أقدس مدينة في الإسلام، تحتضن المسجد النبوي الشريف الذي يضم الروضة الشريفة وقبر النبي محمد صلى الله عليه وسلم.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["حجاج", "معتمرون", "مسلمون"],
+      "suitable_for": [
+        "حجاج",
+        "معتمرون",
+        "مسلمون"
+      ],
       "url": "https://www.almosaferoon.com/ksa/medina/",
       "attractions": [
         {
           "name": "المسجد النبوي الشريف",
           "type": "ديني",
           "description": "ثاني أقدس موقع في الإسلام، يضم منبر الرسول والروضة الشريفة وقبر النبي صلى الله عليه وسلم و7 مآذن.",
-          "highlights": ["الروضة الشريفة", "قبر النبي", "7 مآذن", "حجز عبر تطبيق نُسك"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/medina/al-masjid-an-nabawi-alsharif/"
+          "highlights": [
+            "الروضة الشريفة",
+            "قبر النبي",
+            "7 مآذن",
+            "حجز عبر تطبيق نُسك"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/medina/al-masjid-an-nabawi-alsharif/",
+          "maps_url": "https://maps.google.com/?cid=4164084360606748207"
         },
         {
           "name": "جبل أحد",
           "type": "ديني وتاريخي",
           "description": "يطل على المدينة من الشمال ويرتفع 1077 مترًا، شهد غزوة أحد ويحتضن قبور 70 صحابيًا.",
-          "highlights": ["غزوة أحد", "قبور الصحابة", "ارتفاع 1077 متر", "يُسمح بالصعود"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/medina/uhud-mountain-medina/"
+          "highlights": [
+            "غزوة أحد",
+            "قبور الصحابة",
+            "ارتفاع 1077 متر",
+            "يُسمح بالصعود"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/medina/uhud-mountain-medina/",
+          "maps_url": "https://maps.google.com/?cid=5498450492024269087"
         },
         {
           "name": "مسجد قباء",
           "type": "ديني",
           "description": "أول مسجد بُني في الإسلام، يقع على بُعد 5 كم من المسجد النبوي. الصلاة فيه تعادل عمرة.",
-          "highlights": ["أول مسجد في الإسلام", "ممشى قباء", "مفتوح 24 ساعة", "ماء زمزم"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/medina/masjid-quba-medina/"
+          "highlights": [
+            "أول مسجد في الإسلام",
+            "ممشى قباء",
+            "مفتوح 24 ساعة",
+            "ماء زمزم"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/medina/masjid-quba-medina/",
+          "maps_url": "https://maps.google.com/?cid=7550015683493755470"
         },
         {
           "name": "مقبرة البقيع",
           "type": "ديني وتاريخي",
           "description": "تقع شرق المسجد النبوي وتضم قبور أكثر من 10,000 صحابي منهم عثمان بن عفان وآل بيت النبي.",
-          "highlights": ["قبور الصحابة", "آل بيت النبي", "زيارة في أوقات محددة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/medina/al-baqi-cemetery-medina/"
+          "highlights": [
+            "قبور الصحابة",
+            "آل بيت النبي",
+            "زيارة في أوقات محددة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/medina/al-baqi-cemetery-medina/",
+          "maps_url": "https://maps.google.com/?cid=3189697597700625474"
         },
         {
           "name": "مسجد القبلتين",
           "type": "ديني وتاريخي",
           "description": "يمتد على 4000 متر مربع وسُمّي بهذا الاسم بعد حادثة تحويل القبلة من المسجد الأقصى إلى المسجد الحرام.",
-          "highlights": ["تحويل القبلة", "ساحات كبيرة", "حديقة جانبية"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/medina/masjid-al-qiblatain-medina/"
+          "highlights": [
+            "تحويل القبلة",
+            "ساحات كبيرة",
+            "حديقة جانبية"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/medina/masjid-al-qiblatain-medina/",
+          "maps_url": "https://maps.google.com/?cid=15727014482807593534"
         }
       ],
       "activities": [
@@ -336,82 +633,148 @@
       "name": "العلا",
       "name_en": "AlUla",
       "region": "شمال غرب المملكة",
-      "type": ["تراث عالمي", "آثار", "طبيعة", "صحراء"],
+      "type": [
+        "تراث عالمي",
+        "آثار",
+        "طبيعة",
+        "صحراء"
+      ],
       "description": "العلا مدينة ساحرة تقع في شمال غرب المملكة، تشتهر بجبالها الصخرية المذهلة وتكويناتها الجيولوجية الفريدة وآثارها التاريخية مثل موقع الحجر (مدائن صالح) أول موقع سعودي في قائمة اليونسكو.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير"
+      ],
       "recommended_duration_days": 3,
-      "suitable_for": ["محبو التاريخ", "محبو الطبيعة", "المصورون", "الباحثون"],
+      "suitable_for": [
+        "محبو التاريخ",
+        "محبو الطبيعة",
+        "المصورون",
+        "الباحثون"
+      ],
       "url": "https://www.almosaferoon.com/ksa/alula/",
       "attractions": [
         {
           "name": "بلدة العلا القديمة",
           "type": "تراث تاريخي",
           "description": "تتمتع بتاريخ عريق يعود لأكثر من 2000 عام وكانت عاصمة مملكة دادان.",
-          "highlights": ["مقاهي ومطاعم محلية", "ساحة للفعاليات", "متاجر البخور والعطور"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/alula-old-town/"
+          "highlights": [
+            "مقاهي ومطاعم محلية",
+            "ساحة للفعاليات",
+            "متاجر البخور والعطور"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/alula-old-town/",
+          "maps_url": "https://maps.google.com/?cid=2832032224919837307"
         },
         {
           "name": "آثار منطقة الحجر (مدائن صالح)",
           "type": "تراث عالمي يونسكو",
           "description": "أول موقع سعودي مدرج في قائمة اليونسكو للتراث العالمي، يضم مقابر نبطية منحوتة في الصخر.",
-          "highlights": ["تراث يونسكو", "جولات إرشادية", "مقهى قريب", "متجر تذكارات"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/hegra-alula/"
+          "highlights": [
+            "تراث يونسكو",
+            "جولات إرشادية",
+            "مقهى قريب",
+            "متجر تذكارات"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/hegra-alula/",
+          "maps_url": "https://maps.google.com/?cid=332591185607906886"
         },
         {
           "name": "جبل الفيل",
           "type": "تكوين جيولوجي",
           "description": "صخرة ضخمة من الحجر الرملي تشبه الفيل بارتفاع 40 مترًا وعرض 20 مترًا.",
-          "highlights": ["إطلالات رائعة", "مقهى ومطعم", "جلسات مرتبة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/jabal-alfil-alula/"
+          "highlights": [
+            "إطلالات رائعة",
+            "مقهى ومطعم",
+            "جلسات مرتبة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/jabal-alfil-alula/",
+          "maps_url": "https://maps.google.com/?cid=2980663722610294049"
         },
         {
           "name": "مدينة دادان القديمة",
           "type": "آثار تاريخية",
           "description": "من أقدم الحضارات العربية يعود تاريخها للقرن الثامن قبل الميلاد، تضم مقابر الأسود.",
-          "highlights": ["حضارة عربية قديمة", "مقابر الأسود", "شرح مفصل للتراث"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/dadan-alula/"
+          "highlights": [
+            "حضارة عربية قديمة",
+            "مقابر الأسود",
+            "شرح مفصل للتراث"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/dadan-alula/",
+          "maps_url": "https://maps.google.com/?cid=186112374607617330"
         },
         {
           "name": "جبل عكمة",
           "type": "آثار وطبيعة",
           "description": "جبل رملي يحتوي على نقوش وكتابات قديمة تحكي تاريخ المنطقة.",
-          "highlights": ["نقوش أثرية", "جولات إرشادية بحجز مسبق", "مسار للتجول"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/jabal-ikmah-alula/"
+          "highlights": [
+            "نقوش أثرية",
+            "جولات إرشادية بحجز مسبق",
+            "مسار للتجول"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/jabal-ikmah-alula/",
+          "maps_url": "https://maps.google.com/?cid=16376090894546531401"
         },
         {
           "name": "مطل الحرة",
           "type": "مطل سياحي",
           "description": "منصة مشاهدة في منطقة حرة عويرض توفر إطلالات بانورامية خلابة على تضاريس المنطقة.",
-          "highlights": ["إطلالات بانورامية", "جلسات دائرية مجانية", "مطعم ومقهى"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/harrat-viewpoint-alula/"
+          "highlights": [
+            "إطلالات بانورامية",
+            "جلسات دائرية مجانية",
+            "مطعم ومقهى"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/harrat-viewpoint-alula/",
+          "maps_url": "https://maps.google.com/?cid=8056822360058456304"
         },
         {
           "name": "واحة ديمومة",
           "type": "طبيعة وزراعة",
           "description": "من أجمل المزارع في المنطقة مع أشجار نخيل كثيفة وعيون مائية عذبة.",
-          "highlights": ["دخول مجاني", "مشتل الفراولة", "مزرعة البرتقال", "مسارات خشبية"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/daimumah-alula/"
+          "highlights": [
+            "دخول مجاني",
+            "مشتل الفراولة",
+            "مزرعة البرتقال",
+            "مسارات خشبية"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/daimumah-alula/",
+          "maps_url": "https://maps.google.com/?cid=1914759547871502201"
         },
         {
           "name": "المنتزه الشتوي",
           "type": "حديقة",
           "description": "مساحة خضراء واسعة تمتد على 100 فدان بين جبال الحرة السوداء.",
-          "highlights": ["مظلات وجلسات", "أكشاك طعام", "منطلق للجولات السياحية"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/winter-park-alula/"
+          "highlights": [
+            "مظلات وجلسات",
+            "أكشاك طعام",
+            "منطلق للجولات السياحية"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/winter-park-alula/",
+          "maps_url": "https://maps.google.com/?cid=3273981594893375390"
         },
         {
           "name": "طنطورة العلا",
           "type": "تراث معماري",
           "description": "هيكل هرمي من الطين على سطح مبنى قديم محاط بمقاهي ومطاعم.",
-          "highlights": ["مسارات للمشي", "مطاعم ومقاهي في الهواء الطلق"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/alula-tantura/"
+          "highlights": [
+            "مسارات للمشي",
+            "مطاعم ومقاهي في الهواء الطلق"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/alula-tantura/",
+          "maps_url": "https://maps.google.com/?cid=2026328914495231920"
         },
         {
           "name": "مزرعة الواحة",
           "type": "سياحة زراعية",
           "description": "وجهة سياحية زراعية فريدة بممارسات زراعية مستدامة.",
-          "highlights": ["دخول مجاني", "فطور محلي", "أراجيح وألعاب"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/alula/alula-oasis/"
+          "highlights": [
+            "دخول مجاني",
+            "فطور محلي",
+            "أراجيح وألعاب"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/alula/alula-oasis/",
+          "maps_url": "https://maps.google.com/?cid=6682787491605806548"
         }
       ],
       "activities": [
@@ -430,18 +793,38 @@
         "day_by_day": [
           {
             "day": 1,
-            "attractions": ["المنتزه الشتوي", "جبل الفيل", "مطل الحرة"],
-            "suggested_hotels": ["نزل النسيم الريفي", "منتجع صحارى العلا"],
-            "suggested_restaurants": ["مطعم أوكتو مطل الحرة", "مطاعم العلا التراثية"]
+            "attractions": [
+              "المنتزه الشتوي",
+              "جبل الفيل",
+              "مطل الحرة"
+            ],
+            "suggested_hotels": [
+              "نزل النسيم الريفي",
+              "منتجع صحارى العلا"
+            ],
+            "suggested_restaurants": [
+              "مطعم أوكتو مطل الحرة",
+              "مطاعم العلا التراثية"
+            ]
           },
           {
             "day": 2,
-            "attractions": ["مقبرة لحيان بن كوزا", "ديوان جبل أثلب", "آثار منطقة الحجر (مدائن صالح)"]
+            "attractions": [
+              "مقبرة لحيان بن كوزا",
+              "ديوان جبل أثلب",
+              "آثار منطقة الحجر (مدائن صالح)"
+            ]
           },
           {
             "day": 3,
-            "attractions": ["بلدة العلا القديمة", "سوق العلا"],
-            "suggested_restaurants": ["مطعم سموير العلا", "انتروكوت كافيه دو باريس"]
+            "attractions": [
+              "بلدة العلا القديمة",
+              "سوق العلا"
+            ],
+            "suggested_restaurants": [
+              "مطعم سموير العلا",
+              "انتروكوت كافيه دو باريس"
+            ]
           }
         ]
       }
@@ -451,48 +834,77 @@
       "name": "الطائف",
       "name_en": "Taif",
       "region": "غرب المملكة - جبال الحجاز",
-      "type": ["جبلية", "طبيعة", "مصيف"],
+      "type": [
+        "جبلية",
+        "طبيعة",
+        "مصيف"
+      ],
       "description": "الطائف عروس المصايف، مدينة جبلية جميلة في غرب السعودية تُعرف بطقسها المعتدل في الصيف وجمال طبيعتها ومرتفعاتها الخضراء وزراعة الورود الطائفية العطرية.",
-      "best_visit_months": ["مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس"],
+      "best_visit_months": [
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["عائلات", "محبو الطبيعة", "مصطافون"],
+      "suitable_for": [
+        "عائلات",
+        "محبو الطبيعة",
+        "مصطافون"
+      ],
       "url": "https://www.almosaferoon.com/ksa/taif/",
       "attractions": [
         {
           "name": "منتزه الردف",
           "type": "حديقة عامة",
           "description": "متنزه واسع مناسب للعائلات بمساحات خضراء وزهور ملونة وعروض نافورة مائية وفعاليات ثقافية.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/taif/arruddaf-park-taif/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/taif/arruddaf-park-taif/",
+          "maps_url": "https://maps.google.com/?cid=15154531027760807568"
         },
         {
           "name": "حديقة الملك عبد الله",
           "type": "حديقة عامة",
           "description": "تتميز بالمسطحات الخضراء وحدائق الزهور الجميلة ونوافير وألعاب كثيرة.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/taif/king-abdullah-park-taif/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/taif/king-abdullah-park-taif/",
+          "maps_url": "https://maps.google.com/?cid=12398469435556422103"
         },
         {
           "name": "جوري مول",
           "type": "تسوق وترفيه",
           "description": "يحتوي على متاجر متنوعة ومطاعم ومقاهي ومنطقة ترفيهية للأطفال وصالة سينما.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/taif/cenomi-jouri-mall-taif/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/taif/cenomi-jouri-mall-taif/",
+          "maps_url": "https://maps.google.com/?cid=15317319427229212545"
         },
         {
           "name": "تلفريك الهدا",
           "type": "نشاط طبيعي",
           "description": "يوفر إطلالة جميلة على المدينة والجبال المحيطة ويربط بين قريتي الهدا والكر السياحيتين.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/taif/al-hada-cable-car-taif/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/taif/al-hada-cable-car-taif/",
+          "maps_url": "https://maps.google.com/?cid=8990893949910828165"
         },
         {
           "name": "منتزه الجبل الأخضر",
           "type": "حديقة وترفيه",
           "description": "يضم ألعابًا تناسب جميع الأعمار ومنطقة خضراء كبيرة.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/taif/green-mountain-park-taif/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/taif/green-mountain-park-taif/",
+          "maps_url": "https://maps.google.com/?cid=3766785509495218838"
         }
       ],
       "nearby_destinations": [
-        {"name": "مكة المكرمة", "distance_km": 63},
-        {"name": "جدة", "distance_km": 128},
-        {"name": "الباحة", "distance_km": 178}
+        {
+          "name": "مكة المكرمة",
+          "distance_km": 63
+        },
+        {
+          "name": "جدة",
+          "distance_km": 128
+        },
+        {
+          "name": "الباحة",
+          "distance_km": 178
+        }
       ]
     },
     {
@@ -500,80 +912,142 @@
       "name": "أبها",
       "name_en": "Abha",
       "region": "جنوب المملكة - منطقة عسير",
-      "type": ["جبلية", "طبيعة", "مصيف", "ثقافية"],
+      "type": [
+        "جبلية",
+        "طبيعة",
+        "مصيف",
+        "ثقافية"
+      ],
       "description": "أبها عروس الجنوب السعودي، تتميز بطبيعتها الجبلية الخلابة وأجوائها المعتدلة على مدار العام. تحتضن جبل السودة أعلى قمة في المملكة وتلفريكًا يوفر إطلالات بانورامية ساحرة.",
-      "best_visit_months": ["مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر"],
+      "best_visit_months": [
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر"
+      ],
       "recommended_duration_days": 3,
-      "suitable_for": ["عائلات", "محبو المغامرة", "محبو الطبيعة", "مصطافون"],
+      "suitable_for": [
+        "عائلات",
+        "محبو المغامرة",
+        "محبو الطبيعة",
+        "مصطافون"
+      ],
       "url": "https://www.almosaferoon.com/ksa/abha/",
       "attractions": [
         {
           "name": "حديقة أبو خيال",
           "type": "حديقة عامة",
           "description": "تقع على تلة مرتفعة وتوفر إطلالة رائعة على المدينة مع مساحات خضراء ومسارات تنزه وألعاب للأطفال.",
-          "highlights": ["إطلالة على المدينة", "يمر فوقها التلفريك", "مناسبة للعائلات"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/abu-kheyal-park-abha/"
+          "highlights": [
+            "إطلالة على المدينة",
+            "يمر فوقها التلفريك",
+            "مناسبة للعائلات"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/abu-kheyal-park-abha/",
+          "maps_url": "https://maps.google.com/?cid=3122022506301803297"
         },
         {
           "name": "شارع الفن",
           "type": "ثقافي وترفيهي",
           "description": "يمتد 200 متر ويضم مسارح وجداريات ويُضاء بشكل رائع ليلًا مع أشجار الجاكرندا.",
-          "highlights": ["مسارح وعروض", "أشجار الجاكرندا", "مقاهي ومطاعم"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/the-art-street-abha/"
+          "highlights": [
+            "مسارح وعروض",
+            "أشجار الجاكرندا",
+            "مقاهي ومطاعم"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/the-art-street-abha/",
+          "maps_url": "https://maps.google.com/?cid=9508980568024506273"
         },
         {
           "name": "ممشى الضباب",
           "type": "ممشى طبيعي",
           "description": "يقع أعلى قمم جبلية ويمتد 7 كم بعرض 14 متر مع إطلالة جميلة وشعور بالضباب.",
-          "highlights": ["طول 7 كم", "إطلالات مميزة", "مقاهي ومطاعم", "مناسب للرياضة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/the-dabbab-walkway-abha/"
+          "highlights": [
+            "طول 7 كم",
+            "إطلالات مميزة",
+            "مقاهي ومطاعم",
+            "مناسب للرياضة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/the-dabbab-walkway-abha/",
+          "maps_url": "https://maps.google.com/?cid=17791954238569318733"
         },
         {
           "name": "المدينة العالية",
           "type": "منطقة سياحية",
           "description": "مدينة جبلية رائعة تقع على التلال المرتفعة تجمع الطبيعة الساحرة مع الأنشطة الترفيهية.",
-          "highlights": ["إطلالات من الأعلى", "كافيهات ومطاعم", "محلات تجارية"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/high-city-abha/"
+          "highlights": [
+            "إطلالات من الأعلى",
+            "كافيهات ومطاعم",
+            "محلات تجارية"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/high-city-abha/",
+          "maps_url": "https://maps.google.com/?cid=6043078974117279612"
         },
         {
           "name": "جبل السودة",
           "type": "طبيعة ومغامرة",
           "description": "أعلى جبال المملكة في سلسلة جبال عسير بارتفاع 3000 متر مع غابات كثيفة وتلفريك.",
-          "highlights": ["أعلى قمة في المملكة 3000 متر", "تلفريك", "غابات كثيفة", "مناسب للتسلق"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/jabal-sawda-abha/"
+          "highlights": [
+            "أعلى قمة في المملكة 3000 متر",
+            "تلفريك",
+            "غابات كثيفة",
+            "مناسب للتسلق"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/jabal-sawda-abha/",
+          "maps_url": "https://maps.google.com/?cid=2650603333312997507"
         },
         {
           "name": "حديقة الأندلس",
           "type": "حديقة عامة",
           "description": "تضم مساحات خضراء فسيحة وزهور ملونة وملاعب ومسارات للمشي.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/andalus-park-abha/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/andalus-park-abha/",
+          "maps_url": "https://maps.google.com/?cid=15541099598759441264"
         },
         {
           "name": "منتزه السحاب",
           "type": "مطل طبيعي",
           "description": "يمنح إطلالة ساحرة من الأعلى على القمم المغطاة بالضباب.",
-          "highlights": ["إطلالات على القمم الجبلية", "مناسب للتخييم", "مطاعم ومقاهي"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/al-sahab-park-abha/"
+          "highlights": [
+            "إطلالات على القمم الجبلية",
+            "مناسب للتخييم",
+            "مطاعم ومقاهي"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/al-sahab-park-abha/",
+          "maps_url": "https://maps.google.com/?cid=10818814491718961316"
         },
         {
           "name": "منتزه الحبلة السياحي",
           "type": "طبيعة ومغامرة",
           "description": "يقع فوق جبال عالية مع مساحات خضراء وإطلالات ساحرة وتلفريك.",
-          "highlights": ["تلفريك", "مناسب للتخييم", "منطقة ألعاب للأطفال"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/al-habla-park-abha/"
+          "highlights": [
+            "تلفريك",
+            "مناسب للتخييم",
+            "منطقة ألعاب للأطفال"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/al-habla-park-abha/",
+          "maps_url": "https://maps.google.com/?cid=12845294357092418146"
         },
         {
           "name": "منتزه عسير الوطني",
           "type": "طبيعة",
           "description": "يزخر بالجبال والسهول والمرتفعات ومنخفضات بركانية، وجهة مثالية لمحبي الطبيعة.",
-          "highlights": ["تنوع تضاريسي", "مناسب للتخييم", "مناسب للمغامرة"],
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/aseer-national-park-abha/"
+          "highlights": [
+            "تنوع تضاريسي",
+            "مناسب للتخييم",
+            "مناسب للمغامرة"
+          ],
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/aseer-national-park-abha/",
+          "maps_url": "https://maps.google.com/?q=%D8%B7%D8%B1%D9%8A%D9%82+%D8%A7%D9%84%D9%85%D9%84%D9%83+%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D8%B9%D8%B2%D9%8A%D8%B2%D8%8C+%D8%A7%D9%84%D8%B4%D9%81%D8%A7%D8%A1%D8%8C+%D8%A3%D8%A8%D9%87%D8%A7+62511%D8%8C+%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A%D8%A9&ftid=0x15e35393d7b7f17d:0xd8121c2edff7ce15"
         },
         {
           "name": "الراشد مول",
           "type": "تسوق وترفيه",
           "description": "يضم متاجر ومطاعم وسينما ومنطقة ألعاب للأطفال.",
-          "url": "https://www.almosaferoon.com/attraction/ksa/abha/al-rashid-mall-abha/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/abha/al-rashid-mall-abha/",
+          "maps_url": "https://maps.google.com/?cid=3335637464535646256"
         }
       ]
     },
@@ -582,48 +1056,114 @@
       "name": "الخبر",
       "name_en": "Al Khobar",
       "region": "المنطقة الشرقية",
-      "type": ["ساحلية", "حضرية", "عائلية"],
+      "type": [
+        "ساحلية",
+        "حضرية",
+        "عائلية"
+      ],
       "description": "الخبر جوهرة الساحل الشرقي، تتميز بإطلالتها على الخليج العربي وأجوائها العصرية الراقية. تضم كورنيشًا جميلًا وحدائق ومرافق ترفيهية متطورة ومجمعات تجارية فاخرة.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["عائلات", "أزواج"],
-      "url": "https://www.almosaferoon.com/ksa/khobar/"
+      "suitable_for": [
+        "عائلات",
+        "أزواج"
+      ],
+      "url": "https://www.almosaferoon.com/ksa/khobar/",
+      "attractions": [
+        {
+          "name": "كورنيش الخبر",
+          "type": "ممشى ساحلي",
+          "description": "ممشى ساحلي جميل يمتد 11 كم على الخليج العربي مع متنزهات وأماكن ترفيهية.",
+          "maps_url": "https://maps.google.com/?cid=15922466847205523623",
+          "url": "https://www.almosaferoon.com/attraction/ksa/khobar/khobar-corniche/"
+        },
+        {
+          "name": "الواجهة البحرية بالخبر",
+          "type": "ممشى ساحلي",
+          "description": "واجهة بحرية حديثة مطلة على الخليج العربي.",
+          "maps_url": "https://maps.google.com/?cid=2283997902744043259",
+          "url": "https://www.almosaferoon.com/attraction/ksa/khobar/khobar-waterfront/"
+        },
+        {
+          "name": "الراشد مول الخبر",
+          "type": "تسوق وترفيه",
+          "description": "مركز تسوق كبير يضم متاجر ومطاعم وسينما.",
+          "maps_url": "https://maps.google.com/?cid=5326199761453441026",
+          "url": "https://www.almosaferoon.com/attraction/ksa/khobar/al-rashid-mega-mall-khobar/"
+        },
+        {
+          "name": "بحيرة البط الخبر",
+          "type": "حديقة طبيعية",
+          "description": "حديقة جميلة حول بحيرة تضم طيوراً متنوعة.",
+          "maps_url": "https://maps.google.com/?cid=4942504426806130694",
+          "url": "https://www.almosaferoon.com/attraction/ksa/khobar/duck-lake-khobar/"
+        },
+        {
+          "name": "مجمع فيلاجيو الخبر",
+          "type": "تسوق وترفيه",
+          "description": "مجمع تجاري وترفيهي متكامل.",
+          "maps_url": "https://maps.google.com/?cid=13849142746286328927",
+          "url": "https://www.almosaferoon.com/attraction/ksa/khobar/villagio-mall-khobar/"
+        }
+      ]
     },
     {
       "id": "dammam",
       "name": "الدمام",
       "name_en": "Dammam",
       "region": "المنطقة الشرقية",
-      "type": ["ساحلية", "حضرية", "عائلية"],
+      "type": [
+        "ساحلية",
+        "حضرية",
+        "عائلية"
+      ],
       "description": "الدمام عاصمة المنطقة الشرقية، مدينة ساحلية تطل على الخليج العربي. تضم كورنيش الدمام الجميل ومنتزه الملك عبد الله البحري.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["عائلات"],
+      "suitable_for": [
+        "عائلات"
+      ],
       "url": "https://www.almosaferoon.com/ksa/dammam/",
       "attractions": [
         {
           "name": "كورنيش الدمام",
           "type": "ممشى ساحلي",
           "rating": 4.4,
-          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/dammam-corniche/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/dammam-corniche/",
+          "maps_url": "https://maps.google.com/?cid=13256788376846829491"
         },
         {
           "name": "القرية الشعبية بالدمام",
           "type": "تراث وثقافة",
           "rating": 4.1,
-          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/heritage-village-dammam/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/heritage-village-dammam/",
+          "maps_url": "https://maps.google.com/?cid=3172071856249970362"
         },
         {
           "name": "قرية الدولفين الترفيهية",
           "type": "ترفيه",
           "rating": 3.5,
-          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/dolphin-village-dammam/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/dolphin-village-dammam/",
+          "maps_url": "https://maps.google.com/?cid=15933867715234554318"
         },
         {
           "name": "حديقة بحيرة مدن",
           "type": "حديقة عامة",
           "rating": 4.3,
-          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/modon-lake-park-dammam/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/dammam/modon-lake-park-dammam/",
+          "maps_url": "https://maps.google.com/?cid=10793191795733225537"
         }
       ]
     },
@@ -632,35 +1172,132 @@
       "name": "الظهران",
       "name_en": "Dhahran",
       "region": "المنطقة الشرقية",
-      "type": ["حضرية", "ثقافية"],
+      "type": [
+        "حضرية",
+        "ثقافية"
+      ],
       "description": "الظهران مدينة هادئة ومميزة في المنطقة الشرقية، تضم مركز الملك عبد العزيز الثقافي العالمي (إثراء) الذي يجمع الفن والمعرفة والتجربة التفاعلية.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 1,
-      "suitable_for": ["محبو الثقافة", "عائلات"],
-      "url": "https://www.almosaferoon.com/ksa/dhahran/"
+      "suitable_for": [
+        "محبو الثقافة",
+        "عائلات"
+      ],
+      "url": "https://www.almosaferoon.com/ksa/dhahran/",
+      "attractions": [
+        {
+          "name": "مركز إثراء الظهران",
+          "type": "ثقافي وتعليمي",
+          "description": "مركز الملك عبد العزيز الثقافي العالمي يجمع الفن والمعرفة والتجربة التفاعلية.",
+          "maps_url": "https://maps.google.com/?cid=2062360687690765438",
+          "url": "https://www.almosaferoon.com/attraction/ksa/dhahran/ithra-dhahran/"
+        },
+        {
+          "name": "شاطئ نصف القمر في الظهران",
+          "type": "شاطئ",
+          "description": "من أجمل شواطئ المنطقة الشرقية، مناسب للعائلات ومحبي الصيد.",
+          "maps_url": "https://maps.google.com/?q=%D8%B4%D8%A7%D8%B7%D8%A6+%D9%86%D8%B5%D9%81+%D8%A7%D9%84%D9%82%D9%85%D8%B1&ftid=0x3e49df77d88091d9:0x82d963a8267d6bcd",
+          "url": "https://www.almosaferoon.com/attraction/ksa/dhahran/half-moon-beach-dhahran/"
+        },
+        {
+          "name": "الظهران مول",
+          "type": "تسوق وترفيه",
+          "description": "مركز تسوق كبير في الظهران.",
+          "maps_url": "https://maps.google.com/?cid=11592016763869373908",
+          "url": "https://www.almosaferoon.com/attraction/ksa/dhahran/dhahran-mall/"
+        },
+        {
+          "name": "خليج الدانة الظهران",
+          "type": "ساحلي",
+          "description": "خليج جميل مناسب للاسترخاء والتنزه.",
+          "maps_url": "https://maps.google.com/?cid=6275893138067048967",
+          "url": "https://www.almosaferoon.com/attraction/ksa/dhahran/dana-bay-dhahran/"
+        }
+      ]
     },
     {
       "id": "jubail",
       "name": "الجبيل",
       "name_en": "Jubail",
       "region": "المنطقة الشرقية",
-      "type": ["ساحلية", "عائلية"],
+      "type": [
+        "ساحلية",
+        "عائلية"
+      ],
       "description": "الجبيل مدينة ساحلية تُعرف بجمال شواطئها ونظافة بيئتها. تضم شاطئ النخيل وشاطئ الفناتير مع ممشى جميل ومرافق ترفيهية.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 1,
-      "suitable_for": ["عائلات", "محبو الشواطئ"],
-      "url": "https://www.almosaferoon.com/ksa/jubail/"
+      "suitable_for": [
+        "عائلات",
+        "محبو الشواطئ"
+      ],
+      "url": "https://www.almosaferoon.com/ksa/jubail/",
+      "attractions": [
+        {
+          "name": "كورنيش الفناتير الجبيل",
+          "type": "شاطئ وممشى",
+          "description": "شاطئ برمال بيضاء ومسارات مشي ومروج خضراء مع منظر رائع لشروق وغروب الشمس.",
+          "maps_url": "https://maps.google.com/?cid=8554344299000060282",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jubail/corniche-fanateer-jubail/"
+        },
+        {
+          "name": "شاطئ النخيل الجبيل",
+          "type": "شاطئ",
+          "description": "شاطئ جميل مناسب للعائلات.",
+          "maps_url": "https://maps.google.com/?cid=6943564179505055770",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jubail/al-nakheel-beach-jubail/"
+        },
+        {
+          "name": "مجمع غاليريا مول الجبيل",
+          "type": "تسوق وترفيه",
+          "description": "مجمع تجاري كبير في الجبيل.",
+          "maps_url": "https://maps.google.com/?cid=13586662283168276350",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jubail/galleria-mall-jubail/"
+        },
+        {
+          "name": "مرسى الفناتير للرحلات البحرية الجبيل",
+          "type": "ميناء سياحي",
+          "description": "مرسى يوفر رحلات بحرية ترفيهية.",
+          "maps_url": "https://maps.google.com/?cid=4834187665315827205",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jubail/fanateer-marina-jubail/"
+        }
+      ]
     },
     {
       "id": "alahsa",
       "name": "الأحساء",
       "name_en": "Al Ahsa",
       "region": "المنطقة الشرقية",
-      "type": ["تراث عالمي", "طبيعة", "تاريخية"],
+      "type": [
+        "تراث عالمي",
+        "طبيعة",
+        "تاريخية"
+      ],
       "description": "الأحساء مسجلة في قائمة اليونسكو كموقع تراث عالمي، تشتهر بواحة النخيل الشاسعة وجبل القارة بكهوفه الباردة صيفًا والدافئة شتاءً وسوق القيصرية التراثي.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["محبو التاريخ", "محبو الطبيعة", "عائلات"],
+      "suitable_for": [
+        "محبو التاريخ",
+        "محبو الطبيعة",
+        "عائلات"
+      ],
       "url": "https://www.almosaferoon.com/ksa/alahsa/",
       "attractions": [
         {
@@ -668,26 +1305,30 @@
           "type": "طبيعة وتراث",
           "description": "أكبر واحة نخيل في العالم تضم أكثر من 2.5 مليون نخلة مع حصون ومباني تاريخية وينابيع.",
           "rating": 4.3,
-          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/al-hasa-oasis/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/al-hasa-oasis/",
+          "maps_url": "https://maps.google.com/?cid=5432950259817442664"
         },
         {
           "name": "بحيرة الأصفر",
           "type": "طبيعة",
           "rating": 3.9,
-          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/asfar-lake-al-ahsa/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/asfar-lake-al-ahsa/",
+          "maps_url": "https://maps.google.com/?q=%D8%A8%D8%AD%D9%8A%D8%B1%D8%A9+%D8%A7%D9%84%D8%A3%D8%B5%D9%81%D8%B1&ftid=0x3e37c3acd7ab0fbb:0xa5489d82176e64b2"
         },
         {
           "name": "جبل القارة",
           "type": "طبيعة وكهوف",
           "description": "جبل مميز بكهوفه الباردة صيفًا والدافئة شتاءً.",
           "rating": 4.3,
-          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/al-qarah-mountain-al-ahsa/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/al-qarah-mountain-al-ahsa/",
+          "maps_url": "https://maps.google.com/?cid=1968566945022373240"
         },
         {
           "name": "شاطئ العقير",
           "type": "شاطئ",
           "rating": 4.2,
-          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/uqair-beach-al-ahsa/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/alahsa/uqair-beach-al-ahsa/",
+          "maps_url": "https://maps.google.com/?cid=556958182149829946"
         }
       ]
     },
@@ -696,37 +1337,55 @@
       "name": "تبوك",
       "name_en": "Tabuk",
       "region": "شمال غرب المملكة",
-      "type": ["تاريخية", "طبيعة", "ساحلية"],
+      "type": [
+        "تاريخية",
+        "طبيعة",
+        "ساحلية"
+      ],
       "description": "تبوك وجهة سياحية مميزة تجمع بين عبق التاريخ وروعة الطبيعة. تشتهر بقلعة تبوك القديمة ومدائن شعيب وجبالها وصحاريها وشواطئها على البحر الأحمر.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 3,
-      "suitable_for": ["محبو التاريخ", "محبو المغامرة", "محبو الطبيعة"],
+      "suitable_for": [
+        "محبو التاريخ",
+        "محبو المغامرة",
+        "محبو الطبيعة"
+      ],
       "url": "https://www.almosaferoon.com/ksa/tabuk/",
       "attractions": [
         {
           "name": "مسجد التوبة",
           "type": "ديني وتاريخي",
           "rating": 4.7,
-          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/al-tawba-mosque-tabuk/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/al-tawba-mosque-tabuk/",
+          "maps_url": "https://maps.google.com/?cid=17423970529995305429"
         },
         {
           "name": "قلعة تبوك الأثرية",
           "type": "تراث تاريخي",
           "rating": 4.4,
-          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/tubuk-fortress/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/tubuk-fortress/",
+          "maps_url": "https://maps.google.com/?cid=9775878498429931300"
         },
         {
           "name": "وادي الديسة",
           "type": "طبيعة",
           "description": "وادي طبيعي خلاب بتكوينات صخرية رائعة.",
           "rating": 4.5,
-          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/wadi-al-disah-tabuk/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/wadi-al-disah-tabuk/",
+          "maps_url": "https://maps.google.com/?cid=13314933743241292739"
         },
         {
           "name": "محطة سكة حديد الحجاز",
           "type": "تراث تاريخي",
           "rating": 4.1,
-          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/tabuk-station-hijaz-railway-station/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/tabuk/tabuk-station-hijaz-railway-station/",
+          "maps_url": "https://maps.google.com/?cid=10247654036649353331"
         }
       ]
     },
@@ -735,23 +1394,88 @@
       "name": "ينبع",
       "name_en": "Yanbu",
       "region": "غرب المملكة - ساحل البحر الأحمر",
-      "type": ["ساحلية", "غوص", "رياضات بحرية"],
+      "type": [
+        "ساحلية",
+        "غوص",
+        "رياضات بحرية"
+      ],
       "description": "ينبع مدينة ساحلية رائعة على البحر الأحمر تشتهر بشواطئها البيضاء ومياهها الصافية التي تجذب عشاق الغوص والرياضات البحرية، خصوصًا في منطقة ينبع البحر.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["محبو الغوص", "محبو الشواطئ", "عائلات"],
-      "url": "https://www.almosaferoon.com/ksa/yanbu/"
+      "suitable_for": [
+        "محبو الغوص",
+        "محبو الشواطئ",
+        "عائلات"
+      ],
+      "url": "https://www.almosaferoon.com/ksa/yanbu/",
+      "attractions": [
+        {
+          "name": "بحيرة ينبع الصناعية",
+          "type": "حديقة طبيعية",
+          "description": "وجهة ترفيهية مميزة على ساحل البحر الأحمر مع حدائق استوائية وطيور مهاجرة.",
+          "maps_url": "https://maps.google.com/?cid=6226784693748067215",
+          "url": "https://www.almosaferoon.com/attraction/ksa/yanbu/yanbu-industrial-lake/"
+        },
+        {
+          "name": "كورنيش ينبع",
+          "type": "ممشى ساحلي",
+          "description": "كورنيش جميل على البحر الأحمر.",
+          "maps_url": "https://maps.google.com/?cid=3815838347742907936",
+          "url": "https://www.almosaferoon.com/attraction/ksa/yanbu/corniche-yanbu/"
+        },
+        {
+          "name": "منطقة ينبع التاريخية",
+          "type": "تراث تاريخي",
+          "description": "المنطقة التاريخية القديمة في ينبع.",
+          "maps_url": "https://maps.google.com/?cid=18265343183327611268",
+          "url": "https://www.almosaferoon.com/attraction/ksa/yanbu/yanbu-old-town/"
+        },
+        {
+          "name": "جزيرة النورس ينبع",
+          "type": "جزيرة طبيعية",
+          "description": "جزيرة صغيرة جميلة قرب ينبع.",
+          "maps_url": "https://maps.google.com/?cid=6632320274090556168",
+          "url": "https://www.almosaferoon.com/attraction/ksa/yanbu/seagull-island-yanbu/"
+        },
+        {
+          "name": "شاطئ الشباب ينبع",
+          "type": "شاطئ",
+          "description": "شاطئ شعبي مناسب للشباب والعائلات.",
+          "maps_url": "https://maps.google.com/?cid=10346693949976478989",
+          "url": "https://www.almosaferoon.com/attraction/ksa/yanbu/youth-beach-yanbu/"
+        }
+      ]
     },
     {
       "id": "umluj",
       "name": "أملج",
       "name_en": "Umluj",
       "region": "غرب المملكة - ساحل البحر الأحمر",
-      "type": ["ساحلية", "جزر", "غوص"],
+      "type": [
+        "ساحلية",
+        "جزر",
+        "غوص"
+      ],
       "description": "أملج تُعرف بـ'مالديف السعودية' بسبب شواطئها الرملية البيضاء ومياهها الفيروزية الصافية وجزرها البكر. وجهة مثالية لمحبي السباحة والغوص والاسترخاء.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["محبو الشواطئ", "محبو الغوص", "أزواج"],
+      "suitable_for": [
+        "محبو الشواطئ",
+        "محبو الغوص",
+        "أزواج"
+      ],
       "url": "https://www.almosaferoon.com/ksa/umluj/",
       "attractions": [
         {
@@ -759,7 +1483,36 @@
           "type": "شاطئ",
           "description": "شاطئ رملي أبيض بمياه فيروزية صافية.",
           "duration_hours": 1,
-          "url": "https://www.almosaferoon.com/attraction/ksa/umluj/umluj-beach/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/umluj/umluj-beach/",
+          "maps_url": "https://maps.google.com/?cid=943904595681396725"
+        },
+        {
+          "name": "شاطئ الدقم أملج",
+          "type": "شاطئ",
+          "description": "شاطئ جميل بمياه صافية.",
+          "maps_url": "https://maps.google.com/?cid=5202137882292026563",
+          "url": "https://www.almosaferoon.com/attraction/ksa/umluj/dagm-beach-umluj/"
+        },
+        {
+          "name": "كورنيش أملج",
+          "type": "ممشى ساحلي",
+          "description": "كورنيش جميل على البحر الأحمر.",
+          "maps_url": "https://maps.google.com/?cid=13372966869546530249",
+          "url": "https://www.almosaferoon.com/attraction/ksa/umluj/corniche-umluj/"
+        },
+        {
+          "name": "جزيرة أم سحر أملج",
+          "type": "جزيرة",
+          "description": "جزيرة بكر بمياه صافية وشعاب مرجانية.",
+          "maps_url": "https://maps.google.com/?cid=13665611811901453192",
+          "url": "https://www.almosaferoon.com/attraction/ksa/umluj/um-sahar-island-umluj/"
+        },
+        {
+          "name": "مرسى الحرة أملج",
+          "type": "ميناء سياحي",
+          "description": "مرسى يوفر رحلات بحرية لاستكشاف الجزر.",
+          "maps_url": "https://maps.google.com/?cid=15817217148010699435",
+          "url": "https://www.almosaferoon.com/attraction/ksa/umluj/al-hurra-marina-umluj/"
         }
       ]
     },
@@ -768,17 +1521,75 @@
       "name": "مدينة الملك عبدالله الاقتصادية",
       "name_en": "King Abdullah Economic City (KAEC)",
       "region": "غرب المملكة - ساحل البحر الأحمر",
-      "type": ["حديثة", "ساحلية", "ترفيهية"],
+      "type": [
+        "حديثة",
+        "ساحلية",
+        "ترفيهية"
+      ],
       "description": "وجهة سياحية حديثة على ساحل البحر الأحمر تتميز بشاطئ يام والأنشطة البحرية كالغوص والكاياك ونادٍ عالمي للجولف ومارينا راقية.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير", "مارس"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير",
+        "مارس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["عائلات", "أزواج", "محبو الرياضة"],
+      "suitable_for": [
+        "عائلات",
+        "أزواج",
+        "محبو الرياضة"
+      ],
       "url": "https://www.almosaferoon.com/ksa/kaec/",
       "attractions": [
         {
           "name": "جمان بارك",
-          "type": "حديقة عامة",
+          "type": "حديقة وترفيه",
+          "description": "حديقة ترفيهية تطل على البحر مع أنشطة متنوعة.",
+          "maps_url": "https://maps.google.com/?cid=3174749796698962",
           "url": "https://www.almosaferoon.com/attraction/ksa/kaec/juman-park-king-abdullah-economic-city/"
+        },
+        {
+          "name": "شاطئ يام",
+          "type": "شاطئ",
+          "description": "شاطئ جميل على البحر الأحمر.",
+          "maps_url": "https://maps.google.com/?cid=449069276176717455",
+          "url": "https://www.almosaferoon.com/attraction/ksa/kaec/yam-beach-kaec/"
+        },
+        {
+          "name": "ممشى الشاطئ",
+          "type": "ممشى ساحلي",
+          "description": "ممشى جميل على الشاطئ مع مطاعم ومقاهي.",
+          "maps_url": "https://maps.google.com/?cid=4678833104957886769",
+          "url": "https://www.almosaferoon.com/attraction/ksa/kaec/beach-walk-kaec/"
+        },
+        {
+          "name": "نادي وملعب الغولف رويال غرينز",
+          "type": "رياضة",
+          "description": "ملعب غولف عالمي المستوى.",
+          "maps_url": "https://maps.google.com/?cid=6526061997430488398",
+          "url": "https://www.almosaferoon.com/attraction/ksa/kaec/royal-greens-golf-kaec/"
+        },
+        {
+          "name": "المروج مول",
+          "type": "تسوق وترفيه",
+          "description": "مركز تسوق حديث.",
+          "maps_url": "https://maps.google.com/?cid=15004229369707107121",
+          "url": "https://www.almosaferoon.com/attraction/ksa/kaec/al-muruj-mall-kaec/"
+        },
+        {
+          "name": "حلبة جمان كارتينج",
+          "type": "ترفيه ورياضة",
+          "description": "حلبة سباق كارتينج ممتعة.",
+          "maps_url": "https://maps.google.com/?cid=11296567850431865534",
+          "url": "https://www.almosaferoon.com/attraction/ksa/kaec/juman-karting-kaec/"
+        },
+        {
+          "name": "متحف العلوم والتقنية في الاسلام",
+          "type": "ثقافي وتعليمي",
+          "description": "متحف يعرض اسهامات العلماء المسلمين.",
+          "maps_url": "https://maps.google.com/?cid=11788798213149569188",
+          "url": "https://www.almosaferoon.com/attraction/ksa/kaec/museum-of-science-technology-in-islam-kaec/"
         }
       ]
     },
@@ -787,17 +1598,67 @@
       "name": "جازان",
       "name_en": "Jazan",
       "region": "جنوب غرب المملكة",
-      "type": ["ساحلية", "جبلية", "جزر", "تراثية"],
+      "type": [
+        "ساحلية",
+        "جبلية",
+        "جزر",
+        "تراثية"
+      ],
       "description": "جازان لؤلؤة الجنوب تجمع بين جمال الطبيعة وتنوع التضاريس، من جزيرة فرسان الساحرة إلى جبال فيفا الخضراء. تشتهر بشواطئها وأسواقها الشعبية وتجربتها السياحية الفريدة.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير"
+      ],
       "recommended_duration_days": 3,
-      "suitable_for": ["محبو الطبيعة", "محبو الغوص", "محبو المغامرات الجبلية"],
+      "suitable_for": [
+        "محبو الطبيعة",
+        "محبو الغوص",
+        "محبو المغامرات الجبلية"
+      ],
       "url": "https://www.almosaferoon.com/ksa/jazan/",
       "attractions": [
         {
           "name": "القرية التراثية جازان",
           "type": "تراث وثقافة",
-          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/the-heritage-village-jazan/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/the-heritage-village-jazan/",
+          "maps_url": "https://maps.google.com/?cid=4332926326070932706"
+        },
+        {
+          "name": "واجهة جازان البحرية",
+          "type": "ممشى ساحلي",
+          "description": "واجهة بحرية جميلة في جازان.",
+          "maps_url": "https://maps.google.com/?cid=4866054897117123624",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/jazan-sea-front/"
+        },
+        {
+          "name": "قلعة الدوسرية التاريخية جازان",
+          "type": "تراث تاريخي",
+          "description": "قلعة تاريخية تعود لعصور قديمة.",
+          "maps_url": "https://maps.google.com/?cid=5903181657686376967",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/al-dosariyah-castle-jazan/"
+        },
+        {
+          "name": "جبال فيفا جازان",
+          "type": "طبيعة وجبال",
+          "description": "جبال خضراء خلابة في منطقة جازان.",
+          "maps_url": "https://maps.google.com/?q=%D9%81%D9%8A%D9%81%D8%A7%D8%A1&ftid=0x15fcefca8347eead:0xccf9d9841ed2a314",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/fifa-mountains-jazan/"
+        },
+        {
+          "name": "شاطئ المرجان جازان",
+          "type": "شاطئ",
+          "description": "شاطئ جميل في جازان.",
+          "maps_url": "https://maps.google.com/?cid=3352636369889808570",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/marjan-beach-jazan/"
+        },
+        {
+          "name": "كورنيش جازان الجنوبي",
+          "type": "ممشى ساحلي",
+          "description": "كورنيش جميل على ساحل البحر الأحمر.",
+          "maps_url": "https://maps.google.com/?cid=386816502891169491",
+          "url": "https://www.almosaferoon.com/attraction/ksa/jazan/south-corniche-jazan/"
         }
       ]
     },
@@ -806,49 +1667,120 @@
       "name": "جزيرة فرسان",
       "name_en": "Farasan Island",
       "region": "جنوب غرب المملكة - البحر الأحمر",
-      "type": ["جزيرة", "غوص", "طبيعة", "تراثية"],
+      "type": [
+        "جزيرة",
+        "غوص",
+        "طبيعة",
+        "تراثية"
+      ],
       "description": "جزيرة فرسان من أجمل جزر البحر الأحمر بشواطئها البيضاء ومياهها الفيروزية ومحميتها الطبيعية لغزال فرسان وشعابها المرجانية وقراها التراثية.",
-      "best_visit_months": ["نوفمبر", "ديسمبر", "يناير", "فبراير"],
+      "best_visit_months": [
+        "نوفمبر",
+        "ديسمبر",
+        "يناير",
+        "فبراير"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["محبو الغوص", "محبو الطبيعة", "محبو التراث"],
-      "url": "https://www.almosaferoon.com/ksa/farasanisland/"
+      "suitable_for": [
+        "محبو الغوص",
+        "محبو الطبيعة",
+        "محبو التراث"
+      ],
+      "url": "https://www.almosaferoon.com/ksa/farasanisland/",
+      "attractions": [
+        {
+          "name": "قرية القصار التراثية جزيرة فرسان",
+          "type": "تراث تاريخي",
+          "description": "قرية تاريخية بمبانٍ من الأحجار والطين وأكبر واحة نخيل في الجزيرة.",
+          "maps_url": "https://maps.google.com/?cid=7388018650484626032",
+          "url": "https://www.almosaferoon.com/attraction/ksa/farasanisland/al-qessar-heritage-village-farasan-island/"
+        },
+        {
+          "name": "شاطئ الغدير جزيرة فرسان",
+          "type": "شاطئ",
+          "description": "شاطئ جميل بمياه صافية.",
+          "maps_url": "https://maps.google.com/?cid=712870402463248504",
+          "url": "https://www.almosaferoon.com/attraction/ksa/farasanisland/al-ghadir-beach-farasan/"
+        },
+        {
+          "name": "غابة القندل جزيرة فرسان",
+          "type": "طبيعة",
+          "description": "غابة مانغروف نادرة في جزيرة فرسان.",
+          "maps_url": "https://maps.google.com/?cid=12734427824937134872",
+          "url": "https://www.almosaferoon.com/attraction/ksa/farasanisland/qandal-forest-farasan/"
+        },
+        {
+          "name": "القلعة العثمانية جزيرة فرسان",
+          "type": "تراث تاريخي",
+          "description": "قلعة عثمانية تاريخية في الجزيرة.",
+          "maps_url": "https://maps.google.com/?cid=1716288537040574849",
+          "url": "https://www.almosaferoon.com/attraction/ksa/farasanisland/ottoman-fort-farasan/"
+        },
+        {
+          "name": "متحف الزيلعي البحري جزيرة فرسان",
+          "type": "متحف",
+          "description": "متحف بحري يعرض تاريخ الجزيرة والملاحة.",
+          "maps_url": "https://maps.google.com/?cid=10656474674336396633",
+          "url": "https://www.almosaferoon.com/attraction/ksa/farasanisland/zelaie-maritime-museum-farasan/"
+        }
+      ]
     },
     {
       "id": "albaha",
       "name": "الباحة",
       "name_en": "Al Baha",
       "region": "جنوب غرب المملكة - جبال الحجاز",
-      "type": ["جبلية", "طبيعة", "تراثية", "مصيف"],
+      "type": [
+        "جبلية",
+        "طبيعة",
+        "تراثية",
+        "مصيف"
+      ],
       "description": "الباحة تتميز بطبيعتها الخضراء وجبالها الشاهقة وأجوائها المعتدلة. تضم غابة رغدان وقرية ذي عين التراثية ذات البيوت الحجرية والمياه الجارية.",
-      "best_visit_months": ["مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس"],
+      "best_visit_months": [
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["محبو الطبيعة", "محبو التاريخ", "عائلات"],
+      "suitable_for": [
+        "محبو الطبيعة",
+        "محبو التاريخ",
+        "عائلات"
+      ],
       "url": "https://www.almosaferoon.com/ksa/albaha/",
       "attractions": [
         {
           "name": "منتزه غابة رغدان",
           "type": "طبيعة",
           "rating": 4.4,
-          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/raghadan-forest-park-al-baha/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/raghadan-forest-park-al-baha/",
+          "maps_url": "https://maps.google.com/?cid=8768348457179236747"
         },
         {
           "name": "منتزه غابة خيرة",
           "type": "طبيعة",
           "rating": 4.7,
-          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/khairah-forest-park-al-baha/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/khairah-forest-park-al-baha/",
+          "maps_url": "https://maps.google.com/?cid=15891125279967760736"
         },
         {
           "name": "قرية ذي عين الأثرية",
           "type": "تراث تاريخي",
           "description": "قرية أثرية بيوتها الحجرية ومياهها الجارية.",
           "rating": 4.5,
-          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/thee-ain-ancient-village-al-baha/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/thee-ain-ancient-village-al-baha/",
+          "maps_url": "https://maps.google.com/?cid=9714723079254641995"
         },
         {
           "name": "منتزه الأمير حسام",
           "type": "حديقة عامة",
           "rating": 4.4,
-          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/prince-hussam-park-al-baha/"
+          "url": "https://www.almosaferoon.com/attraction/ksa/albaha/prince-hussam-park-al-baha/",
+          "maps_url": "https://maps.google.com/?cid=13821905317261346982"
         }
       ]
     },
@@ -857,21 +1789,106 @@
       "name": "تنومة",
       "name_en": "Tanomah",
       "region": "جنوب المملكة - جبال السروات",
-      "type": ["جبلية", "طبيعة", "مصيف"],
+      "type": [
+        "جبلية",
+        "طبيعة",
+        "مصيف"
+      ],
       "description": "تنومة تقع بين أحضان جبال السروات في منطقة عسير، تتميز بأجوائها المعتدلة وغاباتها الكثيفة وشلالاتها وضبابها الساحر. متنفس لمحبي الهدوء والمشي في المسارات الطبيعية.",
-      "best_visit_months": ["مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس"],
+      "best_visit_months": [
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس"
+      ],
       "recommended_duration_days": 2,
-      "suitable_for": ["محبو الطبيعة", "محبو الهدوء", "عائلات"],
-      "url": "https://www.almosaferoon.com/ksa/tanomah/"
+      "suitable_for": [
+        "محبو الطبيعة",
+        "محبو الهدوء",
+        "عائلات"
+      ],
+      "url": "https://www.almosaferoon.com/ksa/tanomah/",
+      "attractions": [
+        {
+          "name": "شلال الدهناء تنومة",
+          "type": "طبيعة",
+          "description": "شلال طبيعي جميل يشكل بحيرة لامعة بين المرتفعات.",
+          "maps_url": "https://maps.google.com/?cid=8053554700623648902",
+          "url": "https://www.almosaferoon.com/attraction/ksa/tanomah/dahna-falls-tanomah/"
+        },
+        {
+          "name": "منتزه الشرف تنومة",
+          "type": "حديقة عامة",
+          "description": "منتزه جميل في تنومة مع مناظر طبيعية خلابة.",
+          "maps_url": "https://maps.google.com/?cid=10770490898172964262",
+          "url": "https://www.almosaferoon.com/attraction/ksa/tanomah/al-sharaf-park-tanomah/"
+        },
+        {
+          "name": "منتزه الحيفة تنومة",
+          "type": "حديقة عامة",
+          "description": "منتزه طبيعي في تنومة.",
+          "maps_url": "https://maps.google.com/?cid=7570418055152746125",
+          "url": "https://www.almosaferoon.com/attraction/ksa/tanomah/al-hayfa-park-tanomah/"
+        },
+        {
+          "name": "وادي حصيص",
+          "type": "طبيعة",
+          "description": "وادي طبيعي خلاب في تنومة.",
+          "maps_url": "https://maps.google.com/?cid=11093743322112552976",
+          "url": "https://www.almosaferoon.com/attraction/ksa/tanomah/wadi-husais-tanomah/"
+        },
+        {
+          "name": "متحف القرية التراثية تنومة",
+          "type": "تراث وثقافة",
+          "description": "متحف يعرض تراث منطقة تنومة.",
+          "maps_url": "https://maps.google.com/?cid=624022431085153739",
+          "url": "https://www.almosaferoon.com/attraction/ksa/tanomah/heritage-village-museum-tanomah/"
+        }
+      ]
     }
   ],
   "destination_categories": {
-    "religious": ["مكة المكرمة", "المدينة المنورة"],
-    "heritage_and_history": ["العلا", "الأحساء", "تبوك", "الباحة"],
-    "coastal_and_diving": ["جدة", "ينبع", "أملج", "جازان", "جزيرة فرسان", "مدينة الملك عبدالله الاقتصادية"],
-    "mountain_and_nature": ["أبها", "الطائف", "الباحة", "تنومة", "جازان"],
-    "urban_and_modern": ["الرياض", "جدة", "الخبر", "الدمام", "الظهران"],
-    "eastern_province": ["الخبر", "الدمام", "الظهران", "الجبيل", "الأحساء"]
+    "religious": [
+      "مكة المكرمة",
+      "المدينة المنورة"
+    ],
+    "heritage_and_history": [
+      "العلا",
+      "الأحساء",
+      "تبوك",
+      "الباحة"
+    ],
+    "coastal_and_diving": [
+      "جدة",
+      "ينبع",
+      "أملج",
+      "جازان",
+      "جزيرة فرسان",
+      "مدينة الملك عبدالله الاقتصادية"
+    ],
+    "mountain_and_nature": [
+      "أبها",
+      "الطائف",
+      "الباحة",
+      "تنومة",
+      "جازان"
+    ],
+    "urban_and_modern": [
+      "الرياض",
+      "جدة",
+      "الخبر",
+      "الدمام",
+      "الظهران"
+    ],
+    "eastern_province": [
+      "الخبر",
+      "الدمام",
+      "الظهران",
+      "الجبيل",
+      "الأحساء"
+    ]
   },
   "ai_context_for_itinerary_planning": {
     "instructions": "هذه البيانات مُعدّة لمساعدة الذكاء الاصطناعي في تصميم جداول سياحية مخصصة للمملكة العربية السعودية. عند بناء جدول سياحي يُراعى ما يلي:",
@@ -886,13 +1903,46 @@
       "العملة: ريال سعودي، معظم بطاقات الائتمان مقبولة"
     ],
     "trip_types": {
-      "religious_trip": ["مكة المكرمة", "المدينة المنورة"],
-      "adventure_trip": ["العلا", "تبوك", "أبها", "جازان"],
-      "beach_trip": ["أملج", "ينبع", "جزيرة فرسان", "جدة"],
-      "cultural_trip": ["الرياض", "العلا", "الأحساء", "جدة"],
-      "family_trip": ["الرياض", "جدة", "أبها", "الطائف"],
-      "honeymoon_trip": ["العلا", "أملج", "جزيرة فرسان", "أبها"],
-      "short_weekend": ["الرياض", "جدة", "الطائف", "الخبر"]
+      "religious_trip": [
+        "مكة المكرمة",
+        "المدينة المنورة"
+      ],
+      "adventure_trip": [
+        "العلا",
+        "تبوك",
+        "أبها",
+        "جازان"
+      ],
+      "beach_trip": [
+        "أملج",
+        "ينبع",
+        "جزيرة فرسان",
+        "جدة"
+      ],
+      "cultural_trip": [
+        "الرياض",
+        "العلا",
+        "الأحساء",
+        "جدة"
+      ],
+      "family_trip": [
+        "الرياض",
+        "جدة",
+        "أبها",
+        "الطائف"
+      ],
+      "honeymoon_trip": [
+        "العلا",
+        "أملج",
+        "جزيرة فرسان",
+        "أبها"
+      ],
+      "short_weekend": [
+        "الرياض",
+        "جدة",
+        "الطائف",
+        "الخبر"
+      ]
     }
   }
 }

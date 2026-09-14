@@ -114,3 +114,24 @@ def load_extra():
                 aid = "xh_" + d["id"] + "_" + "".join(ch for ch in h.lower() if ch.isalnum())[:20]
                 extra_attractions.append((aid, d["id"], h, "nature_adventure", 0.0, 0.0, 4.4, 1, 120))
     return new_destinations, extra_attractions, enrichment
+
+
+# ----------------------------- Google Maps links -----------------------------
+_MAPS_BY_NAME = None
+
+def maps_url_for(attraction_name):
+    """Return the Google Maps link for an attraction by its name (or None)."""
+    global _MAPS_BY_NAME
+    if _MAPS_BY_NAME is None:
+        _MAPS_BY_NAME = {}
+        try:
+            raw = json.load(open(_PATH, encoding="utf-8"))
+            for x in raw.get("destinations", []):
+                for a in x.get("attractions", []):
+                    nm = (a.get("name") or "").strip()
+                    mu = (a.get("maps_url") or "").strip()
+                    if nm and mu:
+                        _MAPS_BY_NAME[nm] = mu
+        except Exception:
+            _MAPS_BY_NAME = {}
+    return _MAPS_BY_NAME.get((attraction_name or "").strip())

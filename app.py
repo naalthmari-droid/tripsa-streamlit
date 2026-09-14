@@ -11,6 +11,19 @@ import engine
 import db
 import notifications
 from style import CUSTOM_CSS, LOTTIE
+import saudi_extra as _sx
+
+
+def _maps_btn(label):
+    """Return an elegant 'Open in Google Maps' link-button HTML if a link exists."""
+    url = _sx.maps_url_for(label)
+    if not url:
+        return ""
+    return (f' <a href="{url}" target="_blank" class="gmap-btn" '
+            f'style="display:inline-block;margin-inline-start:8px;padding:1px 9px;'
+            f'font-size:11px;font-weight:600;color:#1a73e8;background:#e8f0fe;'
+            f'border:1px solid #d2e3fc;border-radius:20px;text-decoration:none;'
+            f'vertical-align:middle">🗺️ Map</a>')
 
 st.set_page_config(page_title="TRIPSA — Saudi Route Intelligence", page_icon="🧭", layout="wide")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -411,7 +424,8 @@ def page_detail():
                     for a in acts:
                         star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
                         cls = "act meal" if a["kind"] == "meal" else "act"
-                        st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
+                        mapbtn = _maps_btn(a["label"]) if a["kind"] != "meal" else ""
+                        st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}{mapbtn}</span>{star}</div>', unsafe_allow_html=True)
 
     # Members
     members = db.get_members(t["id"])
@@ -524,7 +538,8 @@ def page_room():
                 for a in acts:
                     star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
                     cls = "act meal" if a["kind"] == "meal" else "act"
-                    st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
+                    mapbtn = _maps_btn(a["label"]) if a["kind"] != "meal" else ""
+                    st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}{mapbtn}</span>{star}</div>', unsafe_allow_html=True)
 
     # Detailed per-member votes (destinations + activities/restaurants)
     dest_votes_by_m = db.votes_by_member(t["id"])
@@ -730,7 +745,8 @@ def page_room():
                     for a in acts:
                         star = f'<span class="star">★{a["rating"]}</span>' if a.get("rating") else ""
                         cls = "act meal" if a["kind"] == "meal" else "act"
-                        st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}</span>{star}</div>', unsafe_allow_html=True)
+                        mapbtn = _maps_btn(a["label"]) if a["kind"] != "meal" else ""
+                        st.markdown(f'<div class="{cls}"><span class="t">{a["time"]}–{a["end"]}</span><span class="dotm"></span><span>{a["label"]}{mapbtn}</span>{star}</div>', unsafe_allow_html=True)
             # approved member-suggested activities for this stop (avg score >= 2.5)
             _iv_all = db.get_item_votes(t["id"])
             for _ci in db.get_custom_items(t["id"]):

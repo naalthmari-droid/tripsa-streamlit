@@ -30,6 +30,8 @@ def _styles():
         "sub": ParagraphStyle("sub", parent=ss["Normal"], textColor=MUTED, fontSize=9, spaceAfter=4),
         "act": ParagraphStyle("act", parent=ss["Normal"], textColor=INK, fontSize=9.5,
                               leftIndent=14, spaceAfter=2),
+        "map": ParagraphStyle("map", parent=ss["Normal"], textColor=colors.HexColor("#1a73e8"),
+                              fontName="Helvetica-Oblique", fontSize=8, leftIndent=26, spaceAfter=3),
         "day": ParagraphStyle("day", parent=ss["Normal"], textColor=GOLD,
                               fontName="Helvetica-Bold", fontSize=10, spaceBefore=4, spaceAfter=2),
     }
@@ -100,6 +102,13 @@ def build_final_plan_pdf(trip, members=None):
                 for a in acts:
                     star = f'  ★{a["rating"]}' if a.get("rating") else ""
                     el.append(Paragraph(f'{a["time"]}–{a["end"]}   {a["label"]}{star}', st["act"]))
+                    try:
+                        import saudi_extra as _sx
+                        _mu = _sx.maps_url_for(a["label"]) if a.get("kind") != "meal" else None
+                        if _mu:
+                            el.append(Paragraph(f'🗺️ <link href="{_mu}"><font color="#1a73e8">Open in Google Maps</font></link>', st["map"]))
+                    except Exception:
+                        pass
         except Exception:
             pass
         el.append(Spacer(1, 6))
