@@ -75,7 +75,7 @@ def hero():
         """, unsafe_allow_html=True)
     with c2:
         # elegant stat badge instead of the off-theme illustration
-        st.markdown("""
+        st.markdown(f"""
         <div class="hero-badge">
           <div class="hb-num">{len(data.DESTINATIONS)}</div><div class="hb-lbl">Destinations</div>
           <div class="hb-div"></div>
