@@ -201,6 +201,15 @@ def init_db():
         destination_id TEXT, name TEXT, item_type TEXT,
         cost REAL, duration_min INTEGER, link TEXT, notes TEXT,
         created_at TEXT)""")
+    # preferred schedule: the member may pin their activity to a specific day & time
+    try:
+        cur.execute("ALTER TABLE custom_items ADD COLUMN pref_day INTEGER")
+    except Exception:
+        pass
+    try:
+        cur.execute("ALTER TABLE custom_items ADD COLUMN pref_time_min INTEGER")
+    except Exception:
+        pass
     # ownership link: each trip belongs to a founder (nullable for legacy trips)
     try:
         cur.execute("ALTER TABLE trips ADD COLUMN founder_id INTEGER")
@@ -308,18 +317,21 @@ def create_trip(t):
 
 # ----------------------------- Custom activities (member-suggested) -----------------------------
 def add_custom_item(trip_id, member_id, added_by, destination_id, name,
-                    item_type="activity", cost=0.0, duration_min=90, link="", notes=""):
+                    item_type="activity", cost=0.0, duration_min=90, link="", notes="",
+                    pref_day=None, pref_time_min=None):
     """A member suggests a custom activity/event for the trip. Returns the new id."""
     conn = _conn()
     cur = conn.cursor()
     cur.execute("""INSERT INTO custom_items(trip_id,member_id,added_by,destination_id,name,
-        item_type,cost,duration_min,link,notes,created_at)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
+        item_type,cost,duration_min,link,notes,created_at,pref_day,pref_time_min)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (int(trip_id), int(member_id), (added_by or "").strip(),
          (destination_id or "").strip(), (name or "").strip(),
          (item_type or "activity").strip(), float(cost or 0),
          int(duration_min or 90), (link or "").strip(), (notes or "").strip(),
-         datetime.utcnow().isoformat()))
+         datetime.utcnow().isoformat(),
+         (int(pref_day) if pref_day else None),
+         (int(pref_time_min) if pref_time_min is not None else None)))
     cid = cur.lastrowid
     conn.commit()
     conn.close()

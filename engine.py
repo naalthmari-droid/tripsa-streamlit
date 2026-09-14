@@ -381,15 +381,41 @@ def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
     days = max(1, int(nights))
     all_days = []
     attrs = attractions_for(dest_id)
-    # rotate attractions across days so each day differs
+    # Give each day a FRESH slice of attractions — never repeat the same
+    # attraction across different days of the stay.
+    target = 5 if pace == "action_packed" else (3 if pace == "relaxed" else 4)
+    n = len(attrs)
+    # Fit activities to the stay length: when the stay is long, reduce activities per
+    # day so that NO attraction ever repeats across days (total slots <= available).
+    if days > 1 and n >= days * 2:
+        target = max(2, min(target, n // days))
+    per_day_pool = target + 1
+    used = set()
+    cursor = 0
     for d in range(days):
-        day_attrs = attrs[d:] + attrs[:d]  # rotate
-        all_days.append(_schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, day_attrs, d + 1))
+        pool = []
+        i = cursor
+        walked = 0
+        while len(pool) < per_day_pool and walked < n:
+            a = attrs[i % n]
+            if a[0] not in used:
+                pool.append(a)
+                used.add(a[0])
+            i += 1
+            walked += 1
+        cursor = i % n
+        if len(pool) < per_day_pool:  # fallback (very few attractions): refill uniquely
+            for a in attrs:
+                if len(pool) >= per_day_pool:
+                    break
+                if all(a[0] != p[0] for p in pool):
+                    pool.append(a)
+        all_days.append(_schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, pool, d + 1))
     return all_days
 
 
-def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num):
-    """Internal: schedule a single day given a rotated attraction list."""
+def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num, pinned=None):
+    """Internal: schedule one day from a fresh per-day pool. pinned = member-chosen fixed-time activities."""
     start_min = int(day_start) * 60
     end_min = int(day_end) * 60
     lunch_at = 13 * 60
@@ -412,6 +438,22 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
     cursor = start_min
     lunch_added = False
     dinner_added = False
+    pinned = sorted([p for p in (pinned or []) if p.get("minutes") is not None],
+                    key=lambda p: p["minutes"])
+    _emitted = []
+
+    def emit_due_pinned():
+        nonlocal cursor
+        for p in list(pinned):
+            if p["minutes"] <= cursor and p not in _emitted:
+                cursor = max(cursor, p["minutes"])
+                out.append(dict(time=_fmt(cursor), end=_fmt(cursor + p["dur"]),
+                                label=p["label"], kind="activity",
+                                rating=p.get("rating"), pinned=True))
+                cursor += p["dur"] + gap
+                _emitted.append(p)
+                pinned.remove(p)
+
 
     def add_meal(label, place):
         nonlocal cursor
@@ -421,6 +463,7 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
                         kind="meal", rating=(place[6] if place else None)))
         cursor += dur + gap
 
+        emit_due_pinned()
     for it in items:
         dur = it["dur"]
         if pace == "relaxed":
@@ -441,6 +484,14 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
         if not dinner_added and dinner_at - 30 <= cursor <= dinner_at + 60:
             dinner_added = True
             add_meal("Dinner", dinner)
+    # flush pinned items scheduled later than the last moving activity
+    for p in list(pinned):
+        if p not in _emitted and p["minutes"] < end_min:
+            out.append(dict(time=_fmt(p["minutes"]), end=_fmt(p["minutes"] + p["dur"]),
+                            label=p["label"], kind="activity", rating=p.get("rating"),
+                            pinned=True))
+            _emitted.append(p)
+    out.sort(key=lambda x: x["time"])
     return out
 
 

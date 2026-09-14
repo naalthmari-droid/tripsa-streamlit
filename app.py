@@ -628,9 +628,14 @@ def page_room():
                 mapb = _maps_btn(ci["name"])
                 linkb = _link_btn(ci.get("link"), "🔗 Details")
                 cost = f' · SAR {ci["cost"]:g}' if ci.get("cost") else ""
+                _pd = ci.get("pref_day"); _pt = ci.get("pref_time_min")
+                _when = ""
+                if _pd and _pt is not None:
+                    _hh, _mm = int(_pt)//60, int(_pt)%60
+                    _when = f' · 🗓️ <b style="color:#2f5233">Day {int(_pd)} at {_hh:02d}:{_mm:02d}</b>'
                 col_a.markdown(
                     f'<div class="act" style="padding:8px 10px">{icon} <b>{ci["name"]}</b>{mapb}{linkb}'
-                    f'<div style="font-size:12px;color:#6b7560;margin-top:2px">📍 {dname} · {ci["item_type"]} · {ci["duration_min"]} min{cost} · by {ci["added_by"]}'
+                    f'<div style="font-size:12px;color:#6b7560;margin-top:2px">📍 {dname} · {ci["item_type"]} · {ci["duration_min"]} min{cost} · by {ci["added_by"]}{_when}'
                     f'{" · <b style=\'color:#2f5233\'>group avg " + f"{_avg:.1f}/5" + f" ({len(_sc)} vote(s))</b>" if _avg is not None else " · <i>no votes yet</i>"}</div></div>',
                     unsafe_allow_html=True)
                 if ci["member_id"] == st.session_state.get("member_id"):
@@ -648,10 +653,19 @@ def page_room():
             cdur = c4.selectbox("Duration", [30, 60, 90, 120, 180], index=2,
                                 format_func=lambda m: f"{m} min")
             clink = st.text_input("Link (optional)", placeholder="https://…")
+            _stops_opts = {s["destination_id"]: s for s in stops}
+            _sel_stop = _stops_opts.get(cdest)
+            _max_day = max(1, int(_sel_stop["nights"])) if _sel_stop else 1
+            c5, c6 = st.columns(2)
+            cday = c5.selectbox("Pin to day (optional)", ["— any day —"] + [f"Day {i}" for i in range(1, _max_day + 1)])
+            ctime = c6.selectbox("Start time (optional)", ["— any time —"] + [f"{h:02d}:00" for h in range(t["day_start"], t["day_end"])])
             if st.form_submit_button("➕ Add my activity", use_container_width=True) and cn.strip():
+                _pday = int(cday.split()[1]) if cday.startswith("Day") else None
+                _ptmin = (int(ctime[:2]) * 60) if ":" in ctime else None
                 db.add_custom_item(t["id"], st.session_state.get("member_id") or 0,
                                    st.session_state.get("member_name") or "Member",
-                                   cdest, cn.strip(), ctype, ccost, cdur, clink.strip())
+                                   cdest, cn.strip(), ctype, ccost, cdur, clink.strip(),
+                                   pref_day=_pday, pref_time_min=_ptmin)
                 st.success(f"Added “{cn.strip()}” — everyone can now vote on it below.")
                 st.rerun()
         st.markdown("---")
@@ -764,7 +778,22 @@ def page_room():
               </div>
             </div>""", unsafe_allow_html=True)
             with st.expander(f"🕒 Day schedule for {s['name']}", expanded=(s["order"] == 1)):
-                days = engine.schedule_trip_days(s["destination_id"], s["nights"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
+                _iv_fin = db.get_item_votes(t["id"])
+                _days = engine.schedule_trip_days(s["destination_id"], s["nights"], t["day_start"], t["day_end"], t["pace"], t["cuisines"])
+                # inject approved, member-pinned custom activities at their chosen day & time
+                for _ci in db.get_custom_items(t["id"]):
+                    if _ci["destination_id"] != s["destination_id"]:
+                        continue
+                    _sc = [float(v["score"]) for v in _iv_fin if v.get("item_id") == f"c{_ci['id']}"]
+                    if not (_sc and (sum(_sc)/len(_sc)) >= 2.5):
+                        continue
+                    if _ci.get("pref_day") and _ci.get("pref_time_min") is not None:
+                        _d = int(_ci["pref_day"])
+                        if 1 <= _d <= len(_days):
+                            _mins = int(_ci["pref_time_min"]); _dur = int(_ci["duration_min"])
+                            _days[_d-1].append(dict(time=f"{_mins//60:02d}:{_mins%60:02d}", end=f"{(_mins+_dur)//60:02d}:{(_mins+_dur)%60:02d}", label="✨ "+_ci["name"], kind="activity", rating=None, pinned=True))
+                            _days[_d-1].sort(key=lambda x: x["time"])
+                days = _days
                 for di, acts in enumerate(days, 1):
                     st.markdown(f'<div class="sub" style="font-weight:700;color:#2f5233;margin-top:8px">📅 Day {di}</div>', unsafe_allow_html=True)
                     for a in acts:
