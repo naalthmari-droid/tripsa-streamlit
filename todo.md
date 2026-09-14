@@ -13,7 +13,7 @@
 - [x] Add tests for authentication, ownership isolation, and invite-member access
 - [x] Publish the update to GitHub and Streamlit Cloud
 - [x] Rotate Turso secrets: revoke exposed platform token, issue new DB token, update Streamlit secrets, verify app healthy
-- [ ] Custom activity: any member can add a custom activity/event (name, city, type, cost, duration, link) to the trip room before finalization
-- [ ] Custom activities appear for all members and are votable like built-in items
-- [ ] Approved custom activities are included in the regenerated Final Plan schedule
-- [ ] Member who added a custom activity can delete it before finalization
+- [x] Custom activity: any member can add a custom activity/event (name, city, type, cost, duration, link) to the trip room before finalization
+- [x] Custom activities appear for all members and are votable like built-in items
+- [x] Approved custom activities are included in the regenerated Final Plan schedule
+- [x] Member who added a custom activity can delete it before finalization
