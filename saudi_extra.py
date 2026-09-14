@@ -135,3 +135,37 @@ def maps_url_for(attraction_name):
         except Exception:
             _MAPS_BY_NAME = {}
     return _MAPS_BY_NAME.get((attraction_name or "").strip())
+
+
+# ----------------------------- Explore: all scraped attractions -----------------------------
+def all_attractions():
+    """Return every scraped attraction across all destinations, enriched with
+    destination id/name, category, rating, description, and Google Maps link."""
+    out = []
+    try:
+        raw = json.load(open(_PATH, encoding="utf-8"))
+    except Exception:
+        return out
+    for x in raw.get("destinations", []):
+        ar_name = x.get("name")
+        tid = _EXISTING_MAP.get(ar_name)
+        if tid is None and ar_name in _NEW_DESTS:
+            tid = _NEW_DESTS[ar_name]["id"]
+        if tid is None:
+            continue
+        for a in x.get("attractions", []):
+            interest, kind, dur = _classify(a.get("type", ""))
+            out.append({
+                "dest_id": tid,
+                "dest_name": x.get("name_en") or ar_name,
+                "name": (a.get("name") or "").strip(),
+                "category": a.get("type") or "",
+                "interest": interest,
+                "kind": kind,
+                "duration_min": dur,
+                "description": a.get("description") or "",
+                "highlights": a.get("highlights") or [],
+                "maps_url": (a.get("maps_url") or "").strip(),
+                "url": (a.get("url") or "").strip(),
+            })
+    return out

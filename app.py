@@ -616,9 +616,12 @@ def page_room():
         st.markdown('<div class="sec">🎯 Suggest your own activity</div>', unsafe_allow_html=True)
         st.caption("Add a personal activity or event (a hike, a show, a hidden gem) — everyone can see it and vote on it before the plan is locked.")
         custom_items = db.get_custom_items(t["id"])
-        # list existing suggestions with delete (own only)
+        _iv_all_pre = db.get_item_votes(t["id"])
+        # list existing suggestions with live group vote + delete (own only)
         if custom_items:
             for ci in custom_items:
+                _sc = [float(v["score"]) for v in _iv_all_pre if v.get("item_id") == f"c{ci['id']}"]
+                _avg = (sum(_sc) / len(_sc)) if _sc else None
                 col_a, col_b = st.columns([5, 1])
                 dname = data.DEST_BY_ID.get(ci["destination_id"], {}).get("name", ci["destination_id"])
                 icon = _ctype_icon(ci["item_type"])
@@ -627,7 +630,8 @@ def page_room():
                 cost = f' · SAR {ci["cost"]:g}' if ci.get("cost") else ""
                 col_a.markdown(
                     f'<div class="act" style="padding:8px 10px">{icon} <b>{ci["name"]}</b>{mapb}{linkb}'
-                    f'<div style="font-size:12px;color:#6b7560;margin-top:2px">📍 {dname} · {ci["item_type"]} · {ci["duration_min"]} min{cost} · by {ci["added_by"]}</div></div>',
+                    f'<div style="font-size:12px;color:#6b7560;margin-top:2px">📍 {dname} · {ci["item_type"]} · {ci["duration_min"]} min{cost} · by {ci["added_by"]}'
+                    f'{" · <b style=\'color:#2f5233\'>group avg " + f"{_avg:.1f}/5" + f" ({len(_sc)} vote(s))</b>" if _avg is not None else " · <i>no votes yet</i>"}</div></div>',
                     unsafe_allow_html=True)
                 if ci["member_id"] == st.session_state.get("member_id"):
                     if col_b.button("🗑️", key=f"delc{ci['id']}", help="Delete my suggestion"):
@@ -891,6 +895,66 @@ def page_recommendations():
     st.markdown('</div>', unsafe_allow_html=True)
 
 
+# ============================================================ EXPLORE
+def page_explore():
+    st.markdown('<div class="sec">🔍 Explore attractions</div>', unsafe_allow_html=True)
+    st.caption("Search & filter every curated attraction across Saudi Arabia — with one-tap Google Maps.")
+    all_a = _sx.all_attractions()
+    if not all_a:
+        st.info("Attraction catalogue is unavailable right now.")
+        return
+
+    # --- filters row ---
+    q = st.text_input("🔎 Search by name or keyword", placeholder="e.g. boulevard, diving, museum, حافة العالم…")
+    fc1, fc2, fc3 = st.columns(3)
+    dest_opts = ["All"] + sorted({a["dest_name"] for a in all_a})
+    interest_opts = ["All"] + [k for k in data.INTEREST_LABELS.keys()]
+    sel_dest = fc1.selectbox("📍 City / destination", dest_opts)
+    sel_interest = fc2.selectbox("🎯 Category", interest_opts,
+                                 format_func=lambda x: "All" if x == "All" else data.INTEREST_LABELS[x])
+    sort_by = fc3.selectbox("↕️ Sort by", ["City", "Category", "Name"])
+
+    # --- filtering ---
+    ql = q.strip().lower()
+    res = all_a
+    if sel_dest != "All":
+        res = [a for a in res if a["dest_name"] == sel_dest]
+    if sel_interest != "All":
+        res = [a for a in res if a["interest"] == sel_interest]
+    if ql:
+        res = [a for a in res if ql in a["name"].lower() or ql in a["description"].lower()
+               or ql in a["category"].lower() or ql in a["dest_name"].lower()]
+    if sort_by == "Name":
+        res = sorted(res, key=lambda a: a["name"])
+    elif sort_by == "Category":
+        res = sorted(res, key=lambda a: (a["interest"], a["dest_name"]))
+    else:
+        res = sorted(res, key=lambda a: a["dest_name"])
+
+    st.markdown(f'<div class="sub" style="margin:6px 0 10px;color:#6b7560">Showing <b>{len(res)}</b> of {len(all_a)} attractions</div>', unsafe_allow_html=True)
+
+    # --- cards grid ---
+    for a in res:
+        icon = _ctype_icon(a["interest"] if a["interest"] in ("restaurant",) else "")
+        mapb = _maps_btn(a["name"])
+        details = _link_btn(a["url"], "🔗 Details")
+        cat_lbl = data.INTEREST_LABELS.get(a["interest"], a["interest"])
+        hl = " ".join(f'<span class="tag">{h}</span>' for h in a["highlights"][:4])
+        desc = a["description"][:180] + ("…" if len(a["description"]) > 180 else "")
+        st.markdown(f"""
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+            <h3 style="margin:0">{a['name']}</h3>
+            <span class="pill">{cat_lbl}</span>
+          </div>
+          <div class="sub" style="margin-top:2px">📍 {a['dest_name']} · {a['category']} · ⏱️ ~{a['duration_min']} min</div>
+          <p style="margin:8px 0 6px">{desc}</p>
+          <div style="margin-bottom:8px">{hl}</div>
+          <div>{mapb} {details}</div>
+        </div>""", unsafe_allow_html=True)
+        st.markdown("<br/>", unsafe_allow_html=True)
+
+
 # ============================================================ ROUTES
 def page_routes():
     st.markdown('<div class="sec">🗺️ Certified routes</div>', unsafe_allow_html=True)
@@ -971,10 +1035,10 @@ def page_admin():
 # top nav — native Streamlit buttons (reliable, no third-party widget state issues).
 if st.session_state.founder:
     _nav_items = [("home","🏠 Home"),("create","✨ Create"),("mytrips","🗂️ My Trips"),
-                  ("join","🔑 Join"),("routes","🗺️ Routes"),("recommend","🎯 For You")]
+                  ("join","🔑 Join"),("routes","🗺️ Routes"),("explore","🔍 Explore"),("recommend","🎯 For You")]
 else:
     _nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),
-                  ("routes","🗺️ Routes"),("recommend","🎯 For You"),("account","👤 Account")]
+                  ("routes","🗺️ Routes"),("explore","🔍 Explore"),("recommend","🎯 For You"),("account","👤 Account")]
 _cols = st.columns(len(_nav_items))
 for _i, (_p, _label) in enumerate(_nav_items):
     _active = (st.session_state.page == _p)
@@ -999,6 +1063,8 @@ elif page == "room":
     page_room()
 elif page == "routes":
     page_routes()
+elif page == "explore":
+    page_explore()
 elif page == "recommend":
     page_recommendations()
 elif page == "admin":
