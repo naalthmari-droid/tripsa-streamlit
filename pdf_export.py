@@ -14,6 +14,49 @@ SAND = colors.HexColor("#f6f1e7")
 INK = colors.HexColor("#1c2b21")
 MUTED = colors.HexColor("#6b7560")
 
+# ---- Arabic (RTL) support: embed an Arabic TTF and reshape glyphs correctly ----
+import os as _os
+_AR_FONT = "Helvetica"          # fallback if anything fails
+_AR_READY = False
+try:
+    from reportlab.pdfbase import pdfmetrics as _pm
+    from reportlab.pdfbase.ttfonts import TTFont as _TTF
+    _font_path = _os.path.join(_os.path.dirname(__file__), "fonts", "Cairo.ttf")
+    _pm.registerFont(_TTF("Cairo", _font_path))
+    _AR_FONT = "Cairo"
+    _AR_READY = True
+except Exception:
+    _AR_READY = False
+try:
+    import arabic_reshaper as _resh
+    from bidi.algorithm import get_display as _bidi
+except Exception:
+    _resh = None
+    _bidi = None
+
+
+def _has_ar(t):
+    return any('\u0600' <= c <= '\u06ff' for c in (t or ""))
+
+
+def _fix(t):
+    """Reshape + reorder a fully-Arabic string for RTL rendering (base_dir='R')."""
+    if not t:
+        return t
+    if _resh and _bidi and _has_ar(t):
+        try:
+            return _bidi(_resh.reshape(t), base_dir="R")
+        except Exception:
+            return t
+    return t
+
+
+def _act_line(time_s, label, rating):
+    """Build one itinerary line: Latin time first, then the (reshaped) label.
+    Arabic labels are reshaped right-to-left; ASCII-only star to avoid boxes."""
+    star = f'  (*{rating})' if rating else ""
+    return f'{time_s}   {_fix(label)}{star}'
+
 
 def _styles():
     ss = getSampleStyleSheet()
@@ -26,9 +69,9 @@ def _styles():
         "h2": ParagraphStyle("h2", parent=ss["Heading2"], textColor=OLIVE,
                              fontName="Helvetica-Bold", fontSize=14, spaceBefore=10, spaceAfter=4),
         "stop": ParagraphStyle("stop", parent=ss["Normal"], textColor=INK,
-                               fontName="Helvetica-Bold", fontSize=12, spaceAfter=2),
-        "sub": ParagraphStyle("sub", parent=ss["Normal"], textColor=MUTED, fontSize=9, spaceAfter=4),
-        "act": ParagraphStyle("act", parent=ss["Normal"], textColor=INK, fontSize=9.5,
+                               fontName=_AR_FONT, fontSize=12, spaceAfter=2),
+        "sub": ParagraphStyle("sub", parent=ss["Normal"], textColor=MUTED, fontName=_AR_FONT, fontSize=9, spaceAfter=4),
+        "act": ParagraphStyle("act", parent=ss["Normal"], textColor=INK, fontName=_AR_FONT, fontSize=9.5,
                               leftIndent=14, spaceAfter=2),
         "map": ParagraphStyle("map", parent=ss["Normal"], textColor=colors.HexColor("#1a73e8"),
                               fontName="Helvetica-Oblique", fontSize=8, leftIndent=26, spaceAfter=3),
@@ -100,13 +143,14 @@ def build_final_plan_pdf(trip, members=None):
             for di, acts in enumerate(days, 1):
                 el.append(Paragraph(f"Day {di}", st["day"]))
                 for a in acts:
-                    star = f'  ★{a["rating"]}' if a.get("rating") else ""
-                    el.append(Paragraph(f'{a["time"]}–{a["end"]}   {a["label"]}{star}', st["act"]))
+                    _time = f'{a["time"]}–{a["end"]}'
+                    _rating = a.get("rating")
+                    el.append(Paragraph(_act_line(_time, a["label"], _rating), st["act"]))
                     try:
                         import saudi_extra as _sx
                         _mu = _sx.maps_url_for(a["label"]) if a.get("kind") != "meal" else None
                         if _mu:
-                            el.append(Paragraph(f'🗺️ <link href="{_mu}"><font color="#1a73e8">Open in Google Maps</font></link>', st["map"]))
+                            el.append(Paragraph(f'<link href="{_mu}"><font color="#1a73e8">📍 Open in Google Maps</font></link>', st["map"]))
                     except Exception:
                         pass
         except Exception:
