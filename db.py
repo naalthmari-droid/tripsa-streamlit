@@ -5,6 +5,9 @@ import json
 import json
 import sqlite3
 import os
+import hashlib
+import hmac
+import secrets as _secrets
 from datetime import datetime
 import streamlit as st
 
@@ -180,6 +183,91 @@ def init_db():
     cur.execute("""CREATE TABLE IF NOT EXISTS notifications(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         to_email TEXT, subject TEXT, status TEXT, created_at TEXT)""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS founders(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE, display_name TEXT, email TEXT,
+        pw_salt TEXT, pw_hash TEXT, created_at TEXT)""")
+    # ownership link: each trip belongs to a founder (nullable for legacy trips)
+    try:
+        cur.execute("ALTER TABLE trips ADD COLUMN founder_id INTEGER")
+    except Exception:
+        pass  # column already exists
+    conn.commit()
+    conn.close()
+
+
+# ----------------------------- Founder accounts (creator login) -----------------------------
+def _hash_password(password, salt):
+    """Salted, stretched SHA-256 hash (100k rounds) — stored, never the raw password."""
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"),
+                             bytes.fromhex(salt), 100_000)
+    return dk.hex()
+
+
+def create_founder(username, display_name, password, email=""):
+    """Register a trip founder. Returns (ok, founder_id_or_error_message)."""
+    username = (username or "").strip().lower()
+    if not username or len(username) < 3:
+        return False, "Username must be at least 3 characters."
+    if not password or len(password) < 6:
+        return False, "Password must be at least 6 characters."
+    conn = _conn()
+    row = conn.execute("SELECT id FROM founders WHERE username=?", (username,)).fetchone()
+    if row:
+        conn.close()
+        return False, "This username is already taken."
+    salt = _secrets.token_hex(16)
+    pw_hash = _hash_password(password, salt)
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO founders(username,display_name,email,pw_salt,pw_hash,created_at) VALUES(?,?,?,?,?,?)",
+        (username, (display_name or username).strip(), (email or "").strip(),
+         salt, pw_hash, datetime.utcnow().isoformat()))
+    fid = cur.lastrowid
+    conn.commit()
+    conn.close()
+    return True, fid
+
+
+def verify_founder(username, password):
+    """Check credentials; return the founder dict on success, None on failure."""
+    username = (username or "").strip().lower()
+    conn = _conn()
+    row = conn.execute("SELECT * FROM founders WHERE username=?", (username,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    d = dict(row)
+    candidate = _hash_password(password or "", d["pw_salt"])
+    if hmac.compare_digest(candidate, d["pw_hash"]):
+        return {"id": d["id"], "username": d["username"],
+                "display_name": d["display_name"], "email": d.get("email") or ""}
+    return None
+
+
+def get_founder(fid):
+    conn = _conn()
+    row = conn.execute("SELECT id,username,display_name,email FROM founders WHERE id=?",
+                       (fid,)).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def trips_by_founder(fid):
+    """Trip history for one founder — newest first."""
+    conn = _conn()
+    rows = conn.execute("SELECT * FROM trips WHERE founder_id=? ORDER BY id DESC",
+                        (fid,)).fetchall()
+    conn.close()
+    return [_trip_dict(r) for r in rows]
+
+
+def claim_legacy_trips(owner_name, fid):
+    """Link previously-created trips (by owner name) to this founder account."""
+    conn = _conn()
+    conn.execute(
+        "UPDATE trips SET founder_id=? WHERE founder_id IS NULL AND owner_name=?",
+        (fid, owner_name))
     conn.commit()
     conn.close()
 
@@ -189,14 +277,14 @@ def create_trip(t):
     cur = conn.cursor()
     cur.execute("""INSERT INTO trips(title,owner_name,owner_age,owner_email,invite_code,start_destination_id,
         start_date,end_date,travelers,budget_tier,pace,is_group,include_holy,interests,audience,
-        route_mode,certified_route_id,cuisines,accommodation,day_start,day_end,route_json,status,created_at)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+        route_mode,certified_route_id,cuisines,accommodation,day_start,day_end,route_json,status,created_at,founder_id)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (t["title"], t["owner_name"], t.get("owner_age"), t.get("owner_email"), t["invite_code"], t["start_destination_id"],
          t["start_date"], t["end_date"], t["travelers"], t["budget_tier"], t["pace"],
          int(t["is_group"]), int(t["include_holy"]), json.dumps(t["interests"]), t["audience"],
          t["route_mode"], t.get("certified_route_id"), json.dumps(t.get("cuisines", [])),
          t.get("accommodation"), t["day_start"], t["day_end"], json.dumps(t["route"]),
-         "active", datetime.utcnow().isoformat()))
+         "active", datetime.utcnow().isoformat(), t.get("founder_id")))
     tid = cur.lastrowid
     conn.commit()
     conn.close()

@@ -26,7 +26,8 @@ def load_lottie(path):
         return None
 
 # ---------------- session state ----------------
-for k, v in dict(page="home", trip_id=None, member_id=None, member_name="").items():
+for k, v in dict(page="home", trip_id=None, member_id=None, member_name="",
+                 founder=None).items():
     if k not in st.session_state:
         st.session_state[k] = v
 
@@ -114,14 +115,105 @@ def page_home():
     # Trips are private to their group — reached only via the invite link/code, not listed publicly.
 
 
+# ============================================================ ACCOUNT (founder login)
+def page_account():
+    """Founder sign-up / sign-in so creators can return to their trip history."""
+    st.markdown('<div class="sec">👤 Founder account</div>', unsafe_allow_html=True)
+    st.caption("Create an account or sign in to save your trips and return to them anytime. "
+               "Invited members don't need an account — they join with your invite code/link.")
+
+    if st.session_state.founder:
+        f = st.session_state.founder
+        st.success(f"✅ Signed in as **{f['display_name']}** (@{f['username']})")
+        c1, c2 = st.columns(2)
+        if c1.button("🗂️ Go to My Trips", use_container_width=True):
+            go("mytrips")
+        if c2.button("🚪 Sign out", use_container_width=True):
+            st.session_state.founder = None
+            go("home")
+        return
+
+    tab_in, tab_up = st.tabs(["🔑 Sign in", "✨ Create account"])
+
+    with tab_in:
+        with st.form("login"):
+            u = st.text_input("Username")
+            p = st.text_input("Password", type="password")
+            if st.form_submit_button("Sign in", use_container_width=True):
+                f = db.verify_founder(u, p)
+                if f:
+                    st.session_state.founder = f
+                    db.claim_legacy_trips(f["display_name"], f["id"])
+                    go("mytrips")
+                else:
+                    st.error("Incorrect username or password.")
+
+    with tab_up:
+        with st.form("signup"):
+            name = st.text_input("Display name (e.g. Sara)")
+            u = st.text_input("Choose a username (login)")
+            email = st.text_input("Email (optional, for trip alerts)")
+            p1 = st.text_input("Password (min 6 chars)", type="password")
+            p2 = st.text_input("Confirm password", type="password")
+            if st.form_submit_button("Create account", use_container_width=True):
+                if p1 != p2:
+                    st.error("Passwords do not match.")
+                else:
+                    ok, res = db.create_founder(u, name, p1, email)
+                    if ok:
+                        st.session_state.founder = db.verify_founder(u, p1)
+                        db.claim_legacy_trips(name.strip(), res)
+                        st.success("🎉 Account created — welcome!")
+                        go("mytrips")
+                    else:
+                        st.error(res)
+
+
+# ============================================================ MY TRIPS
+def page_mytrips():
+    f = st.session_state.founder
+    if not f:
+        st.warning("Please sign in to see your trips.")
+        if st.button("👤 Go to account", use_container_width=True):
+            go("account")
+        return
+    st.markdown(f'<div class="sec">🗂️ My trips — {f["display_name"]}</div>', unsafe_allow_html=True)
+    trips = db.trips_by_founder(f["id"])
+    if not trips:
+        st.info("No trips yet. Create your first one!")
+        if st.button("✨ Create a trip", use_container_width=True):
+            go("create")
+        return
+    for t in trips:
+        with st.container():
+            finalized = "🏁 finalized" if t.get("finalized") else "🟢 active"
+            c1, c2 = st.columns([4, 1])
+            c1.markdown(
+                f'<div class="card"><h3>{t["title"]}</h3>'
+                f'<div class="sub">{fmt_date(t["start_date"])} → {fmt_date(t["end_date"])} · '
+                f'{t["travelers"]} travelers · {finalized} · 🔑 {t["invite_code"]}</div></div>',
+                unsafe_allow_html=True)
+            if c2.button("Open →", key=f"open_{t['id']}", use_container_width=True):
+                go("detail", trip_id=t["id"])
+
+
 # ============================================================ CREATE
 def page_create():
+    if not st.session_state.founder:
+        st.markdown('<div class="sec">✨ Create your trip</div>', unsafe_allow_html=True)
+        st.info("To create a trip and save it to your history, sign in or create a free founder account first.")
+        if st.button("👤 Sign in / Create account", use_container_width=True):
+            go("account")
+        return
+    _f = st.session_state.founder
     st.markdown('<div class="sec">✨ Create your trip</div>', unsafe_allow_html=True)
+    st.caption(f"Creating as **{_f['display_name']}** (@{_f['username']})")
     with st.form("create"):
         c1, c2 = st.columns(2)
         title = c1.text_input("Trip title", "Northern Adventure")
-        owner = c2.text_input("Your name", "Sara")
-        email = st.text_input("Your email (for trip alerts)", placeholder="you@example.com")
+        owner = c2.text_input("Your name", _f["display_name"])
+        email = st.text_input("Your email (for trip alerts)", value=_f.get("email", ""),
+                              placeholder="you@example.com")
         c1, c2, c3 = st.columns(3)
         age = c1.number_input("Your age", 18, 90, 28)
         travelers = c2.number_input("Travelers", 1, 20, 2)
@@ -188,7 +280,7 @@ def page_create():
                 include_holy=include_holy, interests=interests, audience="tourist",
                 route_mode=("certified" if route_mode == "Use a certified route" else "custom"),
                 certified_route_id=certified_id, cuisines=cuisines, accommodation=accommodation,
-                day_start=day_start, day_end=day_end, route=route))
+                day_start=day_start, day_end=day_end, route=route, founder_id=_f["id"]))
             db.add_member(tid, owner, age, interests)
             # email confirmation (demo mode if SMTP not configured)
             ok, mode = notifications.notify_trip_created(email, owner, title, code, str(sd), str(ed))
@@ -775,7 +867,12 @@ def page_admin():
 
 # ============================================================ Router
 # top nav — native Streamlit buttons (reliable, no third-party widget state issues).
-_nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),("routes","🗺️ Routes"),("recommend","🎯 For You")]
+if st.session_state.founder:
+    _nav_items = [("home","🏠 Home"),("create","✨ Create"),("mytrips","🗂️ My Trips"),
+                  ("join","🔑 Join"),("routes","🗺️ Routes"),("recommend","🎯 For You")]
+else:
+    _nav_items = [("home","🏠 Home"),("create","✨ Create"),("join","🔑 Join"),
+                  ("routes","🗺️ Routes"),("recommend","🎯 For You"),("account","👤 Account")]
 _cols = st.columns(len(_nav_items))
 for _i, (_p, _label) in enumerate(_nav_items):
     _active = (st.session_state.page == _p)
@@ -786,6 +883,10 @@ for _i, (_p, _label) in enumerate(_nav_items):
 page = st.session_state.page
 if page == "home":
     page_home()
+elif page == "account":
+    page_account()
+elif page == "mytrips":
+    page_mytrips()
 elif page == "create":
     page_create()
 elif page == "detail":
@@ -801,8 +902,16 @@ elif page == "recommend":
 elif page == "admin":
     page_admin()
 
-# Hidden admin entry — not part of the public nav. Lives in the sidebar.
+# Sidebar: founder session + hidden admin entry.
 with st.sidebar:
+    if st.session_state.founder:
+        _f = st.session_state.founder
+        st.markdown(f"### 👤 {_f['display_name']}")
+        st.caption(f"@{_f['username']}")
+        if st.button("🚪 Sign out", key="sb_out", use_container_width=True):
+            st.session_state.founder = None
+            go("home")
+        st.divider()
     st.markdown("### 🔐 Staff")
     if st.button("Admin dashboard", key="admin_entry", use_container_width=True):
         go("admin")
