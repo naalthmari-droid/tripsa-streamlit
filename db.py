@@ -50,6 +50,7 @@ def _turso_host(url):
 
 def _turso_exec(url, tok, sql, params=()):
     """Execute one statement via Turso's HTTP pipeline API. Returns (cols, rows, lastrowid)."""
+    import time
     args = []
     for p in params:
         if p is None:
@@ -64,8 +65,15 @@ def _turso_exec(url, tok, sql, params=()):
         {"type": "execute", "stmt": ({"sql": sql, "args": args} if args else {"sql": sql})},
         {"type": "close"},
     ]}
-    r = _get_session().post(_turso_host(url) + "/v2/pipeline", json=body,
-                            headers={"Authorization": "Bearer " + tok}, timeout=30)
+    # Retry transient auth/gateway blips (401/404 during secret propagation or
+    # edge warm-up) with exponential backoff instead of crashing the whole app.
+    r = None
+    for attempt in range(4):
+        r = _get_session().post(_turso_host(url) + "/v2/pipeline", json=body,
+                                headers={"Authorization": "Bearer " + tok}, timeout=30)
+        if r.status_code not in (401, 403, 404, 429, 502, 503):
+            break
+        time.sleep(0.6 * (2 ** attempt))  # 0.6s, 1.2s, 2.4s
     r.raise_for_status()
     res = r.json()["results"][0]["response"]["result"]
     cols = [c["name"] for c in res.get("cols", [])]
