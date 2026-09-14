@@ -48,6 +48,19 @@
 يجب تدوير كل التوكنات التي ظهرت نصاً في المحادثة (Turso platform token + db tokens)
 بعد استقرار النشر، لأنها أصبحت مكشوفة.
 
+## حالة العمل الجارية (2026-09-14) — دمج بيانات المسافرون العرب
+- مصدر البيانات: https://www.almosaferoon.com/ksa/ (ملف: /home/ubuntu/tripsa_streamlit/saudi_tourism_data.json)
+  يحوي 20 وجهة، ~70 معلماً، مدة إقامة موصى بها، أفضل أشهر زيارة، وقواعد تخطيط (مكة/المدينة للمسلمين فقط، دمج المنطقة الشرقية...).
+- وحدة الدمج: saudi_extra.py (خرائط الأسماء العربية→ids، تصنيف الفئات العربية→interest keys، 5 وجهات جديدة: umluj, kaec, jazan, farasan, tanomah).
+- data.py: دمج تلقائي عند الاستيراد (DESTINATIONS=20، ATTRACTIONS مدموجة، rec_days/best_months/min_nights محدثة).
+- airports: أضيفت umluj→EJH, kaec→JED, tanomah→AHB (farasan عبّارة فقط).
+- engine.py: أُضيفت فنادق kaec وjazan داخل HOTELS قبل قوس الإغلاق مباشرة (تحقق من الموقع).
+- ملاحظة: قسم app.py الذي كان يعرض "15 DESTINATIONS" ربما لم يُحدَّث لديناميكي؛ تحقق من الرقم في الصفحة الرئيسية.
+- الميزة السابقة المكتملة: custom_items (فعاليات مقترحة من الأعضاء، تصويت، إدراج في Final Plan عند avg>=2.5، حذف من المقترح فقط).
+- آخر commit مدفوع قبل الدمج: c0174fb (todo). الدمج الحالي لم يُختبر بعد ولم يُدفع.
+- التطبيق: https://tripsa-app-hyjsp9bnu4fvx2k5vad88g.streamlit.app/ — قاعدة Turso: tripsa-us (aws-us-east-1)، التوكن المدوّر sha=2f8618415a في Streamlit Secrets (لا تعرضه).
+- التوكنات المحلية: /home/ubuntu/.tripsa_us_token_rotated (الصالح)، platform token القديم أُبطل.
+
 ## تحديث: اكتمال تدوير الأسرار (بتاريخ الجلسة)
 - ✅ أُبطل منصة Token القديم المكشوف (jti PUA8-LAiEfG0Gx4QqgdJSg) عبر Platform API — status 200.
 - ✅ أُصدر توكن قاعدة بيانات جديد آمن (kid jLv3EwCR, sha 2f8618415a) — تحقق 200.

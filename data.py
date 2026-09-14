@@ -80,6 +80,20 @@ DESTINATIONS = [
          blurb="Garden of the Hejaz — misty forests and hanging villages."),
 ]
 
+
+# ---- Merge Almosaferoon scraped data (new destinations + extra attractions) ----
+import saudi_extra as _sx
+_new_dests, _extra_attrs, _enrich = _sx.load_extra()
+DESTINATIONS = DESTINATIONS + _new_dests
+for _d in DESTINATIONS:
+    _e = _enrich.get(_d["id"])
+    if _e:
+        if _e.get("rec_days"):
+            _d["rec_days"] = int(_e["rec_days"])
+            _d["min_nights"] = max(_d.get("min_nights", 1), int(_e["rec_days"]) - 1)
+        if _e.get("best_months"):
+            _d["best_months"] = _e["best_months"]
+
 DEST_BY_ID = {d["id"]: d for d in DESTINATIONS}
 HOLY_IDS = [d["id"] for d in DESTINATIONS if d["holy"]]
 
@@ -177,6 +191,12 @@ ATTRACTIONS = [
     ("dhee_ayn", "albaha", "Dhee Ayn Village", "Heritage", 19.9300, 41.4400, 4.6, 1, 180),
 ]
 
+# Append extra attractions scraped from Almosaferoon (deduped by id)
+_existing_aid = {a[0] for a in ATTRACTIONS}
+for _a in _extra_attrs:
+    if _a[0] not in _existing_aid:
+        ATTRACTIONS.append(_a)
+
 def restaurants_for(dest_id):
     rows = [r for r in RESTAURANTS if r[1] == dest_id]
     return sorted(rows, key=lambda r: -r[6])
@@ -226,6 +246,8 @@ AIRPORTS = {
     "hail": "HAS", "qassim": "ELQ", "alahsa": "HOF", "dammam": "DMM",
     "khobar": "DMM", "dammam_khobar": "DMM", "tabuk": "TUU", "yanbu": "YNB",
     "albaha": "ABT", "jazan": "GIZ", "najran": "EAM",
+    # Almosaferoon-merged destinations (nearest real airport; farasan is ferry-only)
+    "umluj": "EJH", "kaec": "JED", "tanomah": "AHB",
 }
 
 def airport_for(dest_id):

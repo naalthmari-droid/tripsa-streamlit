@@ -297,6 +297,10 @@ HOTELS = {
         ("Gloria Inn Najran", 4, "Najran", 350, "Mid-Range"),
         ("Hyatt Najran", 3, "Najran", 220, "Budget"),
     ],
+    "kaec": [
+        ("Bay La Sun Hotel & Marina", 5, "KAEC Marina", 800, "Luxury"),
+        ("Views Hotel & Residences", 4, "KAEC", 520, "Mid-Range"),
+    ],
 }
 
 

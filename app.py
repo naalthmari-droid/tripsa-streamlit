@@ -77,7 +77,7 @@ def hero():
         # elegant stat badge instead of the off-theme illustration
         st.markdown("""
         <div class="hero-badge">
-          <div class="hb-num">15</div><div class="hb-lbl">Destinations</div>
+          <div class="hb-num">{len(data.DESTINATIONS)}</div><div class="hb-lbl">Destinations</div>
           <div class="hb-div"></div>
           <div class="hb-num">2</div><div class="hb-lbl">Certified routes</div>
           <div class="hb-div"></div>
