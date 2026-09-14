@@ -17,3 +17,7 @@
 - [x] Custom activities appear for all members and are votable like built-in items
 - [x] Approved custom activities are included in the regenerated Final Plan schedule
 - [x] Member who added a custom activity can delete it before finalization
+- [x] Merge Almosaferoon scraped data: add 5 new destinations (Umluj, KAEC, Jazan, Farasan, Tanomah) + ~45 new attractions
+- [x] Enrich existing destinations with recommended stay duration, best visit months, and planning rules
+- [x] Map Arabic attraction categories to app interest keys for recommendations/scheduling
+- [x] Test recommendations, scheduling, voting with merged data and publish
