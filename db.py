@@ -596,14 +596,18 @@ def admin_overview():
     """Global KPIs: totals across trips, members, votes, comments, ratings."""
     conn = _conn()
     def one(q):
-        return conn.execute(q).fetchone()[0]
+        # Turso REST returns dict rows — read the first column by name, not position.
+        row = conn.execute(q).fetchone()
+        if not row:
+            return 0
+        return next(iter(row.values()))
     out = {
         "trips": one("SELECT COUNT(*) FROM trips"),
         "members": one("SELECT COUNT(*) FROM members"),
         "votes": one("SELECT COUNT(*) FROM votes"),
         "comments": one("SELECT COUNT(*) FROM comments"),
         "ratings": one("SELECT COUNT(*) FROM rec_ratings"),
-        "avg_rating": round(conn.execute("SELECT AVG(stars) FROM rec_ratings").fetchone()[0] or 0, 2),
+        "avg_rating": round((one("SELECT AVG(stars) FROM rec_ratings") or 0), 2),
     }
     conn.close()
     return out
