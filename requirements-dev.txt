@@ -1,0 +1,3 @@
+-r requirements.txt
+# Used only by local PDF regression tests.
+pypdf>=5,<7

@@ -2,6 +2,7 @@
 import math
 import random
 import string
+import unicodedata
 from datetime import datetime, timedelta
 from data import DEST_BY_ID, attractions_for, restaurants_by_cuisines
 import streamlit as st
@@ -375,47 +376,58 @@ def hotels_for(dest_id, budget_tier="mid", accommodation=None):
     return ordered
 
 
+def _unique_attractions(attrs):
+    """Preserve ranking, rejecting duplicate IDs or equivalent city/name pairs.
+
+    Names use Unicode normalization, case folding and collapsed whitespace.
+    This intentionally does not guess translations or fuzzy place aliases.
+    """
+    seen_ids, seen_names = set(), set()
+    unique = []
+    for attr in attrs:
+        name = " ".join(unicodedata.normalize("NFKC", attr[2]).casefold().split())
+        name_key = (attr[1], name)
+        duplicate = attr[0] in seen_ids or name_key in seen_names
+        seen_ids.add(attr[0])
+        seen_names.add(name_key)
+        if not duplicate:
+            unique.append(attr)
+    return unique
+
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
-    """Generate a schedule for EACH day of the stay (not just one day)."""
+    """Schedule each day with no repeated catalog attraction during this stay.
+
+    Allocate remaining choices over remaining days, capped by travel pace.
+    Mark an ID used only after it actually appears in the output. Never refill
+    from used attractions: exhausted/unschedulable days become explicit free
+    time. Meals are recurring necessities and are not subject to this rule.
+    """
     days = max(1, int(nights))
     all_days = []
-    attrs = attractions_for(dest_id)
-    # Give each day a FRESH slice of attractions — never repeat the same
-    # attraction across different days of the stay.
+    attrs = _unique_attractions(attractions_for(dest_id))
     target = 5 if pace == "action_packed" else (3 if pace == "relaxed" else 4)
-    n = len(attrs)
-    # Fit activities to the stay length: when the stay is long, reduce activities per
-    # day so that NO attraction ever repeats across days (total slots <= available).
-    if days > 1 and n >= days * 2:
-        target = max(2, min(target, n // days))
-    per_day_pool = target + 1
     used = set()
-    cursor = 0
     for d in range(days):
-        pool = []
-        i = cursor
-        walked = 0
-        while len(pool) < per_day_pool and walked < n:
-            a = attrs[i % n]
-            if a[0] not in used:
-                pool.append(a)
-                used.add(a[0])
-            i += 1
-            walked += 1
-        cursor = i % n
-        if len(pool) < per_day_pool:  # fallback (very few attractions): refill uniquely
-            for a in attrs:
-                if len(pool) >= per_day_pool:
-                    break
-                if all(a[0] != p[0] for p in pool):
-                    pool.append(a)
-        all_days.append(_schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, pool, d + 1))
+        remaining = [a for a in attrs if a[0] not in used]
+        day_target = min(target, math.ceil(len(remaining) / (days - d)))
+        schedule = _schedule_one_day(dest_id, day_start, day_end, pace,
+                                     cuisine_ids, remaining, d + 1,
+                                     max_activities=day_target)
+        used.update(row["item_id"] for row in schedule if row["kind"] == "activity")
+        if not schedule and int(day_end) > int(day_start):
+            schedule = [dict(time=_fmt(int(day_start) * 60),
+                             end=_fmt(int(day_end) * 60),
+                             label="Free time — no new activity fits the remaining options",
+                             kind="free_time", rating=None)]
+        all_days.append(schedule)
     return all_days
 
 
-def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num, pinned=None):
-    """Internal: schedule one day from a fresh per-day pool. pinned = member-chosen fixed-time activities."""
+def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num,
+                      pinned=None, max_activities=None):
+    """Schedule unused candidates, with an optional cap and member-pinned items."""
     start_min = int(day_start) * 60
     end_min = int(day_end) * 60
     lunch_at = 13 * 60
@@ -427,10 +439,12 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
     dinner = rests[day_num % len(rests)] if rests else None
 
     target = 5 if pace == "action_packed" else (3 if pace == "relaxed" else 4)
+    if max_activities is not None:
+        target = min(target, max(0, int(max_activities)))
     items = []
-    for a in attrs[:target]:
+    for a in _unique_attractions(attrs):
         kind = "heavy" if a[3] == "Nature" else ("light" if a[3] == "Religious" else "medium")
-        items.append(dict(label=a[2], kind=kind, rating=a[6], dur=a[8]))
+        items.append(dict(item_id=a[0], label=a[2], kind=kind, rating=a[6], dur=a[8]))
     order_map = {"light": 0, "medium": 1, "heavy": 2}
     items.sort(key=lambda x: order_map[x["kind"]])
 
@@ -454,17 +468,21 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
                 _emitted.append(p)
                 pinned.remove(p)
 
-
     def add_meal(label, place):
         nonlocal cursor
         dur = place[8] if place else 60
+        if cursor + dur > end_min:
+            return
         name = f"{label} — {place[2]}" if place else label
         out.append(dict(time=_fmt(cursor), end=_fmt(cursor + dur), label=name,
                         kind="meal", rating=(place[6] if place else None)))
         cursor += dur + gap
-
         emit_due_pinned()
+
+    scheduled_count = 0
     for it in items:
+        if scheduled_count >= target:
+            break
         dur = it["dur"]
         if pace == "relaxed":
             dur = int(dur * 1.15)
@@ -474,9 +492,10 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
             lunch_added = True
             add_meal("Lunch", lunch)
         if cursor + dur > end_min:
-            break
+            continue  # A shorter remaining activity may still fit this day.
         out.append(dict(time=_fmt(cursor), end=_fmt(cursor + dur), label=it["label"],
-                        kind="activity", rating=it["rating"]))
+                        kind="activity", rating=it["rating"], item_id=it["item_id"]))
+        scheduled_count += 1
         cursor += dur + gap
         if not lunch_added and cursor >= lunch_at:
             lunch_added = True
@@ -484,7 +503,7 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
         if not dinner_added and dinner_at - 30 <= cursor <= dinner_at + 60:
             dinner_added = True
             add_meal("Dinner", dinner)
-    # flush pinned items scheduled later than the last moving activity
+    # Preserve the existing pinned-helper behavior; the public scheduler does not inject pins.
     for p in list(pinned):
         if p not in _emitted and p["minutes"] < end_min:
             out.append(dict(time=_fmt(p["minutes"]), end=_fmt(p["minutes"] + p["dur"]),
