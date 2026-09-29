@@ -41,3 +41,11 @@ Scope: uniqueness is per city stay for catalog attractions, by ID or normalized 
 - [x] Add regression coverage for same-day geographic clustering and run the complete suite: 20 tests passed.
 - [x] Capture local UI evidence for member-suggested activities, group voting, pinned time, and final-plan inclusion.
 - [x] Expand the Arabic judging deck with the previous five-step journey slide, activity-voting flow, spatial optimization, future concierge package, and logo story.
+
+## Premium UI redesign — 2026-09-30
+
+- [x] Replace the visual system with a bold pine, mint, purple and gold App Store-style palette.
+- [x] Rebuild the home hero around the TRIPSA identity and a realistic itinerary preview.
+- [x] Unify cards, forms, navigation, itinerary rows, alerts and sidebar surfaces.
+- [x] Verify desktop/mobile readability, existing flows and the full automated test suite.
+- [ ] Publish the redesign to GitHub main and verify the live health endpoint.

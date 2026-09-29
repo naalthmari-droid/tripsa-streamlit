@@ -3,7 +3,7 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 from datetime import datetime, date
-import json, os
+import base64, json, os
 from streamlit_lottie import st_lottie
 
 import data
@@ -90,28 +90,52 @@ def go(page, **kw):
     st.rerun()
 
 
+def _asset_data_uri(relative_path):
+    """Embed a small local brand asset without an extra network request."""
+    path = os.path.join(os.path.dirname(__file__), relative_path)
+    try:
+        with open(path, "rb") as asset:
+            return "data:image/png;base64," + base64.b64encode(asset.read()).decode("ascii")
+    except OSError:
+        return ""
+
+
 def hero():
-    c1, c2 = st.columns([3, 1])
-    with c1:
-        st.markdown("""
-        <div class="hero">
-          <div class="brand"><span class="dot"></span> TRIPSA</div>
-          <h1>Plan your Saudi journey<br/>with intelligence.</h1>
-          <p>TRIPSA builds an optimized route between cities — by road, air or rail — with stay dates,
-          and cost, and lets your group vote &amp; reach consensus via a single invite code.</p>
+    logo = _asset_data_uri("assets/tripsa-logo.png")
+    logo_html = (f'<div class="hero-logo-wrap"><img class="hero-logo" src="{logo}" alt="TRIPSA"/></div>'
+                 if logo else '<div class="brand">TRIPSA</div>')
+    st.markdown(f"""
+    <section class="hero">
+      <div class="hero-copy">
+        {logo_html}
+        <div class="hero-kicker"><span>Saudi-first intelligence</span><span>Solo + group planning</span></div>
+        <h1>Your Saudi journey.<br/><span class="accent">Intelligently yours.</span></h1>
+        <p>Tell us how you travel. TRIPSA turns your preferences into a personalized route,
+        geographically coherent days, group decisions and one final plan you can actually follow.</p>
+        <div class="hero-proof">
+          <span><i></i>{len(data.DESTINATIONS)} destinations</span>
+          <span><i></i>{len(_sx.all_attractions())} real experiences</span>
+          <span><i></i>Road · Air · Rail</span>
         </div>
-        """, unsafe_allow_html=True)
-    with c2:
-        # elegant stat badge instead of the off-theme illustration
-        st.markdown(f"""
-        <div class="hero-badge">
-          <div class="hb-num">{len(data.DESTINATIONS)}</div><div class="hb-lbl">Destinations</div>
-          <div class="hb-div"></div>
-          <div class="hb-num">2</div><div class="hb-lbl">Certified routes</div>
-          <div class="hb-div"></div>
-          <div class="hb-num">🤝</div><div class="hb-lbl">Group planning</div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating-chip one">4.8★ Group match</div>
+        <div class="phone-card">
+          <div class="phone-top"><span>TRIPSA PLAN</span><span>5 DAYS</span></div>
+          <div class="phone-title">Riyadh → Qassim → Hail</div>
+          <div class="phone-sub">Optimized for heritage, nature and a relaxed pace</div>
+          <div class="route-strip"><b>1</b><em></em><b>2</b><em></em><b>3</b></div>
+          <div class="mini-day">
+            <div class="mini-day-head"><span>Day 2 · Riyadh</span><span>Nearby cluster</span></div>
+            <div class="mini-row"><time>09:00</time><i></i><span>Diriyah heritage district</span></div>
+            <div class="mini-row"><time>12:30</time><i></i><span>Najdi lunch experience</span></div>
+            <div class="mini-row"><time>16:00</time><i></i><span>Team-approved activity</span></div>
+          </div>
         </div>
-        """, unsafe_allow_html=True)
+        <div class="floating-chip two">✓ No repeated activities</div>
+      </div>
+    </section>
+    """, unsafe_allow_html=True)
 
 
 def fmt_drive(m):
@@ -128,20 +152,29 @@ def fmt_date(iso):
 # ============================================================ HOME
 def page_home():
     hero()
-    st.markdown("<br/>", unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="home-stats">
+      <div class="home-stat"><b>{len(data.DESTINATIONS)}</b><span>Saudi destinations</span></div>
+      <div class="home-stat"><b>{len(_sx.all_attractions())}</b><span>Real attractions</span></div>
+      <div class="home-stat"><b>{len(data.CERTIFIED_ROUTES)}</b><span>Ready-made routes</span></div>
+      <div class="home-stat"><b>0–5</b><span>Transparent group voting</span></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="sec">Why TRIPSA feels different</div>', unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.markdown('<div class="card"><h3>🧭 Optimized Routes</h3><div class="sub">A TSP engine orders your cities to minimize drive time, with per-stop stay dates.</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="feature-card"><div class="f-icon">🧠</div><h3>Your travel fingerprint</h3><p>Interests, budget, accommodation, cuisine, pace and daily rhythm shape every recommendation.</p></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown('<div class="card"><h3>🤝 Group Consensus</h3><div class="sub">Invite code, member preferences, voting and a live group-consensus score.</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="feature-card"><div class="f-icon">📍</div><h3>Less time in transit</h3><p>Optimized city order and nearby daily activity clusters protect more time for the actual experience.</p></div>', unsafe_allow_html=True)
     with c3:
         # Readiness & Impact is an admin/business metric — hidden from regular tourists.
         if st.session_state.get("admin_ok"):
-            st.markdown('<div class="card"><h3>📊 Readiness & Impact</h3><div class="sub">Readiness (0-100) and local economic impact for every route.</div></div>', unsafe_allow_html=True)
+            st.markdown('<div class="feature-card"><div class="f-icon">📊</div><h3>Readiness &amp; impact</h3><p>Operational indicators for administrators, hidden from the regular traveler experience.</p></div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div class="card"><h3>🍽️ Local Flavors</h3><div class="sub">Restaurant picks matched to your favorite cuisine in every city on your route.</div></div>', unsafe_allow_html=True)
+            st.markdown('<div class="feature-card"><div class="f-icon">🤝</div><h3>A plan everyone owns</h3><p>Invite, suggest, vote and regenerate one final plan from the group’s real preferences.</p></div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="sec">Get started</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sec">Start planning</div>', unsafe_allow_html=True)
     a, b, c = st.columns([1, 1, 1])
     if a.button("✨ Create a trip", use_container_width=True):
         go("create")
