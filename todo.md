@@ -48,4 +48,4 @@ Scope: uniqueness is per city stay for catalog attractions, by ID or normalized 
 - [x] Rebuild the home hero around the TRIPSA identity and a realistic itinerary preview.
 - [x] Unify cards, forms, navigation, itinerary rows, alerts and sidebar surfaces.
 - [x] Verify desktop/mobile readability, existing flows and the full automated test suite.
-- [ ] Publish the redesign to GitHub main and verify the live health endpoint.
+- [x] Publish the redesign to GitHub main and verify the live app visually and through its health endpoint.
