@@ -3,15 +3,20 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 from datetime import datetime, date
-import base64, json, os
+import base64, importlib, json, os
 from streamlit_lottie import st_lottie
 
 import data
 import engine
 import db
 import notifications
-from style import CUSTOM_CSS, LOTTIE
+import style as _style
 import saudi_extra as _sx
+
+# Streamlit may preserve imported modules across hot reruns on Cloud. Reloading
+# the design module guarantees that a deployed theme update is visible at once.
+_style = importlib.reload(_style)
+CUSTOM_CSS, LOTTIE = _style.CUSTOM_CSS, _style.LOTTIE
 
 
 def _maps_btn(label):
