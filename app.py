@@ -790,11 +790,9 @@ def page_room():
                     if _ci.get("pref_day") and _ci.get("pref_time_min") is not None:
                         _d = int(_ci["pref_day"])
                         if 1 <= _d <= len(_days):
-                            # A full-day free-time placeholder is replaced by the member's event.
-                            _days[_d-1] = [a for a in _days[_d-1] if a["kind"] != "free_time"]
                             _mins = int(_ci["pref_time_min"]); _dur = int(_ci["duration_min"])
-                            _days[_d-1].append(dict(time=f"{_mins//60:02d}:{_mins%60:02d}", end=f"{(_mins+_dur)//60:02d}:{(_mins+_dur)%60:02d}", label="✨ "+_ci["name"], kind="activity", rating=None, pinned=True))
-                            _days[_d-1].sort(key=lambda x: x["time"])
+                            _days[_d-1] = engine.insert_pinned_activity(
+                                _days[_d-1], "✨ " + _ci["name"], _mins, _dur)
                 days = _days
                 for di, acts in enumerate(days, 1):
                     st.markdown(f'<div class="sub" style="font-weight:700;color:#2f5233;margin-top:8px">📅 Day {di}</div>', unsafe_allow_html=True)

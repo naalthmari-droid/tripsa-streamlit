@@ -7,8 +7,8 @@ import data
 import engine
 
 
-def attraction(aid, name=None, duration=60, category="Museum"):
-    return (aid, "test_city", name or f"Place {aid}", category, 24.0, 46.0, 4.5, 1, duration)
+def attraction(aid, name=None, duration=60, category="Museum", lat=24.0, lng=46.0):
+    return (aid, "test_city", name or f"Place {aid}", category, lat, lng, 4.5, 1, duration)
 
 
 def activities(days):
@@ -75,6 +75,22 @@ class ScheduleTests(unittest.TestCase):
         self.assertEqual(len(activities(result)), 12)
         self.assert_unique(result)
 
+    def test_same_day_activities_follow_nearby_geographic_clusters(self):
+        rows = [
+            attraction("near_a", lat=24.01, lng=46.01),
+            attraction("far_a", lat=25.00, lng=47.00),
+            attraction("near_b", lat=24.02, lng=46.02),
+            attraction("far_b", lat=25.01, lng=47.01),
+        ]
+        with patch.dict(engine.DEST_BY_ID, {
+            "test_city": {"lat": 24.0, "lng": 46.0}
+        }), patch.object(engine, "attractions_for", return_value=rows), patch.object(
+            engine, "restaurants_by_cuisines", return_value=[]
+        ):
+            result = engine.schedule_trip_days("test_city", 2, 9, 22, "moderate", [])
+        day_ids = [[row["item_id"] for row in day if row["kind"] == "activity"] for day in result]
+        self.assertEqual(day_ids, [["near_a", "near_b"], ["far_a", "far_b"]])
+
     def test_unused_candidates_remain_available_for_later_days(self):
         rows = [attraction(str(i), duration=60) for i in range(8)]
         result = self.generate(rows, days=2, start=9, end=11)
@@ -126,6 +142,16 @@ class ScheduleTests(unittest.TestCase):
         pinned = [row for row in result if row.get("pinned")]
         self.assertEqual(len(pinned), 1)
         self.assertEqual(pinned[0]["time"], "16:00")
+
+    def test_inserting_pinned_activity_removes_time_conflicts(self):
+        base = [
+            {"time": "14:40", "end": "16:10", "label": "Place A", "kind": "activity"},
+            {"time": "16:40", "end": "18:10", "label": "Place B", "kind": "activity"},
+            {"time": "19:00", "end": "20:00", "label": "Dinner", "kind": "meal"},
+        ]
+        result = engine.insert_pinned_activity(base, "Group event", 16 * 60, 120)
+        self.assertEqual([row["label"] for row in result], ["Group event", "Dinner"])
+        self.assertEqual((result[0]["time"], result[0]["end"]), ("16:00", "18:00"))
 
     def test_meals_do_not_extend_past_day_end(self):
         with patch.object(engine, "attractions_for", return_value=[attraction("a", duration=30)]), patch.object(

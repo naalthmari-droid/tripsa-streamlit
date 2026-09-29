@@ -30,6 +30,14 @@
 - [x] Add regression tests for scarce/empty/duplicate data, long stays, short windows, cache isolation, and current destinations
 - [x] Run syntax checks and isolated Streamlit AppTest
 
-Validation: `python3 -m unittest discover -s tests -v` passes 18 tests, including 480 schedule combinations across 20 destinations. The matrix covers 1/4/14/30 days, all three paces, and two waking-hour windows. AppTest verifies Home, Detail, Shared Schedule and Final Plan; pins remain at 16:00 on days 2 and 30. An exhausted day's free-time placeholder is replaced when a pinned event is added. PDF extraction verifies all 30 days, unique catalog activities and explicit free time. Install test-only dependencies with `pip install -r requirements-dev.txt`. All integration-test writes use a temporary SQLite database, not Turso or the existing local database.
+Validation: `python3 -m unittest discover -s tests -v` passes 20 tests, including 480 schedule combinations across 20 destinations. The matrix covers 1/4/14/30 days, all three paces, and two waking-hour windows. AppTest verifies Home, Detail, Shared Schedule and Final Plan; pins remain at 16:00 on days 2 and 30. An exhausted day's free-time placeholder is replaced when a pinned event is added. PDF extraction verifies all 30 days, unique catalog activities and explicit free time. Install test-only dependencies with `pip install -r requirements-dev.txt`. All integration-test writes use a temporary SQLite database, not Turso or the existing local database.
 
-Scope: uniqueness is per city stay for catalog attractions, by ID or normalized city/name, not fuzzy multilingual alias matching. Restaurant choices may recur. Existing custom-activity approval rules and storage remain unchanged. Unified custom-activity scheduling/PDF export and general fixed-time conflict resolution remain separate follow-up work; this change does not claim to solve them.
+Scope: uniqueness is per city stay for catalog attractions, by ID or normalized city/name, not fuzzy multilingual alias matching. Restaurant choices may recur. Existing custom-activity approval rules and storage remain unchanged. The Final Plan now removes rows that overlap a member-pinned activity. Unified custom-activity scheduling/PDF export remains a separate follow-up.
+
+## Geographic daily scheduling + judging deck expansion — 2026-09-30
+
+- [x] Order attractions with valid coordinates by a city-seeded nearest-neighbor path.
+- [x] Preserve that order when splitting attractions across stay days, while retaining no-repeat and time-window guarantees.
+- [x] Add regression coverage for same-day geographic clustering and run the complete suite: 20 tests passed.
+- [x] Capture local UI evidence for member-suggested activities, group voting, pinned time, and final-plan inclusion.
+- [x] Expand the Arabic judging deck with the previous five-step journey slide, activity-voting flow, spatial optimization, future concierge package, and logo story.

@@ -395,18 +395,82 @@ def _unique_attractions(attrs):
     return unique
 
 
+def _order_attractions_by_proximity(dest_id, attrs):
+    """Build a deterministic nearest-neighbor walk for geocoded attractions.
+
+    Starting at the destination centre and splitting consecutive sections across
+    days keeps each day's activities close together. Entries without reliable
+    coordinates remain available after the geocoded entries.
+    """
+    attrs = _unique_attractions(attrs)
+    known, unknown = [], []
+    for attr in attrs:
+        try:
+            lat, lng = float(attr[4]), float(attr[5])
+        except (IndexError, TypeError, ValueError):
+            lat, lng = 0.0, 0.0
+        (known if lat and lng else unknown).append(attr)
+
+    if not known:
+        return attrs
+
+    centre = DEST_BY_ID.get(dest_id, {})
+    cur_lat = float(centre.get("lat") or known[0][4])
+    cur_lng = float(centre.get("lng") or known[0][5])
+    ordered = []
+    remaining = list(known)
+    while remaining:
+        nxt = min(
+            remaining,
+            key=lambda a: (
+                haversine_km(cur_lat, cur_lng, float(a[4]), float(a[5])),
+                str(a[0]),
+            ),
+        )
+        ordered.append(nxt)
+        remaining.remove(nxt)
+        cur_lat, cur_lng = float(nxt[4]), float(nxt[5])
+    return ordered + unknown
+
+
+def insert_pinned_activity(day_schedule, label, minutes, duration_min, rating=None):
+    """Insert a fixed-time activity and remove rows that overlap its time slot."""
+    start = int(minutes)
+    end = start + int(duration_min)
+
+    def as_minutes(value):
+        hour, minute = map(int, str(value).split(":"))
+        return hour * 60 + minute
+
+    kept = []
+    for row in day_schedule:
+        if row.get("kind") == "free_time":
+            continue
+        row_start = as_minutes(row["time"])
+        row_end = as_minutes(row["end"])
+        if row_start < end and row_end > start:
+            continue
+        kept.append(row)
+    kept.append(dict(time=_fmt(start), end=_fmt(end), label=label,
+                     kind="activity", rating=rating, pinned=True))
+    kept.sort(key=lambda row: as_minutes(row["time"]))
+    return kept
+
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
-    """Schedule each day with no repeated catalog attraction during this stay.
+    """Schedule each day with nearby, non-repeated attractions during this stay.
 
-    Allocate remaining choices over remaining days, capped by travel pace.
+    Build a city-seeded nearest-neighbor walk, then allocate consecutive choices
+    over remaining days so same-day activities stay geographically close. The
+    allocation remains capped by travel pace.
     Mark an ID used only after it actually appears in the output. Never refill
     from used attractions: exhausted/unschedulable days become explicit free
     time. Meals are recurring necessities and are not subject to this rule.
     """
     days = max(1, int(nights))
     all_days = []
-    attrs = _unique_attractions(attractions_for(dest_id))
+    attrs = _order_attractions_by_proximity(dest_id, attractions_for(dest_id))
     target = 5 if pace == "action_packed" else (3 if pace == "relaxed" else 4)
     used = set()
     for d in range(days):
@@ -414,7 +478,8 @@ def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
         day_target = min(target, math.ceil(len(remaining) / (days - d)))
         schedule = _schedule_one_day(dest_id, day_start, day_end, pace,
                                      cuisine_ids, remaining, d + 1,
-                                     max_activities=day_target)
+                                     max_activities=day_target,
+                                     preserve_input_order=True)
         used.update(row["item_id"] for row in schedule if row["kind"] == "activity")
         if not schedule and int(day_end) > int(day_start):
             schedule = [dict(time=_fmt(int(day_start) * 60),
@@ -426,7 +491,7 @@ def schedule_trip_days(dest_id, nights, day_start, day_end, pace, cuisine_ids):
 
 
 def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day_num,
-                      pinned=None, max_activities=None):
+                      pinned=None, max_activities=None, preserve_input_order=False):
     """Schedule unused candidates, with an optional cap and member-pinned items."""
     start_min = int(day_start) * 60
     end_min = int(day_end) * 60
@@ -446,7 +511,8 @@ def _schedule_one_day(dest_id, day_start, day_end, pace, cuisine_ids, attrs, day
         kind = "heavy" if a[3] == "Nature" else ("light" if a[3] == "Religious" else "medium")
         items.append(dict(item_id=a[0], label=a[2], kind=kind, rating=a[6], dur=a[8]))
     order_map = {"light": 0, "medium": 1, "heavy": 2}
-    items.sort(key=lambda x: order_map[x["kind"]])
+    if not preserve_input_order:
+        items.sort(key=lambda x: order_map[x["kind"]])
 
     out = []
     cursor = start_min
