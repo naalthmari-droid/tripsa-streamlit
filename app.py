@@ -124,20 +124,17 @@ def hero():
         </div>
       </div>
       <div class="hero-visual">
-        <div class="floating-chip one">4.8★ Group match</div>
-        <div class="phone-card">
-          <div class="phone-top"><span>TRIPSA PLAN</span><span>5 DAYS</span></div>
-          <div class="phone-title">Riyadh → Qassim → Hail</div>
-          <div class="phone-sub">Optimized for heritage, nature and a relaxed pace</div>
-          <div class="route-strip"><b>1</b><em></em><b>2</b><em></em><b>3</b></div>
-          <div class="mini-day">
-            <div class="mini-day-head"><span>Day 2 · Riyadh</span><span>Nearby cluster</span></div>
-            <div class="mini-row"><time>09:00</time><i></i><span>Diriyah heritage district</span></div>
-            <div class="mini-row"><time>12:30</time><i></i><span>Najdi lunch experience</span></div>
-            <div class="mini-row"><time>16:00</time><i></i><span>Team-approved activity</span></div>
+        <div class="value-card">
+          <div class="value-eyebrow">WHAT TRIPSA DOES</div>
+          <div class="value-title">From preferences to a ready plan</div>
+          <div class="value-flow">
+            <div class="value-step"><b>01</b><span><strong>Understand</strong><small>Interests, budget, stay, cuisine and daily rhythm</small></span></div>
+            <div class="value-step"><b>02</b><span><strong>Optimize</strong><small>City order and nearby activities reduce unnecessary travel</small></span></div>
+            <div class="value-step"><b>03</b><span><strong>Decide together</strong><small>Members suggest, vote and reach one group plan</small></span></div>
+            <div class="value-step"><b>04</b><span><strong>Travel ready</strong><small>Day-by-day schedule, maps and shareable PDF</small></span></div>
           </div>
+          <div class="value-note"><i></i> Every step is available in the working product</div>
         </div>
-        <div class="floating-chip two">✓ No repeated activities</div>
       </div>
     </section>
     """, unsafe_allow_html=True)
@@ -414,7 +411,10 @@ def page_detail():
     st.markdown('<div class="sec">🗺️ Route map</div>', unsafe_allow_html=True)
     if stops:
         st.markdown('<div class="mapwrap">', unsafe_allow_html=True)
-        m = folium.Map(location=[stops[0]["lat"], stops[0]["lng"]], zoom_start=5, tiles="CartoDB positron")
+        # OpenStreetMap is a public no-key tile layer. CARTO currently returns
+        # "API KEY REQUIRED" tiles in some deployed browser environments.
+        m = folium.Map(location=[stops[0]["lat"], stops[0]["lng"]], zoom_start=5,
+                       tiles="OpenStreetMap", control_scale=True, prefer_canvas=True)
         pts = []
         for s in stops:
             pts.append([s["lat"], s["lng"]])
@@ -425,7 +425,10 @@ def page_detail():
         if len(pts) > 1:
             folium.PolyLine(pts, color="#2f5233", weight=3, opacity=0.8).add_to(m)
         m.fit_bounds(pts)
-        st_folium(m, width=None, height=420)
+        # This map is for viewing only. Returning no map events prevents zoom,
+        # pan and tile updates from rerunning the entire Streamlit application.
+        st_folium(m, key=f"route_map_{t['id']}", height=420,
+                  use_container_width=True, returned_objects=[])
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Stops timeline

@@ -49,3 +49,11 @@ Scope: uniqueness is per city stay for catalog attractions, by ID or normalized 
 - [x] Unify cards, forms, navigation, itinerary rows, alerts and sidebar surfaces.
 - [x] Verify desktop/mobile readability, existing flows and the full automated test suite.
 - [x] Publish the redesign to GitHub main and verify the live app visually and through its health endpoint.
+
+## Map reliability and hero clarity — 2026-09-30
+
+- [x] Replace the failing CARTO tile layer with keyless OpenStreetMap tiles.
+- [x] Make the route map view-only at the Streamlit event layer (`returned_objects=[]`) so pan/zoom does not rerun the app.
+- [x] Give each trip map a stable component key and retain responsive full-width rendering.
+- [x] Replace the fictional itinerary and match score in the hero with four verified product capabilities.
+- [x] Verify 12 OpenStreetMap tiles load locally with no `API KEY REQUIRED` response; all 20 automated tests pass.
